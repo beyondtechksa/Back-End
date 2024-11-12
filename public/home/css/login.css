@@ -1,0 +1,313 @@
+.Login-panel {
+  padding-left: 15px;
+  padding-right: 15px;
+  margin: 3rem 0;
+}
+
+.heading-login {
+  text-align: center;
+}
+
+.heading-login h3 {
+  font-family: Inter;
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 45.89px;
+  text-align: center;
+}
+
+.heading-login h2 {
+  font-family: Inter;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 33.89px;
+  text-align: center;
+  font-weight: 600;
+  color: #390049;
+}
+
+.User-Login-sign-button {
+  margin: 2rem 0;
+}
+.User-Login-sign-button > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.User-Login-sign-button a {
+  width: 176px;
+  height: 60px;
+  top: 195px;
+  left: 18px;
+  border-radius: 50px;
+  text-align: center;
+  background: #fffefe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  font-size: 20px;
+  font-weight: 500;
+}
+.active-login {
+  background: #390049 !important;
+  color: #fff !important;
+}
+.log-form .from-input {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+  width: 350px;
+  margin: auto;
+}
+.log-form .from-input input {
+  border-radius: 13px;
+  background: #fafafa;
+  height: 80px;
+  border: 1px solid #fafafa;
+  width: 350px;
+  padding-left: 15px;
+}
+.forgot {
+  width: 350px;
+  margin: auto;
+}
+.forgot a {
+  color: #000;
+  display: block;
+  font-family: Inter;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 15.73px;
+  text-align: center;
+  margin-top: 15px;
+  margin-right: 20px;
+}
+
+.log-form .from-input label {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 24.8px;
+  color: #000;
+}
+
+.log-form {
+  margin-top: 2rem;
+}
+.button-login {
+  margin-top: 4rem;
+}
+.button-login button {
+  background: #390049;
+  color: #fff;
+  width: 310px;
+  margin: auto;
+  height: 70px;
+  outline: none;
+  border: none;
+  border-radius: 50px;
+  margin: auto;
+  display: block;
+}
+
+.button-login button:hover {
+  background-color: #9600c1;
+}
+
+.User-Login-sign-button a:hover {
+  background: #9600c1;
+  color: #fff;
+}
+
+.active-login:hover {
+  background: #9600c1 !important;
+  color: #fff !important;
+}
+
+.other-login {
+  margin: 1.4rem 0;
+  text-align: center;
+}
+
+.social-auth {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 14px 0;
+}
+.social-auth img {
+  width: 28px;
+}
+
+.map-slected-area {
+  background: #f0f0f0;
+  width: 140px;
+  padding: 5px;
+  border-radius: 50px;
+  margin-top: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.map-slected-area select {
+  outline: none;
+  border: none;
+  background: transparent;
+}
+
+@media screen and (min-width: 992px) and (max-width: 1200px) {
+  .log-form .from-input {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 20px;
+    width: 500px;
+    margin: auto;
+  }
+
+  .log-form .from-input input {
+    border-radius: 13px;
+    background: #fafafa;
+    height: 80px;
+    border: 1px solid #fafafa;
+    width: 500px;
+    padding-left: 15px;
+  }
+
+  .button-login button {
+    background: #390049;
+    color: #fff;
+    width: 410px;
+    margin: auto;
+    height: 70px;
+    outline: none;
+    border: none;
+    border-radius: 50px;
+    margin: auto;
+    display: block;
+  }
+
+  .forgot {
+    width: 500px;
+    margin: auto;
+  }
+}
+
+@media screen and (min-width: 326px) and (max-width: 375px) {
+  .button-login button {
+    background: #390049;
+    color: #fff;
+    width: 275px;
+    margin: auto;
+    height: 58px;
+    outline: none;
+    border: none;
+    border-radius: 50px;
+    margin: auto;
+    display: block;
+  }
+
+  .log-form .from-input input {
+    border-radius: 13px;
+    background: #fafafa;
+    height: 80px;
+    border: 1px solid #fafafa;
+    width: 335px;
+    padding-left: 15px;
+  }
+
+  .User-Login-sign-button a {
+    width: 160px;
+    height: 55px;
+    top: 195px;
+    left: 18px;
+    border-radius: 50px;
+    text-align: center;
+    background: #fffefe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .log-form .from-input {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 20px;
+    width: 350px;
+    margin: 8px auto;
+  }
+}
+@media screen and (min-width: 100px) and (max-width: 325px) {
+  .log-form .from-input input {
+    border-radius: 13px;
+    background: #fafafa;
+    height: 80px;
+    border: 1px solid #fafafa;
+    width: 290px;
+    padding-left: 15px;
+  }
+  .log-form .from-input label {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24.8px;
+    color: #000;
+  }
+  .log-form .from-input {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 20px;
+    width: 300px;
+    margin: auto;
+  }
+
+  .button-login button {
+    background: #390049;
+    color: #fff;
+    width: 275px;
+    margin: auto;
+    height: 58px;
+    outline: none;
+    border: none;
+    border-radius: 50px;
+    margin: auto;
+    display: block;
+  }
+
+  .User-Login-sign-button a {
+    width: 130px;
+    height: 50px;
+    top: 195px;
+    left: 18px;
+    border-radius: 50px;
+    text-align: center;
+    background: #fffefe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .forgot {
+    width: 298px;
+    margin: auto;
+  }
+
+  .log-form .from-input {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 20px;
+    width: 350px;
+    margin: auto;
+    margin: 7px 0;
+  }
+}

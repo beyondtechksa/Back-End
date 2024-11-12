@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;1,300&display=swap');
+body,.app-sidebar .side-menu__item{font-family: Jost,sans-serif !important;text-transform: capitalize;}
+.inline-block{display: inline-block;}
+.user-profile-image{width: 100px;height: 100px;}
+.profile-img-file-input{display: none;}
+.profile-photo-edit {
+    cursor: pointer;
+    position: relative;
+    width: 100px;
+}
+.profile-photo-edit .camera {    position: absolute;z-index: 99;
+    bottom: 0;
+    right: 10px;
+    font-size: 24px;}
+.css-bar{width: 100px;height: 100px;}
+.css-bar:after, .css-bar>img{    width: 90px;
+    height: 90px;}
+
+
+#alert{position: fixed;bottom: 10px;right: 10px;width: 300px;}
+.nav-link {
+    color: #161616;
+    border-radius: 0;
+    font-weight: 500;
+}
+span.required{
+    font-size: 18px;
+    color: #e94f4f;
+    font-weight: bold;
+}
+.colored-tab-pane{background: #f0f1f7;    border-radius: 5px;position: relative;
+    padding: 20px 10px;}
+.tab-pane-box{padding: 1rem;}
+.tab-title{
+    display: block;
+    font-size: 25px;
+    margin-bottom: 10px;
+    color: #4c4c4c;
+    border-left: 4px solid #845adf;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+
+.hover-image img{transition: .4s;}
+.hover-image:hover img{
+    transform: scale(2);
+    z-index: 99;
+    position: relative;
+    top: 70px;
+    left: 80px;
+}
+
+.clickable tr{cursor: pointer;}
+.row_checked{background: #5b4b7e;
+    color: #fff;}
+
+
+/* Width and height for the scrollbar track */
+.scrollable::-webkit-scrollbar {
+    width: 10px; /* Width of the scrollbar */
+    height: 10px; /* Height of the scrollbar */
+}
+
+/* Style the scrollbar thumb */
+.scrollable::-webkit-scrollbar-thumb {
+    background: #888; /* Color of the scrollbar thumb */
+    border-radius: 5px; /* Roundness of the scrollbar thumb */
+}
+
+/* Style the scrollbar track */
+.scrollable::-webkit-scrollbar-track {
+    background: #fff; /* Color of the scrollbar track */
+}
+
+/* Style the scrollbar corner */
+.scrollable::-webkit-scrollbar-corner {
+    background: transparent; /* Color of the scrollbar corner */
+}
+
+.scrollable{max-height: 600px;overflow: auto;}
+.scrollable thead{position: sticky;z-index: 9;
+    top: 0;
+    background: #fff;}
+
+
+.ql-toolbar,.ql-editor{background: #fff;}
+#header-notification-scroll{overflow: auto;}

@@ -1,0 +1,92 @@
+.Splach-screen {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+.content-screen h4 {
+ 
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 31.47px;
+  text-align: center;
+  margin: 10px 0;
+}
+.content-screen p {
+ 
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 15.73px;
+  text-align: center;
+  margin: 10px 0;
+}
+.Splach-screen {
+  margin-top: 4rem;
+}
+
+.Continue-btn {
+  margin-top: 7rem;
+}
+.Continue-btn {
+  text-align: center;
+}
+.Continue-btn a {
+  background: #390049;
+  color: #fff;
+  width: 300px;
+  margin: auto;
+  height: 70px;
+  outline: none;
+  border: none;
+  border-radius: 50px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  margin: auto;
+}
+.skip-button {
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-top: 2rem;
+  text-align: end;
+}
+.skip-button a {
+ 
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 24.2px;
+  text-align: end;
+  color: #bebebe;
+}
+
+.Fornt-page {
+  max-width: 700px;
+  margin: auto;
+}
+.Fornt-page img {
+  width: 100%;
+}
+@media screen and (min-width: 100px) and (max-width: 325px) {
+  .Continue-btn a {
+    background: #390049;
+    color: #fff;
+    width: 260px;
+    margin: auto;
+    height: 65px;
+    outline: none;
+    border: none;
+    border-radius: 50px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin: auto;
+  }
+}
+.Continue-btn a:hover {
+  background-color: #9600c1;
+}
+.skip-button a:hover {
+  color: #9600c1;
+}

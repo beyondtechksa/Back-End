@@ -1,0 +1,388 @@
+.Order-Sum {
+  width: 700px;
+  margin: 3rem auto;
+}
+.Order-summary {
+  margin: auto;
+  background: #fafafa;
+  padding: 20px;
+  border-radius: 12px;
+}
+.Order-summary .title {
+  border-bottom: 1px solid #e4e4e4;
+  padding-bottom: 14px;
+}
+
+.Order-summary .payment-sy {
+  border-bottom: 1px solid #e4e4e4;
+  padding-bottom: 14px;
+  padding-top: 10px;
+}
+
+.payment-sy p {
+  color: #000;
+
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+.payment-sy p span {
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  color: #9600c1;
+}
+.price-dec {
+  margin: 10px 0;
+}
+
+.price-dec p {
+  color: #000;
+
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+.price-dec p:nth-child(2) {
+  color: #9600c1;
+  font-weight: 600;
+}
+
+.total-price-check h4 {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.order-button a {
+  margin: auto;
+  width: 700px;
+}
+
+.Order-summary .payment-sy h3 {
+  color: #000;
+
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+.orderSummary .title h3 {
+  margin: 5px 0;
+  color: #000;
+
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+.orderSummary .title h4 {
+  color: #000;
+
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  margin: 5px 0;
+}
+.orderSummary .title h5 {
+  color: rgba(0, 0, 0, 0.7);
+
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin: 5px 0;
+}
+
+.orderSummary .title p {
+  color: #000;
+
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  margin: 5px 0;
+}
+
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .order-details-summary {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 1rem;
+  }
+
+  .orderSummary .payment-sy {
+    margin-bottom: 45px;
+    border-top: 1px solid #e4e4e4;
+    padding-top: 14px;
+    border-bottom: 1px solid #e4e4e4;
+    padding-bottom: 14px;
+  }
+  .orderSummary .cart-checkout a {
+    width: 100%;
+    text-align: center;
+    height: 59px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .price-dec p:nth-child(2) {
+    color: #000000;
+    font-weight: 600;
+  }
+
+  .orderSummary .order-details-summary {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 1rem;
+  }
+
+  .orderSummary .cart-checkout {
+    position: relative;
+    padding: 0;
+    margin-top: 1rem;
+  }
+}
+
+@media screen and (min-width: 376px) and (max-width: 440px) {
+  .back-to-home {
+    display: flex !important;
+  }
+}
+
+@media screen and (min-width: 326px) and (max-width: 425px) {
+  .orderSummary .title h3 {
+    margin: 5px 0;
+    color: #000;
+
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+  }
+
+  .orderSummary .title h4 {
+    color: #000;
+
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin: 5px 0;
+  }
+
+  .orderSummary .title h5 {
+    color: rgba(0, 0, 0, 0.7);
+
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin: 5px 0;
+  }
+
+  .orderSummary .title p {
+    color: #000;
+
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin: 5px 0;
+  }
+  .orderSummary .payment-sy p {
+    color: #000;
+
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+  }
+
+  .orderSummary .payment-sy p span {
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    color: #9600c1;
+  }
+
+  .orderSummary .price-dec p {
+    color: #000;
+
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+  }
+
+  .orderSummary .total-price-check h4 {
+    font-size: 20px;
+    font-weight: 400;
+  }
+  .orderSummary .price-dec p:nth-child(2) {
+    color: #000000;
+    font-weight: 400;
+  }
+
+  .orderSummary .total-price-check h3 {
+    color: #9600c1;
+    font-weight: 700;
+    font-size: 20px;
+  }
+  .orderSummary .order-details-summary {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .orderSummary .payment-sy {
+    margin-bottom: 50px;
+    border-top: 1px solid #e4e4e4;
+    padding-top: 14px;
+    border-bottom: 1px solid #e4e4e4;
+    padding-bottom: 14px;
+  }
+
+  .orderSummary .order-details-summary .title {
+    margin: 1rem 0;
+  }
+
+  .orderSummary .cart-checkout {
+    position: relative;
+    padding: 0;
+    margin-top: 1rem;
+  }
+  .orderSummary .cart-checkout a {
+    width: 100%;
+
+    text-align: center;
+    height: 59px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .back-to-home {
+    display: flex !important;
+  }
+}
+
+@media screen and (min-width: 100px) and (max-width: 325px) {
+  .orderSummary .title h3 {
+    margin: 5px 0;
+    color: #000;
+
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+  }
+
+  .orderSummary .title h4 {
+    color: #000;
+
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin: 5px 0;
+  }
+
+  .orderSummary .title h5 {
+    color: rgba(0, 0, 0, 0.7);
+
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin: 5px 0;
+  }
+
+  .orderSummary .title p {
+    color: #000;
+
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin: 5px 0;
+  }
+  .orderSummary .payment-sy p {
+    color: #000;
+
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+  }
+
+  .orderSummary .payment-sy p span {
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    color: #9600c1;
+  }
+
+  .orderSummary .price-dec p {
+    color: #000;
+
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+  }
+
+  .orderSummary .total-price-check h4 {
+    font-size: 20px;
+    font-weight: 400;
+  }
+  .orderSummary .price-dec p:nth-child(2) {
+    color: #000000;
+    font-weight: 400;
+  }
+
+  .orderSummary .total-price-check h3 {
+    color: #9600c1;
+    font-weight: 700;
+    font-size: 20px;
+  }
+  .orderSummary .order-details-summary {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .orderSummary .payment-sy {
+    margin-bottom: 45px;
+    border-top: 1px solid #e4e4e4;
+    padding-top: 14px;
+    border-bottom: 1px solid #e4e4e4;
+    padding-bottom: 14px;
+  }
+
+  .orderSummary .order-details-summary .title {
+    margin: 1rem 0;
+  }
+
+  .orderSummary .cart-checkout {
+    position: relative;
+    padding: 0;
+    margin-top: 1rem;
+  }
+  .orderSummary .cart-checkout a {
+    width: 100%;
+
+    text-align: center;
+    height: 59px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .back-to-home {
+    display: flex !important;
+  }
+}

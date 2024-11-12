@@ -1,0 +1,168 @@
+home_forniture => products table
+
+favicon , logo , shipping  => settings table
+
+attributes  => carts table
+
+show_in_navbar , mark_as_top_category => categories table
+
+add new table pages
+
+=================================================
+
+ALTER TABLE `carts` ADD `size` TEXT NULL DEFAULT NULL AFTER `attributes`, ADD `color` TEXT NULL DEFAULT NULL AFTER `size`;
+
+ALTER TABLE `cart_discounts` ADD `status` INT(11) NOT NULL DEFAULT '0' AFTER `discount_percentage`;
+
+//temp products
+ALTER TABLE `temp_products` ADD `name_ar` TEXT NULL AFTER `desc`;
+
+ALTER TABLE `temp_products` ADD `desc_ar` TEXT NULL AFTER `name_ar`;
+
+ALTER TABLE `temp_products` CHANGE `product_id` `product_id` INT(11) NULL;
+
+//end temp
+
+============================================================
+
+ALTER TABLE `addresses` ADD `first_name` VARCHAR(255) NOT NULL AFTER `id`, ADD `last_name` VARCHAR(255) NOT NULL AFTER `first_name`, ADD `company_name` VARCHAR(255) NOT NULL AFTER `last_name`;
+ALTER TABLE `addresses` CHANGE `company_name` `company_name` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+
+=================================================
+ALTER TABLE `users` ADD `uuid` TEXT NULL AFTER `remember_token`;
+
+ALTER TABLE `orders` ADD `payment_id` INT NOT NULL AFTER `status`;
+
+===================================================
+
+ALTER TABLE `temp_products`
+ADD COLUMN `company_name` VARCHAR(255) NULL DEFAULT 'scrape';
+
+=========================================================
+
+ALTER TABLE `products` ADD `visit` BIGINT NOT NULL DEFAULT '0' AFTER `colors_ids`;
+
+========================================================
+
+
+
+ALTER TABLE `shippings` ADD `vat` DECIMAL NOT NULL DEFAULT '0' AFTER `free_shipping_start_at_amount`;
+
+ALTER TABLE `orders` ADD `vat` DECIMAL NOT NULL DEFAULT '0' AFTER `discount`;
+ALTER TABLE temp_products ADD colors_ids JSON DEFAULT NULL;
+
+ALTER TABLE temp_products ADD sizes_ids JSON DEFAULT NULL;
+
+=================================================
+
+
+ALTER TABLE `traking_products` ADD `old_price` DECIMAL NULL DEFAULT NULL AFTER `price`, ADD `old_final_price` DECIMAL NULL DEFAULT NULL AFTER `old_price`, ADD `old_discount_price` DECIMAL NULL DEFAULT NULL AFTER `old_final_price`, ADD `old_discount_percentage` DECIMAL NULL DEFAULT NULL AFTER `old_discount_price`, ADD `old_stock_status` INT(11) NULL DEFAULT NULL AFTER `old_discount_percentage`;
+ALTER TABLE `products` ADD `trendyol_product_id` INT NULL DEFAULT NULL AFTER `id`;
+ALTER TABLE `users` ADD `provider_id` VARCHAR(255) NULL DEFAULT NULL AFTER `id`;
+
+===============================
+
+ALTER TABLE `orders` ADD `currency` TEXT NULL AFTER `vat`;
+
+========================================================
+ALTER TABLE `shippings` DROP COLUMN `vat`;
+INSERT INTO `settings` (`id`, `name`, `slug`, `key`, `value`, `link`, `type`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'vat', 'vat', NULL, '[]', NULL, NULL, NULL, NULL, NULL);
+========================================================
+
+ALTER TABLE `categories` ADD `top_list` INT(11) NOT NULL DEFAULT '0' AFTER `list`;
+INSERT INTO `settings` (`id`, `name`, `slug`, `key`, `value`, `link`, `type`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'small banners', 'small_banners', NULL, '[{\"image\":{\"en\":\"\\/uploads\\/BFQyWvOnWEuPYR15SeB0NDL6E1oS1iRectangle-sm-2.png\",\"ar\":\"\\/uploads\\/lKgOt79X4A8bTilTdTirLDjxVUPtAndesenli-ip-askili-midi-elbise-5362-bey-fd8168.jpg\"},\"link\":\"http:\\/\\/localhost:8000\\/home2\",\"en\":\"\\/uploads\\/slider\\/VyEn6gc82Jx1Ayk4TU3ehD51cQ8CJ1banner-5.png\",\"ar\":\"\\/uploads\\/slider\\/VyEn6gc82Jx1Ayk4TU3ehD51cQ8CJ1banner-5.png\"},{\"image\":{\"en\":\"\\/uploads\\/JFufcTFDqiSABr0uLz9IG7mcYMbaHPanderson-sport-polo-t-shirt-11742-83-O.jpg\",\"ar\":\"\\/uploads\\/N5fLMRbqmtSbchL8s7xxyFY6F3L2qmkemerli-kalem-elbise-bej-02df8-.webp\"},\"link\":\"http:\\/\\/localhost:8000\\/home2\",\"en\":\"\\/uploads\\/slider\\/pW9GHrWKEgPgQh4eWp0yjBOilrJyeibanner-4.png\",\"ar\":\"\\/uploads\\/slider\\/pW9GHrWKEgPgQh4eWp0yjBOilrJyeibanner-4.png\"},{\"image\":{\"en\":\"\\/uploads\\/hcD[...]
+===========
+ALTER TABLE `products` ADD `tracked_at` TIMESTAMP NOT NULL DEFAULT '2024-07-15 11:14:14' AFTER `updated_at`;
+
+=========
+ALTER TABLE `temp_products` ADD `stock_status` VARCHAR(255) NULL DEFAULT NULL AFTER `status`;
+ALTER TABLE `products` CHANGE `stock_status` `stock_status` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+ALTER TABLE `temp_products` DROP `sku`;
+ALTER TABLE `brands` ADD `link` VARCHAR(255) NULL DEFAULT NULL AFTER `slug`;
+===========================
+ALTER TABLE `colors` ADD `color_id` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `name`;
+ALTER TABLE `colors` ADD CONSTRAINT `colors_color_id_foreign` FOREIGN KEY (`color_id`) REFERENCES `colors`(`id`) ON DELETE SET NULL ON UPDATE RESTRICT;
+ALTER TABLE `colors` CHANGE `color_code` `color_code` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `sizes` ADD `size_id` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `id`;
+ALTER TABLE `sizes` ADD CONSTRAINT `sizes_size_id_foreign` FOREIGN KEY (`size_id`) REFERENCES `sizes`(`id`) ON DELETE SET NULL ON UPDATE RESTRICT;
+INSERT INTO `settings` (`id`, `name`, `slug`, `key`, `value`, `link`, `type`, `status`, `created_at`, `updated_at`) VALUES (NULL, 'category banners', 'category_banners', '', '[]', 'http://localhost:8000/shop', 'mobile', '1', '2024-04-06 12:05:08', '2024-07-23 13:36:38');
+
+ALTER TABLE `products` CHANGE `trendyol_product_id` `company_product_id` BIGINT NULL DEFAULT NULL;
+ALTER TABLE `products` ADD `company_name` VARCHAR(255) NULL DEFAULT NULL AFTER `company_product_id`;
+
+=================================
+ALTER TABLE `vendors` ADD UNIQUE(`email`);
+ALTER TABLE `vendors` ADD `password` VARCHAR(255) NOT NULL AFTER `email`;
+ALTER TABLE `company_requests` ADD `vendor_id` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `order_id`;
+ALTER TABLE `company_requests` ADD CONSTRAINT `company_requests_vendor_id_foreign` FOREIGN KEY (`vendor_id`) REFERENCES `vendors`(`id`) ON DELETE SET NULL ON UPDATE RESTRICT;
+ALTER TABLE `company_requests` ADD `vendor_status` INT(11) NOT NULL DEFAULT '0' AFTER `status`, ADD `traking_code` VARCHAR(255) NULL DEFAULT NULL AFTER `vendor_status`;
+ALTER TABLE `vendors` ADD `status` INT(11) NOT NULL DEFAULT '1' AFTER `logo`;
+========================
+ALTER TABLE `colors` ADD `image` VARCHAR(255) NULL DEFAULT NULL AFTER `color_code`;
+ALTER TABLE `vendors` ADD `discount_percentage` FLOAT NOT NULL DEFAULT '0' AFTER `password`;
+=======================
+ALTER TABLE `orders` ADD `traking_code` VARCHAR(255) NULL DEFAULT NULL AFTER `total_amount`;
+============
+ALTER TABLE `orders` ADD `company_shipping` INT(11) NULL DEFAULT NULL AFTER `status`, ADD `weight` VARCHAR(255) NULL DEFAULT NULL AFTER `company_shipping`;
+
+===========
+ALTER TABLE `company_requests` ADD `external_shipping_company_id` BIGINT NULL DEFAULT NULL AFTER `traking_code`;
+ALTER TABLE `company_requests` CHANGE `external_shipping_company_id` `external_shipping_company_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL;
+ALTER TABLE `company_requests` ADD CONSTRAINT `company_requests_external_shipping_company_id_foreign` FOREIGN KEY (`external_shipping_company_id`) REFERENCES `external_shipping_companies`(`id`) ON DELETE SET NULL ON UPDATE RESTRICT;
+============================
+ALTER TABLE `orders` ADD `external_shipping_company_id` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `traking_code`;
+ALTER TABLE `orders` ADD CONSTRAINT `orders_external_shipping_company_id_foreign` FOREIGN KEY (`external_shipping_company_id`) REFERENCES `external_shipping_companies`(`id`) ON DELETE SET NULL ON UPDATE RESTRICT;
+============================
+ALTER TABLE `categories` ADD `mobile_list` INT(11) NOT NULL DEFAULT '0' AFTER `mark_as_top_category`, ADD `mark_as_mobile_top_category` INT(11) NOT NULL DEFAULT '0' AFTER `mobile_list`;
+ALTER TABLE `categories` CHANGE `mobile_list` `mobile_top_list` INT(11) NOT NULL DEFAULT '0';
+
+
+=>migrate mobile_banners table
+
+=============================
+ALTER TABLE `carts` ADD `selected` INT(11) NOT NULL DEFAULT '1' AFTER `id`;
+==============================
+
+ALTER TABLE `categories` CHANGE `slug` `slug` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
+
+ALTER TABLE `brands` ADD UNIQUE( `slug`);
+
+ALTER TABLE `brands` CHANGE `slug` `slug` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
+
+ALTER TABLE `colors` ADD `status` INT(11) NOT NULL DEFAULT '0' AFTER `image`;
+
+ALTER TABLE `sizes` ADD `status` INT(11) NOT NULL DEFAULT '0' AFTER `name`;
+
+ALTER TABLE `categories` ADD `admin_id` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `id`;
+
+ALTER TABLE `categories` ADD CONSTRAINT `categories_admin_id_foreign` FOREIGN KEY (`admin_id`) REFERENCES `admins`(`id`) ON DELETE SET NULL ON UPDATE SET NULL;
+
+ALTER TABLE `attributes` ADD `admin_id` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `id`;
+ALTER TABLE `attributes` ADD CONSTRAINT `attributes_admin_id_foreign` FOREIGN KEY (`admin_id`) REFERENCES `admins`(`id`) ON DELETE SET NULL ON UPDATE SET NULL;
+ALTER TABLE `attributes` ADD `list` INT(11) NOT NULL DEFAULT '0' AFTER `id`;
+
+
+//////////////////////////////////////
+ALTER TABLE `collections` ADD `admin_id` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `id`;
+ALTER TABLE `collections` ADD CONSTRAINT `collections_admin_id_foreign` FOREIGN KEY (`admin_id`) REFERENCES `admins`(`id`) ON DELETE SET NULL ON UPDATE RESTRICT;
+ALTER TABLE `currencies` ADD `admin_id` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `id`;
+ALTER TABLE `currencies` ADD CONSTRAINT `currencies_admin_id_foreign` FOREIGN KEY (`admin_id`) REFERENCES `admins`(`id`) ON DELETE SET NULL ON UPDATE RESTRICT;
+ALTER TABLE users ADD deleted_at TIMESTAMP NULL AFTER updated_at;
+////////////////////////////
+
+ALTER TABLE `products` ADD `deleted_at` TIMESTAMP NULL DEFAULT NULL AFTER `tracked_at`;
+=============================
+
+ALTER TABLE `rates` ADD `file` VARCHAR(255) NULL DEFAULT NULL AFTER `rate`;
+ALTER TABLE `products` ADD `old_price` DECIMAL(10,2) NULL DEFAULT NULL AFTER `final_price`;
+=============================
+ALTER TABLE `pages` ADD `slug` VARCHAR(255) NOT NULL AFTER `id`;
+ALTER TABLE `pages` ADD `show_in_footer_bar` BOOLEAN NOT NULL DEFAULT FALSE AFTER `desc`;
+ALTER TABLE `products` ADD `return_policy_id` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `collection_id`;
+ALTER TABLE `products` ADD CONSTRAINT `products_return_policy_id_foreign` FOREIGN KEY (`return_policy_id`) REFERENCES `return_policies`(`id`) ON DELETE SET NULL ON UPDATE RESTRICT;
+============================
+ALTER TABLE `order_items` ADD `price_before_vat` DECIMAL(10,2) NOT NULL AFTER `price`, ADD `tax_percentage` INT(11) NOT NULL AFTER `price_before_vat`, ADD `tax_amount` DECIMAL(10.2) NOT NULL AFTER `tax_percentage`;
+ALTER TABLE `order_items` CHANGE `price_before_vat` `unit_price` DECIMAL(10,2) NOT NULL;
+ALTER TABLE `order_items` ADD `taxable_amount` DECIMAL(10,2) NOT NULL AFTER `unit_price`;
+ALTER TABLE `products` ADD `currency_id` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `brand_id`;
+ALTER TABLE `products` ADD CONSTRAINT `products_currency_id_foreign` FOREIGN KEY (`currency_id`) REFERENCES `currencies`(`id`) ON DELETE SET NULL ON UPDATE RESTRICT;
