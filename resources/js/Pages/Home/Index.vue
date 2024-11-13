@@ -165,7 +165,7 @@
 
         <!-- ===== Banner ==== -->
          <div   v-show="get_single_banner2_setting().status==1">
-        <banner  :heightt="'360px'" :setting="get_single_banner2_setting()" />
+        <banner   :setting="get_single_banner2_setting()" />
         </div>
         <!-- ====  Banner=== -->
         <!-- ==== Our  Collections ===== -->
@@ -175,7 +175,7 @@
 
         <!-- ===== Banner ==== -->
         <div   v-show="get_single_banner3_setting().status==1">
-        <banner :heightt="'360px'" :setting="get_single_banner3_setting()" />
+        <banner  :setting="get_single_banner3_setting()" />
         </div>
         <!-- ====  Banner=== -->
 
@@ -186,7 +186,7 @@
 
         <!-- ===== Banner ==== -->
         <div   v-show="get_single_banner4_setting().status==1">
-        <banner  :heightt="'360px'" :setting="get_single_banner4_setting()" />
+        <banner   :setting="get_single_banner4_setting()" />
         </div>
         <!-- ====  Banner=== -->
 
@@ -198,7 +198,7 @@
 
         <!-- ===== Banner ==== -->
         <div   v-show="get_single_banner5_setting().status==1">
-        <banner :heightt="'360px'" :setting="get_single_banner5_setting()" />
+        <banner  :setting="get_single_banner5_setting()" />
         </div>
         <!-- ====  Banner=== -->
 
