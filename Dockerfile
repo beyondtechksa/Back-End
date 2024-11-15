@@ -24,10 +24,10 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libicu-dev \
     libmagickwand-dev \
-    sudo 
+    sudo  
 
 # Set up Node.js
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs
 
 # Clean up
@@ -68,4 +68,3 @@ RUN chmod +x /var/www/docker/run.sh
 
 EXPOSE 80
 ENTRYPOINT ["/var/www/docker/run.sh"]
-
