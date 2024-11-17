@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Observers;
-
 use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Enums\CacheEnums;
