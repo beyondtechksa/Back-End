@@ -33,6 +33,7 @@ class TempProduct extends Model
         "company_name",
         'sizes_ids',
         'colors_ids',
+        'currency_id',
     ];
 
     protected $appends=['admin'];

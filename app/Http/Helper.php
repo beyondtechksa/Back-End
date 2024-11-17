@@ -21,6 +21,7 @@ use App\Models\PriceFormula;
 use App\Models\Bill;
 use App\Models\GeneralSetting;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Cookie;
 
 
 if (!function_exists('admin')) {
@@ -291,6 +292,14 @@ if (!function_exists('currencies')) {
         });
     }
 }
+if (!function_exists('mainCurrency')) {
+    function mainCurrency()
+    {
+        return Cache::remember(CacheEnums::MAINCURRENCY, CacheEnums::CACHE_TIME, function () {
+            return Currency::where('main',1)->get();
+        });
+    }
+}
 
 if (!function_exists('active_brands')) {
     function active_brands()
@@ -537,6 +546,14 @@ if (!function_exists('general_settings')) {
         return Cache::remember(CacheEnums::GENERALSETTINGS, CacheEnums::CACHE_TIME, function () {
             return GeneralSetting::get();
         });
+    }
+}
+
+if (!function_exists('user_currency')) {
+    function user_currency()
+    {
+        $selectedCurrency = Cookie::get('user_currency', 'SAR');
+        return $selectedCurrency;
     }
 }
 

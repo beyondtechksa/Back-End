@@ -83,7 +83,7 @@
                   </li>
 
                   <li class="slide"  v-if="check_permissions(['add product'])">
-                    <Link :href="route('products.import','excel')"  class="side-menu__item">{{__('import from xml')}}</Link>
+                    <Link :href="route('products.import','excel')"  class="side-menu__item">{{__('import from excel')}}</Link>
                   </li>
                   <li class="slide"  v-if="check_permissions(['add product'])">
                     <Link :href="'/admin/tracking-history'"  class="side-menu__item">{{__('tracking history')}}</Link>

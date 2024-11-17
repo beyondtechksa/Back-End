@@ -13,14 +13,17 @@
   </div>
 
   </template>
-    
+
   <script>
   import {Link} from '@inertiajs/vue3'
   export default {
     components:{Link},
     props: {
       links: Array,
-      search:String
+      search:{
+        type:String,
+        default:''
+      }
     },
   }
-  </script> 
+  </script>

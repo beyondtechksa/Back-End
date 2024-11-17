@@ -279,7 +279,7 @@ class StartController extends Controller
 
     public function product_details($id, $slug = null)
     {
-        $product = Product::with('brand', 'files', 'rates','sizes','colors')->withAttributesAndOptions()->withRated()->where('id', $id)->where('status', 1);
+        $product = Product::with('brand', 'files', 'rates','sizes','colors','currency')->withAttributesAndOptions()->withRated()->where('id', $id)->where('status', 1);
         if($slug){
             $product->where('slug',$slug);
         }

@@ -15,7 +15,7 @@
                     <product-pricing :form="form" :errors="errors" :currencies="currencies"></product-pricing>
                     <!-- <product-discount :form="form" :errors="errors" :currencies="currencies"></product-discount> -->
                     <product-specifications :form="form"></product-specifications>
-                    <product-attributes :form="form" :errors="errors" :attributes="attributes"></product-attributes>
+                    <!-- <product-attributes :form="form" :errors="errors" :attributes="attributes"></product-attributes> -->
                     <product-gallery :form="form" :errors="errors"></product-gallery>
 
                 </div>
@@ -75,6 +75,8 @@ export default {
             desc_en:this.product.desc_en,
             desc_ar:this.product.desc_ar,
             category_id:this.product.category_id,
+            currency_id:this.product.currency_id,
+            pricing_type:this.product.pricing_type,
             brand_id:this.product.brand_id,
             sku:this.product.sku,
             price: this.product.price,
@@ -98,7 +100,7 @@ export default {
             width:this.product.width,
             height:this.product.height,
             weight:this.product.weight,
-            attributes_ids:this.get_product_attributes(),
+            // attributes_ids:this.get_product_attributes(),
             discount_price: this.product.discount_price,
             start_at: this.product.start_at,
             end_at: this.product.end_at,

@@ -9,7 +9,7 @@
 
         <div class="mb-3 col-lg-12">
             <label class="form-label"> {{ __('pricing type') }}  </label>
-            <select class="form-control" v-model="form.pricing_type">
+            <select @change="set_currency()" class="form-control" v-model="form.pricing_type">
                 <option value="in_house"> In House </option>
                 <option value="out_house"> Out House </option>
             </select>
@@ -122,11 +122,16 @@ export default{
     },
     methods:{
         main_currency(){
-            let main = this.currencies.find((e)=>e.main==1)
-            if(main){
-                this.form.currency_id = main.id
+
+
+        },
+        set_currency(){
+            let pricing_type = this.form.pricing_type
+            if(pricing_type  == 'in_house'){
+                this.form.currency_id = 2
+            }else{
+                this.form.currency_id = 3
             }
-            return main
         },
         final_price(){
             let original_price=this.form.price!=null?parseFloat(this.form.price):0
