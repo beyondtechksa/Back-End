@@ -65,7 +65,7 @@
                                     <td>
                                         <div class="hstack gap-2 fs-15">
                                             <Link v-if="check_permissions(['edit currency'])" :href="route('currencies.edit',currency.id)" class="btn btn-icon btn-sm btn-primary"><i class="ri-edit-line"></i></Link>
-                                            <a v-if="!currency.main==1 && check_permissions(['delete currency'])" @click="item=currency" data-bs-target="#warningModal" data-bs-toggle="modal" href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger"><i class="ri-delete-bin-line"></i></a>
+                                            <a v-if="!currency.main && check_permissions(['delete currency'])" @click="item=currency" data-bs-target="#warningModal" data-bs-toggle="modal" href="javascript:void(0);" class="btn btn-icon btn-sm btn-danger"><i class="ri-delete-bin-line"></i></a>
                                         </div>
                                     </td>
                                 </tr>

@@ -37,7 +37,7 @@
       <!-- --====  Categoires   ======== -->
       <top-categories :categories="top_categories"></top-categories>
 
-        <section class="brand-section-h">
+        <!-- <section class="brand-section-h">
           <div class="container-cum banner-hero-area">
             <div class="row banner-hero-content mobile-hidden" v-show="get_top_banner().status==1">
               <div class="col-lg-6 col-md-12 gap-s-5 gap-e-5">
@@ -91,7 +91,9 @@
 
             </div>
           </div>
-        </section>
+        </section> -->
+
+
         <div  v-show="get_single_banner6_setting().status==1">
         <banner  :heightt="'270px'" class="mt-4" :setting="get_single_banner6_setting()" />
         </div>
@@ -165,7 +167,7 @@
 
         <!-- ===== Banner ==== -->
          <div   v-show="get_single_banner2_setting().status==1">
-        <banner  :heightt="'360px'" :setting="get_single_banner2_setting()" />
+        <banner   :setting="get_single_banner2_setting()" />
         </div>
         <!-- ====  Banner=== -->
         <!-- ==== Our  Collections ===== -->
@@ -175,7 +177,7 @@
 
         <!-- ===== Banner ==== -->
         <div   v-show="get_single_banner3_setting().status==1">
-        <banner :heightt="'360px'" :setting="get_single_banner3_setting()" />
+        <banner  :setting="get_single_banner3_setting()" />
         </div>
         <!-- ====  Banner=== -->
 
@@ -186,7 +188,7 @@
 
         <!-- ===== Banner ==== -->
         <div   v-show="get_single_banner4_setting().status==1">
-        <banner  :heightt="'360px'" :setting="get_single_banner4_setting()" />
+        <banner   :setting="get_single_banner4_setting()" />
         </div>
         <!-- ====  Banner=== -->
 
@@ -198,7 +200,7 @@
 
         <!-- ===== Banner ==== -->
         <div   v-show="get_single_banner5_setting().status==1">
-        <banner :heightt="'360px'" :setting="get_single_banner5_setting()" />
+        <banner  :setting="get_single_banner5_setting()" />
         </div>
         <!-- ====  Banner=== -->
 
