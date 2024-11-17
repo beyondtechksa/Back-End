@@ -47,23 +47,10 @@ class StartController extends Controller
         return inertia('Dashboard/Index')->with(['page_title' => __('Dashboard')]);;
     }
 
-    public function home(Category $category, Collection $collection, Product $product)
+    public function home(Category $category, Product $product)
     {
         $topCategories = top_categories()->take(20);
         // Parent categories
-        $parentCategories = categories_with_parents()->take(3);
-
-        // Latest collections
-        $latestCollections = $collection->where('status', 1)
-            ->latest()
-            ->limit(4)
-            ->get();
-
-        // All collections
-        $allCollections = $collection->where('status', 1)
-            ->latest()
-            ->limit(6)
-            ->get();
 
         // Trending products
         $trendingProducts = $product->with('brand')
@@ -95,13 +82,10 @@ class StartController extends Controller
         // Settings
 
         return inertia('Home/Index', [
-            'parent_categories' => $parentCategories,
             'top_categories' => $topCategories,
-            'latest_collections' => $latestCollections,
             'trending' => $trendingProducts,
             'brands' => $brands,
             'featured' => $featuredProducts,
-            'collections' => $allCollections,
             'new_arrival' => $newArrivalProducts,
         ])->with(['page_title' => __('Home')]);
     }

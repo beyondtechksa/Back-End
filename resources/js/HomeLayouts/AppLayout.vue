@@ -1,6 +1,6 @@
 <template>
-    
-    
+
+
         <!-- Sidebar Start -->
         <div v-if="!$page.props.no_header">
         <header-box></header-box>
@@ -9,7 +9,7 @@
       <div v-if="!$page.props.no_footer">
       <footer-box></footer-box>
       </div>
-    
+
     </template>
 
 
@@ -18,19 +18,19 @@
     import HeaderBox from './HeaderBox.vue';
     import FooterBox from './FooterBox.vue';
 
-   
+
 
     export default{
         components:{Link, HeaderBox, FooterBox},
         mounted(){
             // setTimeout(()=>{
-      
-        
-        let sideBar = document.querySelectorAll('.shop-left-container') 
+
+
+        let sideBar = document.querySelectorAll('.shop-left-container')
         if (sideBar.length > 0) {
           sideBar.forEach(catbar => {
             const fromTop = catbar.offsetTop
-            window.addEventListener('scroll', () => {  
+            window.addEventListener('scroll', () => {
               if (fromTop  <= window.scrollY ) {
                 var blk_width = parseFloat(window.getComputedStyle(catbar, null).getPropertyValue('width'));
                 catbar.style.width = blk_width+"px"
@@ -41,11 +41,11 @@
                 catbar.style.width = blk_width+"px"
                 catbar.style.position = "unset"
               }
-              
+
             })
           })
         }
-    
+
 
               var swiper = new Swiper(".heroSider", {
                 loop: true,
@@ -62,7 +62,7 @@
                 },
               });
 
-   
+
           const select = document.querySelectorAll('.select');
           const options_list = document.querySelector('.options-list');
           const options = document.querySelectorAll('.option');
@@ -202,7 +202,7 @@
           const colorbtn = document.querySelectorAll('.colors-varient .colorbtn a');
           const SizeBox = document.querySelectorAll('.filter-offcanvas  .size-box a');
 
-        
+
 
           colorbtn.forEach((button) => {
             button.addEventListener('click', (e) => {
@@ -217,7 +217,7 @@
             });
           });
 
-       
+
 
           const size = (item) => {
             // 3.1. Select each dropdown content
@@ -249,15 +249,15 @@
           const filerCurrentElement = document.querySelector('.Recommended');
             const shotFilerITem = document.querySelectorAll('.sortFilter li');
             const dropdown = document.querySelector('.select-dropdown');
-            filerCurrentElement.addEventListener('click', (e) => {
-            e.preventDefault();
+            // filerCurrentElement.addEventListener('click', (e) => {
+            // e.preventDefault();
 
-            if (!dropdown.classList.contains('toggle')) {
-                dropdown.classList.add('toggle');
-            } else {
-                dropdown.classList.remove('toggle');
-            }
-            });
+            // if (!dropdown.classList.contains('toggle')) {
+            //     dropdown.classList.add('toggle');
+            // } else {
+            //     dropdown.classList.remove('toggle');
+            // }
+            // });
 
             shotFilerITem.forEach((button) => {
             button.addEventListener('click', (e) => {
@@ -402,9 +402,9 @@
             });
           },2000)
 
-          
 
-  
+
+
             // },2000)
         }
     }
