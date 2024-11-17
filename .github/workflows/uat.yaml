@@ -1,0 +1,52 @@
+name: deploy to uat env
+
+on:
+  push:
+    branches:
+      - uat
+
+env:
+  PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+  USER: riyadev
+
+jobs:
+  openvpn-connect:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install OpenVPN
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openvpn
+
+      - name: Decode and Save OpenVPN Configuration
+        env:
+          OVPN_CONFIG: ${{ secrets.OVPN_CONFIG }}
+        run: |
+          echo "$OVPN_CONFIG" | base64 -d > vpn-config.ovpn
+
+      - name: Connect to VPN
+        run: |
+          sudo openvpn --config vpn-config.ovpn --daemon
+          sleep 10
+
+      - name: Prepare SSH Key
+        run: |
+          echo "$PRIVATE_KEY" > private_key
+          chmod 600 private_key
+
+      - name: Deploy to UAT server1
+        run: |
+          ssh -i private_key -o StrictHostKeyChecking=no $USER@10.9.1.12 "
+          bash /home/riyadev/deploy.sh
+          "
+
+      - name: Deploy to UAT server2
+        run: |
+          ssh -i private_key -o StrictHostKeyChecking=no $USER@10.9.1.11 "
+          bash /home/riyadev/deploy.sh
+          "
+
+      - name: Cleanup
+        run: |
+          rm -f private_key
