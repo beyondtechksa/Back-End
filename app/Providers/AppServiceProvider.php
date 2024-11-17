@@ -11,6 +11,8 @@ use App\Models\Category;
 use App\Observers\CategoryObserver;
 use App\Models\Page;
 use App\Observers\PageObserver;
+use App\Models\Settings;
+use App\Observers\SettingObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,5 +34,6 @@ class AppServiceProvider extends ServiceProvider
         Product::observe(ProductObserver::class);
         Category::observe(CategoryObserver::class);
         Page::observe(PageObserver::class);
+        Settings::observe(SettingObserver::class);
     }
 }
