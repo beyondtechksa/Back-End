@@ -17,7 +17,7 @@
                     <product-pricing :form="form" :errors="errors" :currencies="currencies"></product-pricing>
                     <!-- <product-discount :form="form" :errors="errors" :currencies="currencies"></product-discount> -->
                     <product-specifications :form="form"></product-specifications>
-                    <product-attributes :form="form" :errors="errors" :attributes="attributes"></product-attributes>
+                    <!-- <product-attributes :form="form" :errors="errors" :attributes="attributes"></product-attributes> -->
                     <product-gallery :form="form" :errors="errors"></product-gallery>
 
                 </div>
@@ -88,7 +88,7 @@ export default {
                 desc_en:null,
                 desc_ar:null,
                 category_id: null,
-                currency_id: null,
+                currency_id: 2,
                 brand_id: null,
                 sku: null,
                 pricing_type:'in_house',
