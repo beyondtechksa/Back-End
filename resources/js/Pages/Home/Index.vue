@@ -246,12 +246,9 @@ import SwiperSlider from '@/Components/SwiperSlider.vue';
       props:{
 
         top_categories:Array,
-        parent_categories:Array,
-        latest_collections:Array,
         trending:Array,
         brands:Array,
         featured:Array,
-        collections:Array,
         new_arrival:Array,
       },
       data(){
