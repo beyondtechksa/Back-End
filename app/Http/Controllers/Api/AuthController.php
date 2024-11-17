@@ -50,21 +50,21 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'uuid' => 'required',
-            'phone' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:255',
             'gender' => 'required|string|max:255|in:male,female',
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
         $data = $request->all();
-        $user = User::where('phone', $request->phone)->first();
+        $user = User::where('email', $request->email)->first();
         if ($user) {
             if ($user->uuid != $request->uuid)
-                return response()->json(['errors' => ['uuid' => ['Invalid uuid for your phone!']]], 400);
+                return response()->json(['errors' => ['uuid' => ['Invalid uuid for your email!']]], 400);
         } else {
             $user = User::create([
                 'name' => $data['name'],
-                'phone' => $data['phone'],
+                'phone' => $data['phone'] ?? null,
                 'email' => $data['email'],
                 'gender' => $data['gender'],
                 'password' => Hash::make(Str::random(20)),

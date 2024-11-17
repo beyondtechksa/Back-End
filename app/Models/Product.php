@@ -13,7 +13,7 @@ class Product extends Model
     use HasFactory, HasTranslations, SoftDeletes;
 
     protected $fillable = [
-        'company_product_id','company_name', 'name_en', 'name_ar', 'name_tr','slug', 'desc_en', 'desc_ar', 'desc_tr', 'group_id',
+        'company_product_id','company_name', 'name_en', 'name_ar', 'name_tr','slug', 'desc_en', 'desc_ar', 'desc_tr', 'group_id','pricing_type',
          'sku', 'category_id', 'collection_id','return_policy_id', 'brand_id', 'vendor_id', 'quantity', 'admin_id',
         'shipping', 'length', 'width', 'height', 'dimension_unit', 'weight', 'weight_unit',
         'attributes_ids', 'colors_ids', 'scraped_attributes','currency_id','discount_price', 'discount_percentage', 'start_at', 'end_at', 'points', 'image',
@@ -86,6 +86,10 @@ class Product extends Model
     {
         return $this->belongsTo(Vendor::class, 'vendor_id');
     }
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class, 'currency_id');
+    }
 
     public function files()
     {
@@ -123,9 +127,6 @@ class Product extends Model
     public function return_policy(){
         return $this->belongsTo(ReturnPolicy::class);
     }
-
-
-
 
 
 

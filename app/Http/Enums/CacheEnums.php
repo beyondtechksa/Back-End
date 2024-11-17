@@ -12,6 +12,7 @@ final class CacheEnums extends Enum
     const LOCAL_LANGUAGES = 'locale_';
     const CATEGORIES_WITH_PARENTS = 'categories_with_parents';
     const MAIN_CATEGORIES = 'main_categories';
+    const MAINCURRENCY = 'MAINCURRENCY';
     const CURRENCIES = 'currencies';
     const CURRENCIES_SAR_USD_TRY = 'currencies_sar_usd_try';
     const COLORS = 'all_colors';
