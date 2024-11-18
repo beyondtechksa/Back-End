@@ -41,11 +41,11 @@ jobs:
           bash /home/riyadev/deploy.sh
           "
 
-      - name: Deploy to UAT server2
-        run: |
-          ssh -i private_key -o StrictHostKeyChecking=no $USER@10.9.1.11 "
-          bash /home/riyadev/deploy.sh
-          "
+      # - name: Deploy to UAT server2
+      #   run: |
+      #     ssh -i private_key -o StrictHostKeyChecking=no $USER@10.9.1.11 "
+      #     bash /home/riyadev/deploy.sh
+      #     "
 
       - name: Cleanup
         run: |
