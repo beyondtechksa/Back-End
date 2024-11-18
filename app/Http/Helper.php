@@ -21,6 +21,7 @@ use App\Models\PriceFormula;
 use App\Models\Bill;
 use App\Models\GeneralSetting;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Cookie;
 
 

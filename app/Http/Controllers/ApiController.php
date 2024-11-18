@@ -593,7 +593,6 @@ class ApiController extends Controller
             'product' => function ($query) {
                 $query->with(['sizes','colors'])->select('id', 'name_en', 'name_ar', 'sku',
                     'brand_id', 'image', 'final_selling_price',
-                    'colors_ids', 'sizes_ids',
                     'discount_percentage_selling_price as discount_percentage');
             }, 'product.brand' => function ($query) {
                 $query->select('id', 'name');
