@@ -1,12 +1,10 @@
 <?php
 
 namespace App\Observers;
-
 use App\Models\Settings;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Enums\CacheEnums;
 use Illuminate\Support\Facades\Cache;
-
 
 class SettingObserver
 {
