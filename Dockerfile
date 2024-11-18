@@ -35,8 +35,8 @@ RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg
-RUN pecl install imagick
-RUN docker-php-ext-enable imagick
+RUN pecl install imagick redis
+RUN docker-php-ext-enable imagick redis
 RUN docker-php-ext-install  mbstring  pdo_mysql zip exif pcntl gd  intl  bcmath
   
 
