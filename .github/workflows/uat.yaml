@@ -35,11 +35,11 @@ jobs:
           echo "$PRIVATE_KEY" > private_key
           chmod 600 private_key
 
-      # - name: Deploy to UAT server1
-      #   run: |
-      #     ssh -i private_key -o StrictHostKeyChecking=no $USER@10.9.1.12 "
-      #     bash /home/riyadev/deploy.sh
-      #     "
+      - name: Deploy to UAT server1
+        run: |
+          ssh -i private_key -o StrictHostKeyChecking=no $USER@10.9.1.12 "
+          bash /home/riyadev/deploy.sh
+          "
 
       - name: Deploy to UAT server2
         run: |
