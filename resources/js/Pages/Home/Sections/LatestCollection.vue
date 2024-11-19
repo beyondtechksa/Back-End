@@ -3,7 +3,7 @@
           <div class="container-cum mt-4">
             <div class="title-top d-flex justify-content-between">
               <h2> {{ setting.translated_key}} </h2>
-              <Link :href="setting.link"> {{ __('See All') }} </Link>
+              <Link :href="setting.link??''"> {{ __('See All') }} </Link>
             </div>
             <div class="collection-content pt-2" v-if="setting.value.length>0">
               <div class="row">

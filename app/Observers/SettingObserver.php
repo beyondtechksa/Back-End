@@ -9,15 +9,23 @@ use Illuminate\Support\Facades\Cache;
 class SettingObserver
 {
 
-    public function creating(Settings $settings)
+    public function created(Settings $settings)
     {
-        Cache::forget(CacheEnums::SETTINGS);
+        $this->clearSettingCache();
     }
-    public function updating(Settings $settings)
+    public function updated(Settings $settings)
     {
-        Cache::forget(CacheEnums::SETTINGS);
+        $this->clearSettingCache();
+    }
+    public function deleted(Settings $settings)
+    {
+        $this->clearSettingCache();
     }
 
+    private function clearSettingCache()
+    {
+        clearGlobalCache(CacheEnums::CACHE_SETTINGS);
+    }
 
 
 

@@ -16,7 +16,7 @@
         props:{
             setting:Object,
             heightt:{
-              type:Object,
+                type: [Object, String],
               default:'auto'
             }
         }

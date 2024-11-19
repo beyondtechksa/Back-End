@@ -1,5 +1,5 @@
 <template>
-    <Link :href="collection.link" >
+    <Link :href="collection.link??''" >
     <div class="our_collectionbox">
         <img v-lazy="collection.image[$page.props.locale]" alt="" />
         <div class="out_collection-title">
