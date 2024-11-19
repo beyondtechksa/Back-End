@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Http\Enums\CacheEnums;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Facades\Cache;
+
 use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,19 +16,7 @@ class Size extends Model
     protected $translatable=['name'];
     protected $appends=['translated_name'];
 
-    protected static function boot()
-    {
-        parent::boot();
-        static::created(function () {
-            Cache::forget(CacheEnums::SIZES);
-        });
-        static::updated(function () {
-            Cache::forget(CacheEnums::SIZES);
-        });
-        static::deleted(function () {
-            Cache::forget(CacheEnums::SIZES);
-        });
-    }
+
     public function getTranslatedNameAttribute($value)
     {
         return @$this->name;

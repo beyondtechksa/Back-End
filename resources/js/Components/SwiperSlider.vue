@@ -3,11 +3,11 @@
         <swiper class="swiper responsive-swiper rounded gallery-light pb-4" :loop="true" :slidesPerView="1"
               :spaceBetween="10" :pagination="{ el: '.swiper-pagination', clickable: true }" :modules="[Pagination,Autoplay]" :autoplay="{ delay: 2500, disableOnInteraction: false }"
               :breakpoints="{ 360: { slidesPerView: 2, spaceBetween: 10 }, 640: { slidesPerView: 2, spaceBetween: 10 }, 768: { slidesPerView: 4, spaceBetween: 10 }, 1200: { slidesPerView: 5, spaceBetween: 10 }, }">
-              <swiper-slide v-for="swiper_data,index in slider_data" :key="index">
+              <swiper-slide v-for="swiper_data,index in duplicateSliderData" :key="index">
                 <brand-box v-if="type=='brands'" :brand="swiper_data"></brand-box>
                 <div v-else-if="type=='banners'">
                   <div class="fblk" >
-                  <Link :href="swiper_data.link" class="d-block">
+                  <Link :href="swiper_data.link??''" class="d-block">
                     <img v-lazy="swiper_data.image[$page.props.locale]" alt="" />
                   </Link>
                 </div>
@@ -48,7 +48,7 @@ export default {
             default:null
         },
         shown:{
-            type:String,
+            type:[String,Number],
             default:3
         },
     },
@@ -76,6 +76,16 @@ export default {
     ProductBox,
     BrandBox,
   },
+  computed: {
+  duplicateSliderData() {
+    const minSlidesRequired = 8;
+    if (this.slider_data.length < minSlidesRequired) {
+      return [...this.slider_data, ...this.slider_data];
+    }
+    return this.slider_data;
+  },
+},
+
 }
 
 </script>

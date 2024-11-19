@@ -26,7 +26,6 @@ class SizesController extends Controller
             'name_tr'=>$name_tr,
             'status'=>1
         ]);
-        Artisan::call('cache:clear');
 
         return Size::with('sizes')->find($size->id);
     }
@@ -43,7 +42,6 @@ class SizesController extends Controller
             'size_id'=>$request->size_id,
             'status'=>$request->status,
         ]);
-        Artisan::call('cache:clear');
 
         return Size::with('sizes')->find($size->id);
     }
@@ -51,12 +49,11 @@ class SizesController extends Controller
     public function delete_size($id){
         $size=Size::find($id);
         $size->delete();
-        Artisan::call('cache:clear');
 
     }
     public function multi_delete_size(Request $request){
         $sizes=Size::destroy($request->checked);
     }
 
-    
+
 }
