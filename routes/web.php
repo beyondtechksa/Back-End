@@ -88,6 +88,7 @@ Route::post('/product/cart/add', [StartController::class, 'add_cart'])->name('pr
 Route::post('/product/cart/delete', [StartController::class, 'deleteCartItem'])->name('product.deleteCartItem');
 Route::get('/cart', [StartController::class, 'cart'])->name('cart');
 Route::get('/get-cookie-cart', [StartController::class, 'getCookieCart'])->name('cart.cookie');
+Route::get('/get-cart', [StartController::class, 'getCart'])->name('cart.get');
 Route::post('/cart/update_quantity', [StartController::class, 'update_quantity'])->name('cart.update_quantity');
 Route::post('/cart/update_size_color', [StartController::class, 'update_size_color'])->name('cart.update_size_color');
 Route::post('/cart/select_items', [StartController::class, 'select_items'])->name('cart.select_items');
@@ -98,7 +99,7 @@ Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
 Route::get('auth/apple', [SocialiteController::class, 'redirectToApple']);
 Route::post('auth/apple/callback', [SocialiteController::class, 'handleAppleCallback']);
-Route::get('/get_shipping_price', [StartController::class, 'get_shipping_price']);
+Route::post('/calculate_order', [StartController::class, 'calculate_order']);
 
 ///test
 

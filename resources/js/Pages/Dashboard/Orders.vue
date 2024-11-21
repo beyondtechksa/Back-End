@@ -49,7 +49,7 @@
                               <Link :href="route('product.show',order_item.product.id)"><h2> {{ order_item.product['name_'+$page.props.locale] }} </h2></Link>
                             </div>
                             <div class="card-details">
-                              <h3>{{__('Brand')}} : <span>{{order_item.product.brand.translated_name}}</span></h3>
+                              <h3>{{__('Brand')}} : <span>{{order_item.product.brand?order_item.product.brand.translated_name:null}}</span></h3>
                               <h3>
                                 {{ __('Color') }} : <span> {{ order_item.translated_color }} </span> / {{ __('Quantity') }} :
                                 <span>{{order_item.quantity}}/</span> {{ __('Size') }} : <span>{{ order_item.translated_size }}</span>

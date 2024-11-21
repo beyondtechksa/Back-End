@@ -40,10 +40,10 @@
                 </div> -->
             <div class="product-price pb-2">
                 <div class="old-price" v-if="product.discount_percentage_selling_price>0">
-                <p> {{exchange_price(product.old_price,'SAR') }} {{__('SAR')}}</p>
+                <p> {{(product.final_selling_price / (1-(product.discount_percentage_selling_price/100))).toFixed(2) }} {{__('SAR')}}</p>
                 </div>
                 <div class="current-price">
-                <p> {{exchange_price(product.final_selling_price,'SAR')}} {{__('SAR')}}</p>
+                <p> {{product.final_selling_price}} {{__('SAR')}}</p>
                 </div>
             </div>
             </div>

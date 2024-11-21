@@ -28,6 +28,7 @@ use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use App\Models\ProductOption;
 use App\Http\Enums\CacheEnums;
+use App\Services\CurrencyService;
 use App\Services\OrderService;
 use App\Services\FilterService;
 use App\Services\AddressesService;
@@ -51,14 +52,18 @@ class StartController extends Controller
     {
         $topCategories = top_categories()->take(20);
         // Parent categories
-
+        $currencyService = new CurrencyService();
         // Trending products
         $trendingProducts = $product->with('brand')
             ->where('trending', 1)
             ->where('status', 1)
             ->latest()
             ->limit(15)
-            ->get();
+            ->get()->map(function($product) use($currencyService) {
+                $product['final_selling_price'] = $currencyService->convertPrice($product,$product->final_selling_price);
+                $product['old_price'] = $currencyService->convertPrice($product,$product->old_price);
+                return $product;
+            });
 
         // Featured products
         $featuredProducts = $product->with('brand')
@@ -66,7 +71,11 @@ class StartController extends Controller
             ->where('status', 1)
             ->latest()
             ->limit(15)
-            ->get();
+            ->get()->map(function($product) use($currencyService) {
+                $product['final_selling_price'] = $currencyService->convertPrice($product,$product->final_selling_price);
+                $product['old_price'] = $currencyService->convertPrice($product,$product->old_price);
+                return $product;
+            });
 
         // New arrival products
         $newArrivalProducts = $product->with('brand')
@@ -74,7 +83,11 @@ class StartController extends Controller
             ->where('status', 1)
             ->latest()
             ->limit(15)
-            ->get();
+            ->get()->map(function($product) use($currencyService) {
+                $product['final_selling_price'] = $currencyService->convertPrice($product,$product->final_selling_price);
+                $product['old_price'] = $currencyService->convertPrice($product,$product->old_price);
+                return $product;
+            });
 
         // Brands
         // Brands
@@ -111,18 +124,7 @@ class StartController extends Controller
     public function shop(Request $request, FilterService $filterService)
     {
 
-        //        $filterData = [
-        //            'filter_data'=>[
-        //                'subCategories' => [$request->has('category_id') ?? $request->category_id],
-        //                'discount' => [0, 100],
-        //                'limit' => 12,
-        //                'offset' => 0,
-        //                'price' => [0, 100000]
-        //            ]
-        //        ];
-        //
-        //        $products = $filterService->filter($filterData);
-        //        dd('aa');
+      $currencyService=new CurrencyService();
         $leafCategories = collect();
         $products = Product::with('brand')->where('status', 1)
             ->when($request->has('search'), function ($q) use ($request) {
@@ -161,7 +163,11 @@ class StartController extends Controller
             //            ->inRandomOrder()
             //            ->orderByRaw('RAND() * id')
             ->limit(12)
-            ->get();
+            ->get()->map(function($product) use($currencyService) {
+                $product['final_selling_price'] = $currencyService->convertPrice($product,$product->final_selling_price);
+                $product['old_price'] = $currencyService->convertPrice($product,$product->old_price);
+                return $product;
+            });
         $categories = categories_with_parents();
         $brands = active_brands();
         //$colors = Color::orderBy('id', 'DESC')->get();
@@ -272,7 +278,13 @@ class StartController extends Controller
 
         $category = Category::where('id', $product->category_id)->first();
         $parents = getAllParents($category);
-        $related = Product::with('brand')->where('status', true)->where('category_id', $product->category_id)->limit(5)->inRandomOrder()->get();
+        $currencyService=new CurrencyService();
+        $related = Product::with('brand')->where('status', true)->where('category_id', $product->category_id)
+        ->limit(5)->inRandomOrder()->get()->map(function($product) use($currencyService) {
+            $product['final_selling_price'] = $currencyService->convertPrice($product,$product->final_selling_price);
+            $product['old_price'] = $currencyService->convertPrice($product,$product->old_price);
+            return $product;
+        });
 
         $colors = $this->getAllColors();
         $sizes = $this->getAllSizes();
@@ -525,12 +537,17 @@ class StartController extends Controller
 
     public function cart()
     {
-        //        return $carts = Cart::with('product.brand')->get();
         if (!auth()->check() && !isset($_COOKIE['user_cart']))
             return redirect('login');
+            $carts = $this->user_cart();
+        return inertia('Home/Cart', ['carts' => $carts])->with(['page_title' => __('Cart')]);
+    }
+
+    private function user_cart(){
         if (auth()->check()) {
-            $carts = Cart::with('product.brand','product.sizes','product.colors')->where('user_id', user()->id)->get();
+            $carts = (new GlobalService())->get_user_cart();
         } else {
+            $currencyService=new CurrencyService();
             $cookieCart = json_decode($_COOKIE['user_cart']);
             $carts = [];
             foreach ($cookieCart as $cart) {
@@ -540,29 +557,45 @@ class StartController extends Controller
                 $obj->size = $cart->size;
                 $obj->color = $cart->color;
                 $product = Product::with(['brand','sizes','colors'])->find($cart->product_id);
+                $product['final_selling_price']=$currencyService->convertPrice($product->$product->final_selling_price);
                 $obj->product = $product;
                 $carts[] = $obj;
             }
         }
-        return inertia('Home/Cart', ['carts' => $carts])->with(['page_title' => __('Cart')]);
+        return $carts;
     }
 
+    public function getCart(GlobalService $globalService){
+        if(auth()->check()){
+            return $globalService->get_user_cart();
+        }else{
+            return $this->getCookieCart();
+        }
+    }
     public function getCookieCart()
     {
         //        $cookieCart = isset($_COOKIE['user_cart']) ? json_decode($_COOKIE['user_cart']) : [];
         $cookieCart = json_decode($_COOKIE['user_cart']);
         $carts = [];
-
+        $currencyService=new CurrencyService();
         foreach ($cookieCart as $product) {
             $obj = new \stdClass();
             $obj->product_id = $product->product_id;
             $obj->quantity = $product->quantity;
             $obj->size = $product->size ?? null;
             $obj->color = $product->color ?? null;
-            $obj->product = Product::with(['brand'])->find($product->product_id);
+            $product2=Product::with(['brand'])->find($product->product_id);
+            $product2['final_selling_price']=$currencyService->convertPrice($product2,$product2->final_selling_price);
+            $obj->product = $product2;
             $carts[] = $obj;
         }
         return $carts;
+    }
+
+    public function calculate_order(Request $request){
+        $carts = $this->user_cart();
+        $data=(new OrderService())->calculateOrder($carts);
+        return $data;
     }
 
     public function favourites()
@@ -598,7 +631,7 @@ class StartController extends Controller
     public function payment()
     {
         $carts = Cart::with('product.brand')->where('user_id', user()->id)->where('selected',1)->get();
-        $res = (new PaymentService())->loadTelrIframe(user()->id, $carts);
+        $res = (new PaymentService())->loadTelrIframe(user()->id);
         $frame = isset($res) && $res['order'] && $res['order']['url'] ? $res['order']['url'] : null;
         return inertia('Home/CheckoutPayment', ['carts' => $carts, 'frame' => $frame])->with(['page_title' => __('Checkout Payment')]);
     }
@@ -608,7 +641,7 @@ class StartController extends Controller
     {
         $carts = Cart::with('product.brand')->where('user_id', user()->id)->get();
         $paymentService = new ClickPayService();
-        $paymentResponse = $paymentService->loadClickpayPaymentPage(user()->id, $carts);
+        $paymentResponse = $paymentService->loadClickpayPaymentPage(user()->id);
         $frame = isset($paymentResponse) && $paymentResponse['redirect_url'] ? $paymentResponse['redirect_url'] : null;
         return response()->json([
             'res' =>  $paymentResponse,

@@ -55,7 +55,12 @@ if (!function_exists('user')) {
     function user()
     {
         if (auth()->check()) {
-            $user = User::with('carts.product', 'favourites')->find(auth()->user()->id);
+            // $currencyService=new currencyService();
+            $user = User::with('favourites')->find(auth()->user()->id);
+            // $user['carts']=$user->carts->map(function($cart) use($currencyService){
+            //     $cart->product->final_selling_price = $currencyService->convertPrice($cart->product,$cart->product->final_selling_price);
+            //     return $cart;
+            // });
             $user['cart_discount'] = CartDiscount::where('user_id', $user->id)->where('status', 0)->first();
             return $user;
         } else {
