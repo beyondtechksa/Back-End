@@ -33,6 +33,8 @@ final class CacheEnums extends Enum
     const TOP_MOBILE_CATEGORIES = 'top_mobile_categories';
     const ALL_MOBILE_BANNER = 'all_mobile_banner_';
 
+    const SOCIAL_LINKS = 'social_links';
+
     const CACHE_CATEGORIES = [
         self::CATEGORIES_WITH_PARENTS,
         self::MAIN_CATEGORIES,
@@ -63,6 +65,7 @@ final class CacheEnums extends Enum
         self::CATEGORIES_SETTING,
         self::BANNER_SETTING,
         self::NAV_NEWSBAR,
+        self::SOCIAL_LINKS,
     ];
 
 }

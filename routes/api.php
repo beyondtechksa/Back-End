@@ -36,7 +36,7 @@ Route::get('/categories-banners', [ApiController::class, 'categoriesBanners']);
 Route::post('/search-products', [HomeController::class, 'search']);
 Route::get('/products', [HomeController::class, 'products']);
 Route::post('/reset-account', [HomeController::class, 'resetAccount']);
-
+Route::get('/socials', [HomeController::class, 'socials']);
 
 Route::get('/get_main_categories', [ApiController::class, 'get_main_categories']);
 Route::get('/news_bar', [ApiController::class, 'news_bar']);
@@ -69,7 +69,7 @@ Route::group(['controller' => AuthController::class], function () {
     Route::post('forget-password', 'forgetPassword')->name('api.forget.password');
     Route::post('reset-password', 'resetPassword')->name('api.reset.password');
     Route::middleware(['auth:sanctum'])->group(function () {
-        
+
         Route::post('/mobile/payment/click-pay', [MobilePaymentController::class, 'initiatePayment']);
 
         Route::post('logout', 'logout')->name('api.logout');
