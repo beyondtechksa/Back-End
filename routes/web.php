@@ -105,7 +105,8 @@ Route::get('/get_shipping_price', [StartController::class, 'get_shipping_price']
     Route::post('cart/checkout/payment/callback', [StartController::class,'handleCallback'])->name('payment.callback');
 
 Route::get('cart/checkout/payment/click-pay', [StartController::class,'createClickpayPayment'])->name('payment.store');
-     Route::get('/clickpay/order_success/{id}', action: [StartController::class, 'order_success_click_pay'])->name('order.clickpay.success');
+Route::get('/clickpay/order_success/{id}', action: [StartController::class, 'order_success_click_pay'])->name('order.clickpay.success');
+Route::get('/tamara/order_success/{id}', action: [StartController::class, 'order_success_click_pay'])->name('order.tamara.success');
 
 
 Route::middleware('auth')->group(function () {
@@ -127,6 +128,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/favourites', [StartController::class, 'favourites'])->name('favourites');
     Route::get('/cart/checkout/address', [StartController::class, 'checkout'])->name('cart.checkout.address');
     Route::get('/cart/checkout/payment', [StartController::class, 'payment'])->name('cart.checkout.payment');
+    Route::get('/cart/checkout/tamara/payment', [StartController::class, 'tamaraPayment'])->name('cart.checkout.tamara.payment');
 
 
     Route::post('/cart_checkout', [StartController::class, 'go_checkout'])->name('cart.go_checkout');
