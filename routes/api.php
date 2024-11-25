@@ -50,6 +50,8 @@ Route::get('/banners2', [ApiController::class, 'banners2']);
 Route::get('/shop_by_brand', [ApiController::class, 'shop_by_brand']);
 Route::get('/home_forniture', [ApiController::class, 'home_forniture']);
 Route::get('/test-xml', [ApiController::class, 'test_xml']);
+Route::get('/socials', [HomeController::class, 'socials']);
+
 ///
 
 Route::get('/products/{featured}', [ApiController::class, 'typed_products']);
@@ -69,7 +71,7 @@ Route::group(['controller' => AuthController::class], function () {
     Route::post('forget-password', 'forgetPassword')->name('api.forget.password');
     Route::post('reset-password', 'resetPassword')->name('api.reset.password');
     Route::middleware(['auth:sanctum'])->group(function () {
-        
+
         Route::post('/mobile/payment/click-pay', [MobilePaymentController::class, 'initiatePayment']);
 
         Route::post('logout', 'logout')->name('api.logout');
@@ -101,5 +103,7 @@ Route::group(['controller' => AuthController::class], function () {
         Route::post('/update-profile', [HomeController::class, 'updateProfile']);
         Route::post('/load-telr-iframe', [HomeController::class, 'loadTerlIframe']);
         Route::post('/delete-account', [HomeController::class, 'deleteAccount']);
+        Route::post('/notifications', [HomeController::class, 'notifications']);
+        Route::post('/mark-as-read/{id}', [HomeController::class, 'markAsRead']);
     });
 });

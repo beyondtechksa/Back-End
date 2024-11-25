@@ -26,6 +26,8 @@ final class CacheEnums extends Enum
     const MEDIA = 'media';
     const GENERALSETTINGS = 'general_settings';
 
+    const SOCIAL_LINKS = 'social_links';
+
     const CACHE_TIME = 60 * 60 * 24;
     const ACTIVE_BRANDS = 'active_brands';
 
@@ -63,6 +65,7 @@ final class CacheEnums extends Enum
         self::CATEGORIES_SETTING,
         self::BANNER_SETTING,
         self::NAV_NEWSBAR,
+        self::SOCIAL_LINKS
     ];
 
 }

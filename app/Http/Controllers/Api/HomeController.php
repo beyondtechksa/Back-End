@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\OrderCreationException;
 use App\Http\Controllers\Controller;
+use App\Http\Enums\CacheEnums;
 use App\Http\Requests\StoreRateRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Cart;
@@ -12,6 +13,7 @@ use App\Http\Resources\ProductResourceCollection;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Rates;
+use App\Models\Settings;
 use App\Models\User;
 use App\Rules\ValidCoupon;
 use App\Services\FilterService;
@@ -21,6 +23,7 @@ use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -258,5 +261,30 @@ class HomeController extends Controller
 
         $user->restore();
         return returnSuccess('message', '', 'User has been restored. you can login now');
+    }
+    public function socials()
+    {
+        $setting = Cache::remember(CacheEnums::SOCIAL_LINKS, CacheEnums::CACHE_TIME, function () {
+            return Settings::whereSlug('social')->first();
+        });
+        return returnSuccess('socials', $setting?->value, 'success');
+    }
+
+    public function notifications()
+    {
+        $limit = request()->get('limit', 10);
+       $notification= Auth::user()->notifications()->paginate($limit);
+       $data = [
+           'notifications' => $notification,
+           'unreadNotificationCount' => Auth::user()->unreadNotifications()->count(),
+       ];
+       return returnSuccess('notifications', $data, 'success');
+    }
+
+    public function markAsRead($id)
+    {
+        $notification = Auth::user()->notifications()->find($id);
+        $notification->markAsRead();
+        return returnSuccess('message', '', 'Notification marked as read');
     }
 }
