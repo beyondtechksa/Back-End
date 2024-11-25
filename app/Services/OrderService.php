@@ -94,14 +94,20 @@ class OrderService
        return number_format($total, 2, '.', '');
     }
 
-    public function calculateVat($carts)
-    {
-        $vat=0;
-        foreach($carts as $cart){
-            $vat += $this->calculateVatAmount(exchange_price($cart->product->final_selling_price, 'SAR'),$cart->product->tax_percentage);
-        }
-        return $vat;
+public function calculateVat($carts)
+{
+
+    $vat = 0;
+    foreach ($carts as $cart) {
+        $vat += $this->calculateVatAmount(
+            exchange_price($cart->product->final_selling_price, 'SAR'),
+            $cart->product->tax_percentage
+        );
     }
+
+    return $vat;
+}
+
 
     private function createOrder($userId, $address, $subtotal, $shipping, $discountPercentage, $total, $vat, $currency, $payment_id)
     {
