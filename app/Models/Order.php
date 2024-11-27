@@ -54,9 +54,9 @@ class Order extends Model
         return $this->belongsTo(ExternalShippingCompany::class,'external_shipping_company_id');
     }
 
-    public function return_requests()
+    public function return_request()
     {
-        return $this->hasMany(ReturnRequest::class);
+        return $this->hasOne(ReturnRequest::class);
     }
 
 

@@ -9,7 +9,7 @@ class ReturnRequest extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'order_id', 'user_id', 'status', 'reason','return_reason_id','return_status_id'
+        'order_id', 'user_id', 'status', 'reason','return_reason_id','return_status_id','image'
     ];
 
     public function order()
@@ -25,6 +25,13 @@ class ReturnRequest extends Model
     public function return_items()
     {
         return $this->hasMany(ReturnItem::class);
+    }
+
+    public function return_reason(){
+        return $this->belongsTo(ReturnReason::class);
+    }
+    public function return_status(){
+        return $this->belongsTo(ReturnStatus::class);
     }
 
 

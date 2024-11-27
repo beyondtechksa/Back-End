@@ -49,7 +49,7 @@
                             <Link :href="route('cart')" class="bel-icon d-flex">
                                 <img src="/home/img/iconShop.svg" alt=""/>
                                 <span class="count">{{
-                                            $page.props.auth.user ? $page.props.auth.user.carts.length : countCookie
+                                            $page.props.auth.user ? carts.length : countCookie
                                         }}</span>
                             </Link>
                         </div>
@@ -116,8 +116,8 @@
                                     <span class="name"> {{substr(product['name_'+$page.props.locale],20)}}</span>
                                     <div class="price d-flex gap-2">
 
-                                        <del v-if="product.discount_percentage_selling_price>0"> {{ __('SAR') }} {{ exchange_price(parseFloat(product.final_selling_price/(1-(product.discount_percentage_selling_price/100))),'SAR') }}  </del>
-                                        <span class="final"> {{ __('SAR') }} {{ exchange_price(product.final_selling_price,'SAR') }}  </span>
+                                        <del v-if="product.discount_percentage_selling_price>0"> {{ __('SAR') }} {{ (product.final_selling_price/(1-(product.discount_percentage_selling_price/100))).toFixed(2) }}  </del>
+                                        <span class="final"> {{ __('SAR') }} {{ product.final_selling_price }}  </span>
                                     </div>
                                     </div>
                                    </Link>
@@ -191,15 +191,15 @@
                                 <a @click="show_user_cart=!show_user_cart, show_user_menu=false" href="javascript:void(0)">
                                     <img width="28" src="/home/img/iconShop.svg" alt=""/>
                                     <span class="count">{{
-                                            $page.props.auth.user ? $page.props.auth.user.carts.length : countCookie
+                                            $page.props.auth.user ? carts.length : countCookie
                                         }}</span>
                                 </a>
                                 <div v-if="show_user_cart" class="user-cart">
                                     <h3 class="heading"> {{__('My Cart')}} </h3>
                                     <div v-if="$page.props.auth.user">
-                                        <div v-if="$page.props.auth.user.carts.length>0">
+                                        <div v-if="carts.length>0">
                                             <div class="products">
-                                                <Link :href="route('product.show',cart.product.id)" class="d-flex product-list gap-2" v-for="cart,index in $page.props.auth.user.carts" :key="index">
+                                                <Link :href="route('product.show',cart.product.id)" class="d-flex product-list gap-2" v-for="cart,index in carts" :key="index">
                                                     <img v-lazy="cart.product.image">
                                                     <div class="details">
                                                     <span class="name"> {{substr(cart.product['name_'+$page.props.locale],20)}}</span>
@@ -209,9 +209,8 @@
                                                     </div>
 
                                                     <div class="price d-flex gap-2">
-
-                                                        <del v-if="cart.product.discount_percentage_selling_price>0"> {{ exchange_price(cart.product.old_price,'SAR') }}  {{ __('SAR') }} </del>
-                                                        <span class="final"> {{ exchange_price(cart.product.final_selling_price,'SAR') }}  {{ __('SAR') }} </span>
+                                                        <del v-if="cart.product.discount_percentage_selling_price>0"> {{ (cart.product.final_selling_price/(1-(cart.product.discount_percentage_selling_price/100))).toFixed(2) }}  {{ __('SAR') }} </del>
+                                                        <span class="final"> {{ cart.product.final_selling_price }}  {{ __('SAR') }} </span>
                                                     </div>
                                                     </div>
                                                 </Link>
@@ -237,8 +236,8 @@
                                                         <span  v-if="cart.size"> <strong> {{ __('size') }} : </strong> {{ cart.size}} </span>
                                                     </div>
                                                     <div class="price d-flex gap-2">
-                                                        <del v-if="cart.product.discount_percentage_selling_price>0">  {{ exchange_price(parseFloat(cart.product.final_selling_price)+parseFloat(cart.product.final_selling_price*cart.product.discount_percentage_selling_price/100),'SAR') }}  {{ __('SAR') }}</del>
-                                                        <span class="final">  {{ exchange_price(cart.product.final_selling_price,'SAR') }}  {{ __('SAR') }} </span>
+                                                        <del v-if="cart.product.discount_percentage_selling_price>0">  {{ (cart.product.final_selling_price/(1-(cart.product.discount_percentage_selling_price/100))).toFixed(2) }}  {{ __('SAR') }}</del>
+                                                        <span class="final">  {{ cart.product.final_selling_price }}  {{ __('SAR') }} </span>
                                                     </div>
                                                 </div>
                                             </Link>
@@ -314,8 +313,8 @@
                                     <h3 class="brand"><span v-if="product.brand"> {{product.brand.translated_name}} </span> </h3>
                                     <span class="name"> {{substr(product['name_'+$page.props.locale],20)}}</span>
                                     <div class="price d-flex gap-2">
-                                        <del v-if="product.discount_percentage_selling_price"> {{ __('SAR') }} {{ exchange_price(product.old_price,'SAR') }}  </del>
-                                        <span class="final"> {{ __('SAR') }} {{ exchange_price(product.final_selling_price,'SAR') }}  </span>
+                                        <del v-if="product.discount_percentage_selling_price"> {{ __('SAR') }} {{ (cart.product.final_selling_price/(1-(cart.product.discount_percentage_selling_price/100))).toFixed(2) }}  </del>
+                                        <span class="final"> {{ __('SAR') }} {{ product.final_selling_price }}  </span>
                                     </div>
                                     </div>
                                    </Link>
@@ -449,9 +448,8 @@ import Form from 'vform';
 export default {
     mounted() {
 
-          let news_bar=this.$page.props.settings.find((e)=>e.slug=='news_bar')
-
-          this.news_bar_setting=news_bar?news_bar.value:null
+        let news_bar=this.$page.props.settings.find((e)=>e.slug=='news_bar')
+        this.news_bar_setting=news_bar?news_bar.value:null
         axios.get('/get_nav_categories')
             .then((resp) => {
                 this.categories = resp.data
@@ -459,6 +457,10 @@ export default {
                     this.select_main_category(resp.data[0])
                 }
             })
+            axios.get(route('cart.get'))
+             .then((resp)=>{
+                this.carts = resp.data
+             })
 
     },
     components: {Link},
@@ -481,7 +483,8 @@ export default {
             show_user_cart:false,
             main_category:null,
             main_child:null,
-            cookieCart:null
+            cookieCart:null,
+            carts:[]
         }
     },
     methods: {

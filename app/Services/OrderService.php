@@ -30,23 +30,17 @@ class OrderService
     {
         try {
             DB::beginTransaction();
-            $carts = Cart::where('user_id', $user_id)->where('selected',1)->get();
+            $carts = (new GlobalService())->get_user_selected_cart($user_id);
+
             if ($carts->isEmpty())
                 throw new OrderCreationException('there is no products in cart');
-            $subtotal = $this->calculateSubtotal($carts, $currency);
-            $subtotal_before_vat = $this->calculateSubtotalBeforeVat($carts);
+
             $address = Address::where('user_id', $user_id)->where('favourite', 1)->first();
             if (!$address)
                 throw new OrderCreationException('address not found');
-            $shipping = get_shipping_price();
-            $cartDiscount = CartDiscount::where('user_id', $user_id)->where('status', 0)->first();
-            $discountPercentage = $cartDiscount ? $cartDiscount->discount_percentage : 0;
-            $total = $this->calculateTotal($subtotal, $shipping, $discountPercentage);
-            $vat = $this->calculateVat($carts);
-            $total_amount = $total;
-            $order = $this->createOrder($user_id, $address, $subtotal_before_vat, $shipping, $discountPercentage, $total_amount, $vat, $currency, $payment_id);
+            $order = $this->createOrder($carts,$user_id, $address,$currency, $payment_id);
             $this->createOrderItems($order, $carts);
-            $this->updateCartDiscountStatus($cartDiscount);
+            $this->updateCartDiscountStatus();
             // try{
                 $user=User::find($user_id);
                 $text='There is a new order from '.$user->name;
@@ -94,33 +88,28 @@ class OrderService
        return number_format($total, 2, '.', '');
     }
 
-public function calculateVat($carts)
-{
-
-    $vat = 0;
-    foreach ($carts as $cart) {
-        $vat += $this->calculateVatAmount(
-            exchange_price($cart->product->final_selling_price, 'SAR'),
-            $cart->product->tax_percentage
-        );
+    public function calculateVat($carts)
+    {
+        $vat=0;
+        foreach($carts as $cart){
+            $vat += $this->calculateVatAmount(exchange_price($cart->product->final_selling_price, 'SAR'),$cart->product->tax_percentage);
+        }
+        return $vat;
     }
 
-    return $vat;
-}
-
-
-    private function createOrder($userId, $address, $subtotal, $shipping, $discountPercentage, $total, $vat, $currency, $payment_id)
+    private function createOrder($carts,$userId, $address,$currency, $payment_id)
     {
+        $orderData = $this->calculateOrder($carts);
         return Order::create([
             'user_id' => $userId,
             'address' => $address,
-            'subtotal_amount' => $subtotal,
-            'shipping' => $shipping,
-            'discount' => $discountPercentage,
-            'total_amount' => $total,
+            'subtotal_amount' => $orderData['subtotal'],
+            'shipping' => $orderData['shipping'],
+            'discount' => $orderData['cart_discount_coupon'],
+            'total_amount' => $orderData['total'],
             'status' => 0,
             'payment_id' => $payment_id,
-            'vat' => $vat,
+            'vat' => $orderData['vat'],
             'currency' => $currency,
             'status'=>2
         ]);
@@ -136,10 +125,10 @@ public function calculateVat($carts)
                 'color' => $cart->color,
                 'size' => $cart->size,
                 'tax_percentage' => $cart->product->tax_percentage,
-                'tax_amount' => $this->calculateVatAmount(exchange_price($cart->product->final_selling_price, 'SAR'),$cart->product->tax_percentage),
-                'unit_price' => $this->calculatePriceBeforeVat(exchange_price($cart->product->final_selling_price, 'SAR'),$cart->product->tax_percentage),
-                'taxable_amount'=>$this->calculatePriceBeforeVat(exchange_price($cart->product->final_selling_price, 'SAR'),$cart->product->tax_percentage) * $cart->quantity,
-                'price' => exchange_price($cart->product->final_selling_price, 'SAR') * $cart->quantity,
+                'tax_amount' => $this->calculateVatAmount($cart->product->final_selling_price,$cart->product->tax_percentage),
+                'unit_price' => $this->calculatePriceBeforeVat($cart->product->final_selling_price,$cart->product->tax_percentage),
+                'taxable_amount'=>$this->calculatePriceBeforeVat($cart->product->final_selling_price,$cart->product->tax_percentage) * $cart->quantity,
+                'price' => $cart->product->final_selling_price * $cart->quantity,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -186,8 +175,9 @@ public function calculateVat($carts)
         }
     }
 
-    private function updateCartDiscountStatus($cartDiscount)
+    private function updateCartDiscountStatus()
     {
+        $cartDiscount=user()->cart_discount;
         if ($cartDiscount) {
             $cartDiscount->update(['status' => 1]);
         }
@@ -201,5 +191,46 @@ public function calculateVat($carts)
             'paid_status'=>1,
         ]);
     }
+
+    public function calculateOrder($carts)
+    {
+        $subtotal = 0;
+        $subtotalBeforeVat = 0;
+        $vat = 0;
+        $shipping = $this->getShippingPrice();
+        $cart_discount_coupon=auth()->check() && user()->cart_discount?user()->cart_discount->discount_percentage:0;
+        foreach ($carts as $cart) {
+            if($cart->selected){
+                $product = $cart->product;
+                $price = $product->final_selling_price;
+                $quantity = $cart->quantity;
+
+                $subtotal += $price * $quantity;
+
+                $priceBeforeVat = $price / (1 + ($product->tax_percentage / 100));
+                $subtotalBeforeVat += $priceBeforeVat * $quantity;
+
+                $vat += ($price - $priceBeforeVat) * $quantity;
+            }
+        }
+        $totalBeforeDiscount = $subtotal + $shipping;
+        $data=[
+            'subtotal' => number_format($subtotal,2),
+            'subtotalBeforeVat' => number_format($subtotalBeforeVat,2),
+            'vat' => number_format($vat,2),
+            'cart_discount_coupon' => number_format($cart_discount_coupon,2),
+            'shipping' => number_format($shipping,2),
+            'totalBeforeDiscount' => number_format($totalBeforeDiscount,2),
+            'total' => number_format($totalBeforeDiscount - ($totalBeforeDiscount*$cart_discount_coupon/100) ,2),
+        ];
+        return $data;
+    }
+
+    // Example method to get shipping price (you can modify this)
+    private function getShippingPrice()
+    {
+        return get_shipping_price();
+    }
+
 
 }

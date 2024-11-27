@@ -860,12 +860,17 @@ private function applyGeneralFilters($products, Request $request)
         $checked = $request->checked;
         $colors = $request->colors_ids;
         $sizes = $request->sizes_ids;
+        $sizesData = array_map(function ($sizeId) {
+            return ['inStock' => true];
+        }, $sizes);
         foreach ($checked as $product_id) {
             $product = Product::find($product_id);
             if ($request->color_update_type == 'add') {
                 $product->colors()->syncWithoutDetaching($colors);
+                $product->sizes()->syncWithoutDetaching(array_combine($sizes, $sizesData));
             } else {
                 $product->colors()->detach($colors);
+                $product->sizes()->detach($sizes);
             }
         }
     }

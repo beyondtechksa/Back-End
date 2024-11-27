@@ -26,6 +26,10 @@ final class CacheEnums extends Enum
     const MEDIA = 'media';
     const GENERALSETTINGS = 'general_settings';
 
+    const TRENDINGPRODUCTS = 'trending_products';
+    const FEATUREDPRODUCTS = 'featured_products';
+    const NEWARRIVALPRODUCTS = 'new_arrival_products';
+
     const SOCIAL_LINKS = 'social_links';
 
     const CACHE_TIME = 60 * 60 * 24;
@@ -42,6 +46,11 @@ final class CacheEnums extends Enum
         self::TOP_CATEGORIES,
         self::TOP_MOBILE_CATEGORIES,
 
+    ];
+    const CACHE_PRODUCTS = [
+        self::TRENDINGPRODUCTS,
+        self::FEATUREDPRODUCTS,
+        self::NEWARRIVALPRODUCTS,
     ];
     const CACHE_MOBILE_BANNERS = [
         self::ALL_MOBILE_BANNER,

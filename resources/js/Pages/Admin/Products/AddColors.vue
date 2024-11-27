@@ -1,6 +1,6 @@
 <template>
     <div class="row">
-    <div class="col-lg-12">
+    <div class="col-lg-6">
         <div class="scroll">
         <label class="form-label"> Colors </label>
         <input @keyup="searching_colors" v-model="search_color" class="form-control" :placeholder=" __('filter')">
@@ -23,7 +23,7 @@
         </div>
         </div>
     </div>
-    <!-- <div class="col-lg-6">
+    <div class="col-lg-6">
         <div class="scroll">
         <label class="form-label"> Sizes </label>
         <input @keyup="searching_sizes" v-model="search_size" class="form-control" :placeholder=" __('filter')">
@@ -45,7 +45,7 @@
             </table>
         </div>
         </div>
-    </div> -->
+    </div>
     </div>
 </template>
 
