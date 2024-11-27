@@ -20,6 +20,7 @@ class ReturnRequestService
                 'return_reason_id'=>$data['return_reason_id'],
                 'reason' => $data['reason'] ?? null,
                 'return_status_id' => $return_status_id,
+                'image' => $data['image'] ?? null,
             ]);
 
             foreach ($data['items'] as $item) {
@@ -43,9 +44,6 @@ class ReturnRequestService
         return $returnRequest;
     }
 
-    /**
-     * Update individual return item statuses (for admin).
-     */
     public function updateReturnItemStatus($returnItemId, $status)
     {
         $returnItem = ReturnItem::findOrFail($returnItemId);

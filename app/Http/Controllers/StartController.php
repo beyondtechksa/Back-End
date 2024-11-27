@@ -54,7 +54,8 @@ class StartController extends Controller
         // Parent categories
         $currencyService = new CurrencyService();
         // Trending products
-        $trendingProducts = $product->with('brand')
+        $trendingProducts = Cache::remember(CacheEnums::TRENDINGPRODUCTS, CacheEnums::CACHE_TIME, function () use($product, $currencyService){
+            return $product->with('brand')
             ->where('trending', 1)
             ->where('status', 1)
             ->latest()
@@ -64,9 +65,11 @@ class StartController extends Controller
                 $product['old_price'] = $currencyService->convertPrice($product,$product->old_price);
                 return $product;
             });
-
+        });
         // Featured products
-        $featuredProducts = $product->with('brand')
+
+        $featuredProducts = Cache::remember(CacheEnums::FEATUREDPRODUCTS, CacheEnums::CACHE_TIME, function () use($product, $currencyService){
+            return $product->with('brand')
             ->where('featured', 1)
             ->where('status', 1)
             ->latest()
@@ -76,9 +79,12 @@ class StartController extends Controller
                 $product['old_price'] = $currencyService->convertPrice($product,$product->old_price);
                 return $product;
             });
+        });
+
 
         // New arrival products
-        $newArrivalProducts = $product->with('brand')
+        $newArrivalProducts = Cache::remember(CacheEnums::NEWARRIVALPRODUCTS, CacheEnums::CACHE_TIME, function () use($product, $currencyService){
+            return $product->with('brand')
             ->where('new_arrival', 1)
             ->where('status', 1)
             ->latest()
@@ -88,8 +94,9 @@ class StartController extends Controller
                 $product['old_price'] = $currencyService->convertPrice($product,$product->old_price);
                 return $product;
             });
+        });
 
-        // Brands
+
         // Brands
         $brands = active_brands()->take(5);
         // Settings

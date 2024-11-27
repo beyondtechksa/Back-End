@@ -37,9 +37,9 @@
       <!-- --====  Categoires   ======== -->
       <top-categories :categories="top_categories"></top-categories>
 
-        <!-- <section class="brand-section-h">
+        <section class="brand-section-h">
           <div class="container-cum banner-hero-area">
-            <div class="row banner-hero-content mobile-hidden" v-show="get_top_banner().status==1">
+            <!-- <div class="row banner-hero-content mobile-hidden" v-show="get_top_banner().status==1">
               <div class="col-lg-6 col-md-12 gap-s-5 gap-e-5">
                 <div class=""  v-for="banner,index in get_top_banner_setting('left')" :key="index">
                   <Link :href="banner.link??''" class="d-block">
@@ -72,7 +72,7 @@
                 </div>
 
               </div>
-            </div>
+            </div> -->
             <div v-show="get_brand_setting().status==1">
             <shop-by-brand :setting="get_brand_setting()"></shop-by-brand>
             </div>
@@ -87,11 +87,9 @@
             </div>
             <div class="web-hidden">
                 <swiper-slider type="banners" :slider_data="get_top_banner_setting('bottom')"></swiper-slider>
-
-
             </div>
           </div>
-        </section> -->
+        </section>
 
 
         <div  v-show="get_single_banner6_setting().status==1">

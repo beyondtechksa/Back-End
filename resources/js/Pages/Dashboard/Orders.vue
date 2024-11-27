@@ -55,14 +55,14 @@
                                 <span>{{order_item.quantity}}/</span> {{ __('Size') }} : <span>{{ order_item.translated_size }}</span>
                               </h3>
                               <h2 class="price-tag">{{ __('SAR') }} {{ order_item.price }}</h2>
-
-
+                              <Link v-if="order_item.return_items.length>0" :href="route('profile.return_order_item_details',order_item.id)" class="custom-btn mt-3 d-block">{{ __('return details') }}</Link>
                             </div>
                           </div>
                         </div>
                       </div>
                       <div class="d-flex gap-1">
-                      <Link v-if="order.status==6" :href="route('profile.return_order',order.id)" class="track-order">{{ __('return item') }}</Link>
+                      <Link v-if="order.status==6 && !order.return_request" :href="route('profile.return_order',order.id)" class="track-order">{{ __('return item') }}</Link>
+
                       <Link :href="route('profile.track_order',order.id)" class="track-order">{{ __('Track Order') }}</Link>
                       </div>
                     </div>
