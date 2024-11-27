@@ -166,3 +166,9 @@ ALTER TABLE `order_items` CHANGE `price_before_vat` `unit_price` DECIMAL(10,2) N
 ALTER TABLE `order_items` ADD `taxable_amount` DECIMAL(10,2) NOT NULL AFTER `unit_price`;
 ALTER TABLE `products` ADD `currency_id` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `brand_id`;
 ALTER TABLE `products` ADD CONSTRAINT `products_currency_id_foreign` FOREIGN KEY (`currency_id`) REFERENCES `currencies`(`id`) ON DELETE SET NULL ON UPDATE RESTRICT;
+================================
+ALTER TABLE `temp_products` ADD `currency_id` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `colors_ids`;
+ALTER TABLE `temp_products` ADD CONSTRAINT `temp_products_currency_id_foreign` FOREIGN KEY (`currency_id`) REFERENCES `currencies`(`id`) ON DELETE SET NULL ON UPDATE RESTRICT;
+ALTER TABLE `products` ADD `pricing_type` VARCHAR(255) NULL DEFAULT NULL AFTER `currency_id`;
+===============================
+ALTER TABLE `return_requests` ADD `image` VARCHAR(255) NULL DEFAULT NULL AFTER `reason`;

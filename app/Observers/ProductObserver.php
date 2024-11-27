@@ -4,6 +4,8 @@ namespace App\Observers;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use App\Services\SkuGenerator;
+use App\Http\Enums\CacheEnums;
+
 class ProductObserver
 {
     public function creating(Product $product)
@@ -37,5 +39,18 @@ class ProductObserver
             $product->old_price = $product->final_selling_price; // No discount applied
         }
     }
+
+    public function created(){
+        $this->clearCache();
+    }
+    public function updated(){
+        $this->clearCache();
+    }
+
+    private function clearCache()
+    {
+        clearGlobalCache(CacheEnums::CACHE_PRODUCTS);
+    }
+
 
 }

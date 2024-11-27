@@ -16,6 +16,9 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\Address;
 use App\Models\ReturnReason;
+use App\Models\OrderItem;
+use App\Models\ReturnItem;
+use App\Models\ReturnStatus;
 use App\Services\ReturnRequestService;
 
 class ProfileController extends Controller
@@ -78,7 +81,7 @@ class ProfileController extends Controller
         return inertia('Dashboard/Addresses', ['addresses' => $addresses])->with(['page_title' => 'addresses']);
     }
     public function my_orders(){
-        $orders=Order::with('order_items.product.brand')->where('user_id',user()->id)->latest()->get();
+        $orders=Order::with('order_items.product.brand','return_request','order_items.return_items')->where('user_id',user()->id)->latest()->get();
         return inertia('Dashboard/Orders',['orders'=>$orders])->with(['page_title'=>'my orders']);
     }
 
@@ -136,7 +139,7 @@ class ProfileController extends Controller
             },
             'order_items.product.brand',
             'order_items.product.return_policy',
-            'return_requests' => function($query) {
+            'return_request' => function($query) {
                 $query->with(['return_items.order_item.product'=>function($query){
                     $query->select('id', 'name_en', 'name_ar', 'brand_id', 'image');
                 },
@@ -149,6 +152,24 @@ class ProfileController extends Controller
         $return_reasons=ReturnReason::get();
         return inertia('Dashboard/ReturnOrder',['order'=>$order,'return_reasons'=>$return_reasons]);
     }
+    public function return_order_item_details($order_item_id){
+        $order_item = OrderItem::with('product:id,slug')
+        ->findOrFail($order_item_id);
+        $return_item=ReturnItem::where('order_item_id',$order_item_id)->first();
+        $return_statuses=ReturnStatus::get();
+        return inertia('Dashboard/ReturnOrderItemDetails',['order_item'=>$order_item,'return_item'=>$return_item,'return_statuses'=>$return_statuses]);
+    }
+    public function return_order_details($order_id){
+        $order = Order::with([
+            'order_items.product:id,name_en,name_ar,image',
+            'return_request.return_items',
+            'return_request.return_reason',
+            'return_request.return_status',
+            ])
+        ->findOrFail($order_id);
+
+        return inertia('Dashboard/ReturnOrderDetails',['order'=>$order]);
+    }
 
     public function store_return_request(Request $request){
         $data = $request->validate([
@@ -157,14 +178,24 @@ class ProfileController extends Controller
             'items' => 'required|array',
             'items.*' => 'required|exists:order_items,id',
             'reason' => 'nullable|string',
+            'image'=>'required|file|mimes:jpg,jpeg,png,gif'
         ]);
-
+        $data['image']=uploadImage($request->file('image'),'return-items');
         $data['user_id'] = auth()->id(); // Get the authenticated user ID
         $returnRequestService=new ReturnRequestService();
         $returnRequest = $returnRequestService->createReturnRequest($data);
 
         return redirect()->route('profile.orders')->with('success','your request is under review');
 
+    }
+
+    public function cancel_return_item(Request $request){
+        $return_item=ReturnItem::find($request->return_item_id);
+        $return_item->update([
+            'status'=>'canceled by user'
+        ]);
+        return redirect()->route('profile.orders');
+        // return redirect()->route('profile.');
     }
 
 }

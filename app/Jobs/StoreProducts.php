@@ -80,6 +80,7 @@ class StoreProducts implements ShouldQueue
                 'commercial_percentage'=>$formula->commercial_percentage,
                 'manual_price_adjustment'=>$formula->manual_price_adjustment,
                 'final_selling_price'=>  calc_final_price($product->final_price,$formula),
+                'currency_id'=>$product->currency_id ?? 3
             ]);
 
 

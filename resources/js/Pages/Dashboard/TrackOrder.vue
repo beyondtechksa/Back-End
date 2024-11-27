@@ -1,7 +1,7 @@
 
 
 <template>
-   
+
   <Head title="Dashboard" />
   <app>
     <main class="user-admin">
@@ -25,12 +25,12 @@
                     <input v-model="form.order_id" type="text" />
                     <div class="text-danger"  v-html="form.errors.order_id" />
                 </div>
- 
+
                 <div class="submit-button">
                     <button class="submit" type="submit">
                     {{__('Track Order')}}
                     </button>
-                
+
                 </div>
                 </div>
             </form>
@@ -143,7 +143,8 @@
                           class="Order-ship d-flex align-items-center justify-content-between"
                         >
                           <div>
-                            <h4>Your Order have been shipped already</h4>
+                            <Link v-if="order.status==6" :href="route('profile.return_order',order.id)" class="track-order">{{ __('return item') }}</Link>
+                            <!-- <h4>Your Order have been shipped already</h4> -->
                             <p v-if="order.external_shipping_company">{{order.external_shipping_company.name}} (tracking number : 29372983628)</p>
                           </div>
                           <div class="" v-if="order.external_shipping_company">
@@ -156,14 +157,14 @@
                     </div>
         </div>
             </page-content>
-            
+
           </div>
         </div>
       </div>
 
       <!-- ==== Responsive Admin  ==== -->
 
-      
+
     </main>
   </app>
 
@@ -197,4 +198,3 @@ export default{
   }
 }
 </script>
-    

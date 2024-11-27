@@ -39,17 +39,17 @@
 
         <section class="brand-section-h">
           <div class="container-cum banner-hero-area">
-            <div class="row banner-hero-content mobile-hidden" v-show="get_top_banner().status==1">
+            <!-- <div class="row banner-hero-content mobile-hidden" v-show="get_top_banner().status==1">
               <div class="col-lg-6 col-md-12 gap-s-5 gap-e-5">
                 <div class=""  v-for="banner,index in get_top_banner_setting('left')" :key="index">
-                  <Link :href="banner.link" class="d-block">
+                  <Link :href="banner.link??''" class="d-block">
                     <img style="height:370px" v-lazy="banner.image[$page.props.locale]" alt="" />
                   </Link>
                 </div>
               </div>
               <div class="col-lg-6 col-md-12 gap-s-5 gap-e-5 right-content">
                 <div :class="{'gap-t-10':index>0}" v-for="banner,index in get_top_banner_setting('right')" :key="index">
-                  <Link :href="banner.link" class="d-block">
+                  <Link :href="banner.link??''" class="d-block">
                     <img v-lazy="banner.image[$page.props.locale]" alt="" />
                   </Link>
                 </div>
@@ -59,27 +59,27 @@
             <div class="row banner-hero-content web-hidden"  v-show="get_top_banner().status==1">
               <div class="col-12 mb-2">
                 <div class=""  v-for="banner,index in get_top_banner_setting('left')" :key="index">
-                  <Link :href="banner.link" class="d-block">
+                  <Link :href="banner.link??''" class="d-block">
                     <img style="height:370px" v-lazy="banner.image[$page.props.locale]" alt="" />
                   </Link>
                 </div>
               </div>
               <div class="col-12 mb-2 right-content">
                 <div :class="{'gap-t-10':index>0}" v-for="banner,index in get_top_banner_setting('right')" :key="index">
-                  <Link :href="banner.link" class="d-block">
+                  <Link :href="banner.link??''" class="d-block">
                     <img v-lazy="banner.image[$page.props.locale]" alt="" />
                   </Link>
                 </div>
 
               </div>
-            </div>
+            </div> -->
             <div v-show="get_brand_setting().status==1">
             <shop-by-brand :setting="get_brand_setting()"></shop-by-brand>
             </div>
             <div class="row mobile-hidden"  v-show="get_top_banner().status==1">
               <div class="col-lg-3 col-md-6 gap-s-5 gap-e-5  gap-t-10" v-for="banner,index in get_top_banner_setting('bottom')" :key="index">
                 <div class="fblk" >
-                  <Link :href="banner.link" class="d-block">
+                  <Link :href="banner.link??''" class="d-block">
                     <img v-lazy="banner.image[$page.props.locale]" alt="" />
                   </Link>
                 </div>
@@ -87,11 +87,11 @@
             </div>
             <div class="web-hidden">
                 <swiper-slider type="banners" :slider_data="get_top_banner_setting('bottom')"></swiper-slider>
-
-
             </div>
           </div>
         </section>
+
+
         <div  v-show="get_single_banner6_setting().status==1">
         <banner  :heightt="'270px'" class="mt-4" :setting="get_single_banner6_setting()" />
         </div>
@@ -101,7 +101,7 @@
             <div class="row mobile-hidden">
               <div class="col-xl-2 col-lg-3 gap-s-5 gap-e-5 gap-t-10 " v-for="banner,index in get_small_banners_setting().value" :key="index">
                 <div class="fblk" >
-                  <Link :href="banner.link" class="d-block">
+                  <Link :href="banner.link??''" class="d-block">
                     <img style="height:120px;width:100%" v-lazy="banner.image[$page.props.locale]" alt="" />
                   </Link>
                 </div>
@@ -127,7 +127,7 @@
 
 
         <!-- ===== Treading Style  ===== -->
-        <trending :products="trending"></trending>
+        <trending :products="trending.data"></trending>
 
         <!-- ====== Treading style End  ==== -->
 
@@ -148,7 +148,7 @@
           <div class="container-cum pt-4 pb-4">
             <div class="row">
               <div class="col-lg-2 col-md-4 col-4 gap-s-5 gap-e-5" v-for="banner,index in get_banners2_setting().value" :key="index">
-                <Link :href="banner.link">
+                <Link :href="banner.link??''">
                   <div class="sale-branner">
                     <img v-lazy="banner.image[$page.props.locale]" alt="" />
                   </div>
@@ -160,12 +160,12 @@
         </section>
         <!-- =======  Sele Brand Banner ====== End -->
         <!-- ====   Featured Products ====   -->
-        <featured :products="featured"></featured>
+        <featured :products="featured.data"></featured>
         <!-- ===== Featured Products End  ==== -->
 
         <!-- ===== Banner ==== -->
          <div   v-show="get_single_banner2_setting().status==1">
-        <banner  :heightt="'360px'" :setting="get_single_banner2_setting()" />
+        <banner   :setting="get_single_banner2_setting()" />
         </div>
         <!-- ====  Banner=== -->
         <!-- ==== Our  Collections ===== -->
@@ -175,18 +175,18 @@
 
         <!-- ===== Banner ==== -->
         <div   v-show="get_single_banner3_setting().status==1">
-        <banner :heightt="'360px'" :setting="get_single_banner3_setting()" />
+        <banner  :setting="get_single_banner3_setting()" />
         </div>
         <!-- ====  Banner=== -->
 
         <!--   ========= New Arrivals in Home Fornitures  ==== -->
 
-        <new-arrival :products="new_arrival"></new-arrival>
+        <new-arrival :products="new_arrival.data"></new-arrival>
         <!-- ======= New Arrivals in Home Fornitures ===== -->
 
         <!-- ===== Banner ==== -->
         <div   v-show="get_single_banner4_setting().status==1">
-        <banner  :heightt="'360px'" :setting="get_single_banner4_setting()" />
+        <banner   :setting="get_single_banner4_setting()" />
         </div>
         <!-- ====  Banner=== -->
 
@@ -198,7 +198,7 @@
 
         <!-- ===== Banner ==== -->
         <div   v-show="get_single_banner5_setting().status==1">
-        <banner :heightt="'360px'" :setting="get_single_banner5_setting()" />
+        <banner  :setting="get_single_banner5_setting()" />
         </div>
         <!-- ====  Banner=== -->
 
@@ -244,12 +244,9 @@ import SwiperSlider from '@/Components/SwiperSlider.vue';
       props:{
 
         top_categories:Array,
-        parent_categories:Array,
-        latest_collections:Array,
         trending:Array,
         brands:Array,
         featured:Array,
-        collections:Array,
         new_arrival:Array,
       },
       data(){

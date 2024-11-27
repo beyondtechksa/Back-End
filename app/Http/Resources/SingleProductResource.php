@@ -7,6 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\Color;
 use App\Models\Size;
 use App\Models\Product;
+use App\Services\CurrencyService;
 
 class SingleProductResource extends JsonResource
 {
@@ -32,13 +33,12 @@ class SingleProductResource extends JsonResource
             $groups= Product::whereIn('id', [$this->group_id, $this->id])->orWhere('group_id', $this->group_id)->select('image','id')->get();
         }
 
-        $colors_ids=$this->colors_ids!=null?(array)$this->colors_ids:[];
-        $sizes_ids=$this->sizes_ids!=null?$this->sizes_ids:[];
-
-
+        $currencyService=new CurrencyService();
+        $final_selling_price = $currencyService->convertPrice($this,$this->final_selling_price);
         return [
             'id' => $this->id,
             'sku' => $this->sku,
+            'slug' => $this->slug,
             'name_en' => $this->name_en,
             'name_ar' => $this->name_ar,
             'name_tr' => $this->name_tr,
@@ -46,19 +46,18 @@ class SingleProductResource extends JsonResource
             'desc_tr' => $this->desc_tr,
             'desc_ar' => $this->desc_ar,
             'image' => $this->image,
-            'old_price' => exchange_price($this->old_price, $this->currency),
+            'old_price' => number_format($final_selling_price / (1-($this->discount_percentage_selling_price/100)),2),
             'discount_percentage_selling_price' => $this->discount_percentage_selling_price,
-            'final_selling_price' => exchange_price($this->final_selling_price, $this->currency),
+            'final_selling_price' => $final_selling_price,
 //            'final_selling_price'=>$this->final_selling_price,
             'discount_price' => $this->discount_percentage_selling_price,
             'files' => $this->files->select('id', 'image'),
             'brand' => $this->brand,
             'rates' => $this->rates,
             'group_id' => $this->group_id,
-            'colors_ids' => $colors_ids,
-            'sizes_ids' => $sizes_ids,
             'colors' => $this->colors,
             'sizes' => $this->sizes,
+            'currency' => $this->currency,
             'groups' => $groups,
             'product_attributes' => $this->product_attributes,
             'rated' => $this->rated,

@@ -247,6 +247,7 @@ class ProductsController extends Controller
             'desc_ar' => $data['desc_ar'],
             'category_id' => $data['category_id'],
             'currency_id' => $data['currency_id'],
+            'pricing_type' => $data['pricing_type'],
             'price' => $data['price'],
             'sale_price' => $data['sale_price'],
             'discount_percentage_selling_price' => $data['discount_percentage_selling_price'],
@@ -350,6 +351,8 @@ class ProductsController extends Controller
             'desc_ar' => $data['desc_ar'],
             // 'sku' => $data['sku'],
             'category_id' => $data['category_id'],
+            'currency_id' => $data['currency_id'],
+            'pricing_type' => $data['pricing_type'],
             'brand_id' => $data['brand_id'],
             'price' => $data['price'],
             'sale_price' => $data['sale_price'],
@@ -857,12 +860,17 @@ private function applyGeneralFilters($products, Request $request)
         $checked = $request->checked;
         $colors = $request->colors_ids;
         $sizes = $request->sizes_ids;
+        $sizesData = array_map(function ($sizeId) {
+            return ['inStock' => true];
+        }, $sizes);
         foreach ($checked as $product_id) {
             $product = Product::find($product_id);
             if ($request->color_update_type == 'add') {
                 $product->colors()->syncWithoutDetaching($colors);
+                $product->sizes()->syncWithoutDetaching(array_combine($sizes, $sizesData));
             } else {
                 $product->colors()->detach($colors);
+                $product->sizes()->detach($sizes);
             }
         }
     }

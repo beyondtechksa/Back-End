@@ -17,14 +17,14 @@ class ClickPayService
     private $currency = 'SAR'; // Set default currency
 
     // Load ClickPay payment page
-    public function loadClickpayPaymentPage($user_id, $carts )
+    public function loadClickpayPaymentPage($user_id )
     {
         $callback_url = route('payment.callback');
         $return_url = route('payment.return');
         $this->user = User::find($user_id);
         $this->address = Address::where('user_id', $user_id)
             ->where('favourite', 1)->first();
-
+        $carts = (new GlobalService())->get_user_selected_cart($user_id);
         $this->modifyCart($carts);
          $response = Http::withHeaders([
             'authorization' => config('clickpay.server_key'),
@@ -71,11 +71,8 @@ class ClickPayService
     // Modify cart and calculate totals
     protected function modifyCart($carts)
     {
-        $subtotal = (new OrderService())->calculateSubtotal($carts, $this->currency);
-
-        $shipping = get_shipping_price();
-        $total = (new OrderService())->calculateTotal($subtotal, $shipping, 0); // Assume no discount for now
-        $this->total = number_format($total, 2, '.', '');
+        $orderData=(new OrderService())->calculateOrder($carts);
+        $this->total =$orderData['total'];
         $this->cart_id = json_encode($carts->pluck('id')->toArray());
     }
 

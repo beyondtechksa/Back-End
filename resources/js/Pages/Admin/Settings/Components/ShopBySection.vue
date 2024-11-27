@@ -35,11 +35,11 @@
                     </div>
                      </div>
                 </div>
-                <div class="col-6">
-                    <label class="form-label"> {{ __('item image') }} {{index+1}} <span class="text-success"> h:flexible </span> </label>
-                    <div data-bs-toggle="modal" @click="selected_index=index" data-bs-target="#filemanagerModal" for="profile-img-file-input" style="width: 100%;" class="profile-photo-edit avatar-xs">
+                <div class="col-6" v-for="locale,index2 in $page.props.locales" :key="index2">
+                    <label class="form-label"> {{ __('item image') }} {{index+1}} ({{ locale.symbol }}) <span class="text-success"> h:flexible </span> </label>
+                    <div data-bs-toggle="modal" @click="selected_index=index,selected_lang=locale.symbol" data-bs-target="#filemanagerModal" for="profile-img-file-input" style="width: 100%;" class="profile-photo-edit avatar-xs">
                         <div class="profile-admin position-relative d-inline-block mx-auto  mb-4">
-                            <div class="mb-0"><img style="height: 300px;" v-lazy="check_src(index)" class="avatar-xl img-thumbnail admin-profile-image " alt="admin-profile-image"></div>
+                            <div class="mb-0"><img style="height: 300px;" v-lazy="check_src(index,locale.symbol)" class="avatar-xl img-thumbnail admin-profile-image " alt="admin-profile-image"></div>
                             <div class="camera p-0 rounded-circle">
                                 <span class="avatar-title rounded-circle text-body">
                                     <i class="ri-camera-fill"></i>
@@ -87,10 +87,10 @@ export default{
             this.form.post(route('settings.update'))
         },
 
-        check_src(index){
+        check_src(index,symbol){
         if(index!=null){
-            if(this.form.value[index].image!=null){
-                return this.form.value[index].image
+            if(this.form.value[index].image[symbol]!=null){
+                return this.form.value[index].image[symbol]
             }else{
                 return this.$page.props.auth.default_img
             }
@@ -104,7 +104,7 @@ export default{
         },
         fileUploaded(){
             if(this.selected_index!=null){
-                this.form.value[this.selected_index].image=this.$refs.gallery.selected_media.path
+                this.form.value[this.selected_index].image[this.selected_lang]=this.$refs.gallery.selected_media.path
             }
         },
 

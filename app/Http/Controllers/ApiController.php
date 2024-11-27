@@ -21,6 +21,7 @@ use Illuminate\Http\Response;
 use App\Http\Enums\CacheEnums;
 use App\Services\OrderService;
 use App\Services\GlobalService;
+use App\Services\CurrencyService;
 use App\Http\Enums\CompanyEnums;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -579,7 +580,7 @@ class ApiController extends Controller
         return $this->success('success', '200');
     }
 
-    public function my_cart(Request $request, OrderService $orderService)
+    public function my_cart(Request $request, OrderService $orderService, CurrencyService $currencyService)
     {
 
         $currency = $request->header('currency', 'SAR');
@@ -593,35 +594,25 @@ class ApiController extends Controller
             'product' => function ($query) {
                 $query->with(['sizes','colors'])->select('id', 'name_en', 'name_ar', 'sku',
                     'brand_id', 'image', 'final_selling_price',
-                    'colors_ids', 'sizes_ids',
-                    'discount_percentage_selling_price as discount_percentage');
+                    'discount_percentage_selling_price as discount_percentage','tax_percentage');
             }, 'product.brand' => function ($query) {
                 $query->select('id', 'name');
             }
         ])->where('user_id', Auth::id())->get();
         if ($cart_items->isEmpty())
             return returnSuccess('cart', 'empty cart', 'success');
-        $cart_items->transform(function ($cartItem) use ($currency) {
-            $cartItem->product->final_selling_price = exchange_price($cartItem->product->final_selling_price, $currency);
-            $cartItem->product->old_price = exchange_price($cartItem->product->old_price, $currency);
+        $cart_items->transform(function ($cartItem) use ($currency,$currencyService) {
+            $cartItem->product->final_selling_price = $currencyService->convertPrice($cartItem->product,$cartItem->product->final_selling_price);
             return $cartItem;
         });
-        $shipping = get_shipping_price();
-        $cartDiscount = CartDiscount::where('user_id', user()->id)->where('status', 0)->first();
-        $discountPercentage = $cartDiscount ? $cartDiscount->discount_percentage : 0;
-        $subTotal = $cart_items->sum(function ($cartItem) {
-            return $cartItem->product->final_selling_price * $cartItem->quantity;
-        });
-        $total_before_vat = $orderService->calculateTotal($subTotal, $shipping, $discountPercentage);
 
-        $vat = $orderService->calculateVat($total_before_vat);
-        $total = (double)$total_before_vat + (double)$vat;
+        $orderData =$orderService->calculateOrder($cart_items);
         $cart = [
-            'shipping' => $shipping,
-            'discountPercentage' => $discountPercentage,
-            'subTotal' => $subTotal,
-            'total' => $total,
-            'vat' => $vat,
+            'shipping' => $orderData['shipping'],
+            'discountPercentage' => $orderData['cart_discount_coupon'],
+            'subTotal' => $orderData['subtotal'],
+            'total' => $orderData['total'],
+            'vat' => $orderData['vat'],
             'cart' => $cart_items,
         ];
         return returnSuccess('cart', $cart, 'success');

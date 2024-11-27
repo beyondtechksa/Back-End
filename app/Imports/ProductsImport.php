@@ -35,6 +35,7 @@ class ProductsImport implements ToModel, WithHeadingRow, WithChunkReading, WithV
             'discount_price'=>0,
             'discount_percentage'=>0,
             'final_price'=>$row['price'],
+            'currency_id'=>mainCurrency()?mainCurrency()->id:null
         ]);
         $product->save();
         $this->imported_products[] = $product;
