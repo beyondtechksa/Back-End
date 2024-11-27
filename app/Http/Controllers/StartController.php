@@ -39,6 +39,8 @@ use App\Http\Resources\SingleProductResource;
 use Illuminate\Support\Facades\Cache;
 use App\Exceptions\OrderCreationException;
 use App\Services\ClickPayService;
+use App\Services\TamaraPaymentService;
+
 use Log;
 
 class StartController extends Controller
@@ -655,6 +657,23 @@ class StartController extends Controller
             'frame' => $frame
         ]);
     }
+    public function tamaraPayment()
+    {
+        $carts = Cart::with('product.brand')->where('user_id', auth()->user()->id)->get();
+
+        $res = (new TamaraPaymentService())->loadTamaraPayment(auth()->user()->id, $carts); // Adjust for Tamara
+        $frame = isset($res) && isset($res['checkout_url'])  ? $res['checkout_url']: null;
+        $order_id = isset($res) && isset($res['order_id'])  ? $res['order_id']: null;
+        $token =  config('tamarapayment.token');
+       // dd(`Bearer ${$token}`);
+        return response()->json([
+           'res' =>  $res  ,
+           'frame' => $frame,
+           'url' => 'https://api-sandbox.tamara.co/orders/'.$order_id.'/authorise',
+           'token' => 'Bearer ' .$token,
+           'user_id'    =>  auth()->user()->id
+        ]);
+    }
 
 
     public function handleReturn(Request $request)
@@ -755,7 +774,7 @@ class StartController extends Controller
     public function order_success()
     {
         $result = (new PaymentService())->checkPayment(\user()->id);
-        if (Cart::where('user_id', \user()->id)->count() == 0 || !$result)
+        if (Cart::where('user_id', operator: \user()->id)->count() == 0 || !$result)
             return redirect()->route('welcome');
         if (isset($result['order']['status']['code']) && $result['order']['status']['code'] == 3) {
             DB::table('payment_transactions')

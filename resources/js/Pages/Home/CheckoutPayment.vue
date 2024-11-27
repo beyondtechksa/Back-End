@@ -76,6 +76,9 @@
                                                     <img src="/home/img/mathod1.png" alt="" />
                                                 </a>
                                                 <a href="#" @click="loadPaymentIframe('tamara')">
+                                                    <img src="/home/img/tamara.png" alt="" />
+                                                </a>
+                                                <a href="#" @click="loadPaymentIframe('clickPay')">
                                                     <img src="/home/img/ClickPayLogo.png" alt="" />
                                                 </a>
                                             </div>
@@ -168,7 +171,10 @@ export default {
             showTamaraFrame: false,  // Control the visibility of the iframe
             showIFrame: false,  // Control the visibility of the iframe
             paymentUrl: null,   // URL for the payment iframe
-            form: useForm({})
+            form: useForm({}),
+            url : null,
+            token : null,
+            user_id : null,
         }
     },
     methods: {
@@ -176,7 +182,7 @@ export default {
             this.form.post(route('order.create'))
         },
         loadPaymentIframe(method) {
-            if(method == 'tamara'){
+            if(method == 'clickPay'){
                 axios.get('payment/click-pay').then(res => {
                  console.log("we are in tamara");
                 //  this.paymentUrl = res.data.frame ;
@@ -185,13 +191,71 @@ export default {
                 }).catch(err => {
                     console.log(err)
                 })
-            }else{
+            }else if(method == 'tamara'){
+                axios.get('/cart/checkout/tamara/payment').then(res => {
+                 this.paymentUrl = res.data.frame;
+                 //this.showIframe = false;
+                 this.showIFrame = true;
+                 this.url = res.data.url;
+                 this.token = res.data.token;
+                 this.user_id = res.data.user_id;
+                console.log('cart/checkout/tamara/payment');
+                console.log(this.paymentUrl );
+                console.log(res.data );
+                }).catch(err => {
+                    console.log(err)
+                })
+            }
+            else{
                 this.paymentUrl = this.frame;
                 this.showTamaraFrame = false;
                 this.showIFrame = true;
             }
+        },
+        async callApi() { // Add `async` here
+
+        if (this.url != null && this.token != null ) {
+            const headers = {
+                accept: 'application/json',
+                authorization: this.token, // Ensure `this.token` is set correctly
+            };
+
+            try {
+                const response = await fetch(this.url, { // Use await here
+                    method: 'POST',
+                    headers: headers,
+                });
+
+                if (!response.ok) {
+                    console.log("it is inprogress");
+                }
+
+                const data = await response.json();
+                if (data.status == "authorised") { // Adjust based on your API response structure
+                     window.location.href  = `/tamara/order_success/${this.user_id}`;
+ 
+                }
+            } catch (error) {
+                console.error('Error fetching API:', error);
+            }
         }
-    }
+    },
+        startApiCalls() {
+            this.intervalId = setInterval(this.callApi, 5000); // Call API every 5 seconds
+        },
+        stopApiCalls() {
+            if (this.intervalId) {
+                clearInterval(this.intervalId); // Stop the interval
+                this.intervalId = null;
+            }
+        },
+    },
+    mounted() {
+        this.startApiCalls(); // Start the interval when the component is mounted
+    },
+    beforeDestroy() {
+        this.stopApiCalls(); // Clear the interval if the component is destroyed
+    },
 }
 </script>
 
