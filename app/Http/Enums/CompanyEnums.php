@@ -15,7 +15,7 @@ final class CompanyEnums extends Enum
     const VOLTAJ = 'voltaj';
     const TOZLU = 'tozlu';
     const BARRELS = 'barrels and oil';
-    const PAZARIUM = 'pazarium';
+    const PAZARIUM = 'pazarium new';
     const CASABONY = 'casabony';
     const VALIBERTA = 'valiberta';
     const MIXRAY = 'mixray';
@@ -84,7 +84,7 @@ final class CompanyEnums extends Enum
         self::PAZARIUM,
         self::CASABONY,
         self::VALIBERTA,
-        // self::BREEZE,
+        self::BREEZE,
         self::EMINNA,
         self::MODAYAKAMOZ,
         self::MITELOVE,

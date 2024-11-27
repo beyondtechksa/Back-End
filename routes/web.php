@@ -30,7 +30,6 @@ use App\Models\Product;
 
 Route::get('slug', function () {
    return 'test';
-
 });
 
 
@@ -75,7 +74,7 @@ Route::post('/cart/update_size_color', [StartController::class, 'update_size_col
 Route::post('/cart/select_items', [StartController::class, 'select_items'])->name('cart.select_items');
 //end cookie
 
-Route::get('/dashboard', [StartController::class, 'dashboard'])->middleware(['auth'])->name('dashboard');
+
 Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
 Route::get('auth/apple', [SocialiteController::class, 'redirectToApple']);
@@ -91,7 +90,8 @@ Route::get('/clickpay/order_success/{id}', action: [StartController::class, 'ord
 Route::get('/tamara/order_success/{id}', action: [StartController::class, 'order_success_click_pay'])->name('order.tamara.success');
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth','verified'])->group(function () {
+    Route::get('/dashboard', [StartController::class, 'dashboard'])->name('dashboard');
     // Route::get('/basic-info', [ProfileController::class, 'basic_info'])->name('profile.basic_info');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

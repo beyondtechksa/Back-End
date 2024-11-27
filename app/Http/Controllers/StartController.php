@@ -56,46 +56,50 @@ class StartController extends Controller
         // Parent categories
         $currencyService = new CurrencyService();
         // Trending products
-        $trendingProducts = Cache::remember(CacheEnums::TRENDINGPRODUCTS, CacheEnums::CACHE_TIME, function () use($product, $currencyService){
+
+        $trendingProducts = Cache::remember(CacheEnums::TRENDINGPRODUCTS, CacheEnums::CACHE_TIME, function () use($product, $currencyService) {
             return $product->with('brand')
-            ->where('trending', 1)
-            ->where('status', 1)
-            ->latest()
-            ->limit(15)
-            ->get()->map(function($product) use($currencyService) {
-                $product['final_selling_price'] = $currencyService->convertPrice($product,$product->final_selling_price);
-                $product['old_price'] = $currencyService->convertPrice($product,$product->old_price);
-                return $product;
-            });
+                ->select('id','slug', 'name_en', 'name_ar', 'image', 'brand_id', 'final_selling_price', 'discount_percentage_selling_price', 'currency_id')
+                ->where('trending', 1)
+                ->where('status', 1)
+                ->latest()
+                ->paginate(15)
+                ->through(function($product) use($currencyService) {
+                    $product->final_selling_price = $currencyService->convertPrice($product, $product->final_selling_price);
+                    $product->old_price = $currencyService->convertPrice($product, $product->old_price);
+                    return $product;
+                });
         });
         // Featured products
 
         $featuredProducts = Cache::remember(CacheEnums::FEATUREDPRODUCTS, CacheEnums::CACHE_TIME, function () use($product, $currencyService){
             return $product->with('brand')
+            ->select('id','slug', 'name_en', 'name_ar', 'image', 'brand_id', 'final_selling_price', 'discount_percentage_selling_price', 'currency_id')
             ->where('featured', 1)
             ->where('status', 1)
             ->latest()
-            ->limit(15)
-            ->get()->map(function($product) use($currencyService) {
-                $product['final_selling_price'] = $currencyService->convertPrice($product,$product->final_selling_price);
-                $product['old_price'] = $currencyService->convertPrice($product,$product->old_price);
-                return $product;
-            });
+            ->paginate(15)
+                ->through(function($product) use($currencyService) {
+                    $product->final_selling_price = $currencyService->convertPrice($product, $product->final_selling_price);
+                    $product->old_price = $currencyService->convertPrice($product, $product->old_price);
+                    return $product;
+                });
         });
 
 
         // New arrival products
         $newArrivalProducts = Cache::remember(CacheEnums::NEWARRIVALPRODUCTS, CacheEnums::CACHE_TIME, function () use($product, $currencyService){
             return $product->with('brand')
+            ->select('id','slug', 'name_en', 'name_ar', 'image', 'brand_id', 'final_selling_price', 'discount_percentage_selling_price', 'currency_id')
             ->where('new_arrival', 1)
             ->where('status', 1)
             ->latest()
-            ->limit(15)
-            ->get()->map(function($product) use($currencyService) {
-                $product['final_selling_price'] = $currencyService->convertPrice($product,$product->final_selling_price);
-                $product['old_price'] = $currencyService->convertPrice($product,$product->old_price);
-                return $product;
-            });
+            ->paginate(15)
+                ->through(function($product) use($currencyService) {
+                    $product->final_selling_price = $currencyService->convertPrice($product, $product->final_selling_price);
+                    $product->old_price = $currencyService->convertPrice($product, $product->old_price);
+                    return $product;
+                });
         });
 
 
@@ -357,6 +361,7 @@ class StartController extends Controller
                 $singlePro->quantity = 1;
                 $singlePro->size = $request->size;
                 $singlePro->color = $request->color;
+                $singlePro->selected = true;
                 $carts[] = $singlePro;
                 setcookie('user_cart', json_encode($carts), time() + (3600 * 90), "/");
             }
@@ -556,36 +561,42 @@ class StartController extends Controller
         if (auth()->check()) {
             $carts = (new GlobalService())->get_user_cart();
         } else {
-            $currencyService=new CurrencyService();
-            $cookieCart = json_decode($_COOKIE['user_cart']);
+            $cookieCart = isset($_COOKIE['user_cart']) ? json_decode($_COOKIE['user_cart']) : [];
+            // $cookieCart = json_decode($_COOKIE['user_cart']);
             $carts = [];
-            foreach ($cookieCart as $cart) {
+            // if (empty($cookieCart)){
+            //     return $carts;
+            // }
+            $currencyService=new CurrencyService();
+            foreach ($cookieCart as $product) {
                 $obj = new \stdClass();
-                $obj->product_id = $cart->product_id;
-                $obj->quantity = $cart->quantity;
-                $obj->size = $cart->size;
-                $obj->color = $cart->color;
-                $product = Product::with(['brand','sizes','colors'])->find($cart->product_id);
-                $product['final_selling_price']=$currencyService->convertPrice($product->$product->final_selling_price);
-                $obj->product = $product;
+                $obj->product_id = $product->product_id;
+                $obj->quantity = $product->quantity;
+                $obj->size = $product->size ?? null;
+                $obj->color = $product->color ?? null;
+                $obj->selected = $product->selected ?? true;
+                $product2=Product::with(['brand'])->find($product->product_id);
+                $product2['final_selling_price']=$currencyService->convertPrice($product2,$product2->final_selling_price);
+                $obj->product = $product2;
                 $carts[] = $obj;
             }
+
+            return $carts;
         }
         return $carts;
     }
 
     public function getCart(GlobalService $globalService){
-        if(auth()->check()){
-            return $globalService->get_user_cart();
-        }else{
-            return $this->getCookieCart();
-        }
+        $this->user_cart();
     }
     public function getCookieCart()
     {
-        //        $cookieCart = isset($_COOKIE['user_cart']) ? json_decode($_COOKIE['user_cart']) : [];
-        $cookieCart = json_decode($_COOKIE['user_cart']);
+        $cookieCart = isset($_COOKIE['user_cart']) ? json_decode($_COOKIE['user_cart']) : [];
+        // $cookieCart = json_decode($_COOKIE['user_cart']);
         $carts = [];
+        // if (empty($cookieCart)){
+        //     return $carts;
+        // }
         $currencyService=new CurrencyService();
         foreach ($cookieCart as $product) {
             $obj = new \stdClass();
@@ -598,6 +609,7 @@ class StartController extends Controller
             $obj->product = $product2;
             $carts[] = $obj;
         }
+
         return $carts;
     }
 
