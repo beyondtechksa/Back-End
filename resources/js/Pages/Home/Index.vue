@@ -127,7 +127,7 @@
 
 
         <!-- ===== Treading Style  ===== -->
-        <trending :products="trending"></trending>
+        <trending :products="trending.data"></trending>
 
         <!-- ====== Treading style End  ==== -->
 
@@ -160,7 +160,7 @@
         </section>
         <!-- =======  Sele Brand Banner ====== End -->
         <!-- ====   Featured Products ====   -->
-        <featured :products="featured"></featured>
+        <featured :products="featured.data"></featured>
         <!-- ===== Featured Products End  ==== -->
 
         <!-- ===== Banner ==== -->
@@ -181,7 +181,7 @@
 
         <!--   ========= New Arrivals in Home Fornitures  ==== -->
 
-        <new-arrival :products="new_arrival"></new-arrival>
+        <new-arrival :products="new_arrival.data"></new-arrival>
         <!-- ======= New Arrivals in Home Fornitures ===== -->
 
         <!-- ===== Banner ==== -->

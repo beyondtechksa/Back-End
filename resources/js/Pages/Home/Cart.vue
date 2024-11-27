@@ -312,7 +312,6 @@
         sizes:Array,
       },
       mounted(){
-        this.get_shipping()
         this.carts.forEach((el)=>{
           if(el.selected==1){
             this.checked.push(el.id)

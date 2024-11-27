@@ -16,7 +16,7 @@
                 <h4>{{ __('Vat') }}</h4>
                 <h4 class="price-tag-e">{{ __('SAR') }} {{ data.vat }}</h4>
             </div>
-            <div v-show="$page.props.auth.user">
+
             <div class="total-price">
             <h4>{{ __('Shipping Fee') }} (<span class="fs-16 text-success"> {{__('including vat')}} </span>) </h4>
             <h4 class="price-tag-e">{{ __('SAR') }} {{ data.shipping }}</h4>
@@ -31,7 +31,7 @@
                 <h4>{{ __('Discount') }}</h4>
                 <h4 class="price-tag-e">% {{data.cart_discount_coupon}}</h4>
             </div>
-
+            <div v-show="$page.props.auth.user">
             <div class="coupon-code">
             <form @submit.prevent="add_coupon()">
                 <img src="/home/img/coupon.jpg" alt="" />

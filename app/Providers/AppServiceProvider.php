@@ -19,6 +19,8 @@ use App\Models\Color;
 use App\Observers\ColorObserver;
 use App\Models\Language;
 use App\Observers\LanguageObserver;
+use App\Models\Currency;
+use App\Observers\CurrencyObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -44,5 +46,6 @@ class AppServiceProvider extends ServiceProvider
         Size::observe(SizeObserver::class);
         Color::observe(ColorObserver::class);
         Language::observe(LanguageObserver::class);
+        Currency::observe(CurrencyObserver::class);
     }
 }

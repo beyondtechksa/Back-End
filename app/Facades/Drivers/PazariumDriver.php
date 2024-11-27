@@ -24,7 +24,7 @@ class PazariumDriver implements CompanyDriverInterface
         $productIds = TempProduct::where('type' , 'company')->where('company_name' , $company_name)->pluck('product_id')->toArray();
         $products=[];
         while (true) {
-        $url = "https://www.pazarium.com.tr/xml/?R=1310703&K=152b&AltUrun=1&TamLink=1&Dislink=1&Seo=1&Imgs=1&stok=1&start={$start}&limit={$this->limit}&pass=QUB1y0fJ";
+        $url = "https://www.pazarium.com.tr/xml/?R=1310703&K=152b&AltUrun=1&TamLink=1&Dislink=1&Seo=1&Stok=1&Imgs=1&start={$start}&limit={$this->limit}&pass=QUB1y0fJ";
         $xml = fetchDataFromUrl($url);
         $productsData = simplexml_load_string($xml , "SimpleXMLElement", LIBXML_NOCDATA);
         if (empty($productsData->product) || $start>=10000) {
