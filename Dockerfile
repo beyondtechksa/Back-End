@@ -71,7 +71,7 @@ RUN chmod -R 775 /var/www/storage
 # Copy nginx/php/supervisor configs
 RUN cp docker/supervisord.conf /etc/supervisord.conf
 RUN cp docker/php.ini /usr/local/etc/php/conf.d/app.ini
-RUN cp docker/nginx.conf /etc/nginx/sites-enabled/default
+RUN cp docker/nginx.conf /etc/nginx/conf.d/default.conf
 RUN cp docker/www.conf /usr/local/etc/php-fpm.d/www.conf
 RUN cp docker/main.conf /etc/nginx/nginx.conf
 RUN chown -R www-data:www-data /var/www
