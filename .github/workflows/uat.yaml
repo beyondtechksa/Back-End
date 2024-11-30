@@ -3,7 +3,7 @@ name: deploy to uat env
 on:
   push:
     branches:
-      - uat
+      
 
 env:
   PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}

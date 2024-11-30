@@ -1,11 +1,15 @@
-FROM php:8.2-fpm
+FROM php:8.3-fpm
 
 # Set the working directory
 WORKDIR /var/www
 
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
+    gnupg2 \
+    lsb-release\
+    curl\
     libpng-dev \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
@@ -13,7 +17,6 @@ RUN apt-get update && apt-get install -y \
     zip \
     jpegoptim optipng pngquant gifsicle \
     git \
-    curl \
     lua-zlib-dev \
     nginx \
     supervisor \
@@ -24,9 +27,20 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libicu-dev \
     libmagickwand-dev \
-    sudo  
+    sudo 
 
-# Set up Node.js
+# Import the official Nginx signing key (if needed)
+RUN curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor \
+    | tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
+
+# Set up the Nginx repository
+RUN echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] \
+http://nginx.org/packages/debian `lsb_release -cs` nginx" \
+    | tee /etc/apt/sources.list.d/nginx.list
+
+# Update apt, install Nginx, and check the version
+RUN apt-get update && apt-get install -y nginx
+## Set up Node.js
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs
 
@@ -35,9 +49,9 @@ RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg
-RUN pecl install imagick redis
-RUN docker-php-ext-enable imagick redis
-RUN docker-php-ext-install  mbstring  pdo_mysql zip exif pcntl gd  intl  bcmath  
+RUN pecl install  redis
+RUN docker-php-ext-enable  redis
+RUN docker-php-ext-install  mbstring  pdo_mysql zip exif pcntl gd  intl  bcmath  opcache xml dom 
   
 
 # Install composer
@@ -57,13 +71,14 @@ RUN chmod -R 775 /var/www/storage
 # Copy nginx/php/supervisor configs
 RUN cp docker/supervisord.conf /etc/supervisord.conf
 RUN cp docker/php.ini /usr/local/etc/php/conf.d/app.ini
-RUN cp docker/nginx.conf /etc/nginx/sites-enabled/default
+RUN cp docker/nginx.conf /etc/nginx/conf.d/default.conf
 RUN cp docker/www.conf /usr/local/etc/php-fpm.d/www.conf
 RUN cp docker/main.conf /etc/nginx/nginx.conf
 RUN chown -R www-data:www-data /var/www
 USER www-data
 # Deployment steps ....
-RUN composer install 
+RUN composer update lcobucci/jwt
+RUN composer install --optimize-autoloader --no-dev
 RUN npm i
 RUN npm run build
 RUN chmod +x /var/www/docker/run.sh
