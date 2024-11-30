@@ -9,9 +9,10 @@ class CurrencyService
 
     public function convertPrice($product,$amount)
     {
-        $toCurrencyPerfix=user_currency();
-        $baseCurrency=$product->currency??Currency::where('prefix','TRY')->first();
-        $toCurrency = Currency::where('prefix', $toCurrencyPerfix)->first();
+        $currency = Currency::where('id',$product->currency_id)->first()??Currency::where('prefix','TRY')->first();
+        $toCurrencyPrefix=user_currency();
+        $baseCurrency=$currency;
+        $toCurrency = Currency::where('prefix', $toCurrencyPrefix)->first();
         if (!$toCurrency || $toCurrency->prefix == $baseCurrency->prefix) {
             return $amount;
         }

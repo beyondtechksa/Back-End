@@ -34,10 +34,11 @@ class SingleProductResource extends JsonResource
         }
 
         $currencyService=new CurrencyService();
-
+        $final_selling_price = $currencyService->convertPrice($this,$this->final_selling_price);
         return [
             'id' => $this->id,
             'sku' => $this->sku,
+            'slug' => $this->slug,
             'name_en' => $this->name_en,
             'name_ar' => $this->name_ar,
             'name_tr' => $this->name_tr,
@@ -45,9 +46,9 @@ class SingleProductResource extends JsonResource
             'desc_tr' => $this->desc_tr,
             'desc_ar' => $this->desc_ar,
             'image' => $this->image,
-            'old_price' => exchange_price($this->old_price, $this->currency),
+            'old_price' => number_format($final_selling_price / (1-($this->discount_percentage_selling_price/100)),2),
             'discount_percentage_selling_price' => $this->discount_percentage_selling_price,
-            'final_selling_price' => $currencyService->convertPrice($this,$this->final_selling_price),
+            'final_selling_price' => $final_selling_price,
 //            'final_selling_price'=>$this->final_selling_price,
             'discount_price' => $this->discount_percentage_selling_price,
             'files' => $this->files->select('id', 'image'),

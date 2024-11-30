@@ -93,7 +93,7 @@
                         </div>
                       </div>
                       <div class="card-details">
-                        <h3>{{ __('Brand') }} : <span> {{ cart.product.brand.translated_name }} </span></h3>
+                        <h3>{{ __('Brand') }} : <span> {{ cart.product.brand?cart.product.brand.translated_name:null }} </span></h3>
                         <div class="d-flex gap-2 align-items-center">
                           <div>{{ __('Quantity') }} : <br>
                              <!-- <input @keyup="update_quantity(cart)" class="sm-input" type="number" v-model="cart.quantity"> -->
@@ -114,7 +114,7 @@
                             </select>
                           </div>
                         </div>
-                        <h2 class="price-tag">{{exchange_price(cart.product.final_selling_price,'SAR')}} {{ __('SAR') }} </h2>
+                        <h2 class="price-tag">{{cart.product.final_selling_price}} {{ __('SAR') }} </h2>
                         <div class="order-date d-flex align-items-center gap-1">
                           <h4 class="d-flex align-items-center gap-2">
                             <img src="/home/img/package-black.svg" alt="" />
@@ -176,7 +176,7 @@
                       <option :value="color.translated_name" v-for="color,index in cart.product.colors" :key="index"> {{ color.translated_name }} </option>
                     </select>
                   </div>
-                <h5>{{ __('Brand') }} : <span> {{cart.product.brand.translated_name}}</span></h5>
+                <h5>{{ __('Brand') }} : <span> {{cart.product.brand?cart.product.brand.translated_name:null}}</span></h5>
               </div>
             </div>
             <div class="">
@@ -312,7 +312,6 @@
         sizes:Array,
       },
       mounted(){
-        this.get_shipping()
         this.carts.forEach((el)=>{
           if(el.selected==1){
             this.checked.push(el.id)

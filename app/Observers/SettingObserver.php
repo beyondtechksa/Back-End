@@ -1,25 +1,31 @@
 <?php
 
 namespace App\Observers;
-
-use App\Models\Setting;
+use App\Models\Settings;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Enums\CacheEnums;
 use Illuminate\Support\Facades\Cache;
 
-
 class SettingObserver
 {
 
-    public function creating(Page $page)
+    public function created(Settings $settings)
     {
-        Cache::forget(CacheEnums::SETTINGS);
+        $this->clearSettingCache();
     }
-    public function updating(Page $page)
+    public function updated(Settings $settings)
     {
-        Cache::forget(CacheEnums::SETTINGS);
+        $this->clearSettingCache();
+    }
+    public function deleted(Settings $settings)
+    {
+        $this->clearSettingCache();
     }
 
+    private function clearSettingCache()
+    {
+        clearGlobalCache(CacheEnums::CACHE_SETTINGS);
+    }
 
 
 

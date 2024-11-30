@@ -10,6 +10,7 @@ class FilterService
 {
     public function filter($filterData)
     {
+        $currencyService=new currencyService();
         $query = Product::withRated()->where('status', 1);
 
         if (!empty($filterData['subCategories'])) {
@@ -77,7 +78,11 @@ class FilterService
             ->orderBy('ontop', 'desc')
             ->offset($offset)
 //            ->inRandomOrder()
-            ->get();
+            ->get()->map(function($product) use($currencyService) {
+                $product['final_selling_price'] = $currencyService->convertPrice($product,$product->final_selling_price);
+                $product['old_price'] = $currencyService->convertPrice($product,$product->old_price);
+                return $product;
+            });
 
     }
 

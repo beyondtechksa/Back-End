@@ -47,10 +47,10 @@ class HandleInertiaRequests extends Middleware
                 'user' => $isAdminArea ? null : user(),
                 'default_img' => '/assets/images/faces/1.jpg',
             ],
-            'ziggy' => array_merge((new Ziggy)->toArray(), [
-                'location' => $request->url(),
-                'query' => $request->query()
-            ]),
+            // 'ziggy' => array_merge((new Ziggy)->toArray(), [
+            //     'location' => $request->url(),
+            //     'query' => $request->query()
+            // ]),
             'messages' => [
                 'success' => session('success'),
             ],
@@ -66,7 +66,6 @@ class HandleInertiaRequests extends Middleware
             'general_setings'=>general_settings()
         ];
 
-        // Add admin/vendor/shipping-specific data if in the admin area
         if ($isAdminArea) {
             $guard = Auth::guard('admin')->check() ? 'admin' : (Auth::guard('vendor')->check() ? 'vendor' : 'shipping');
             $shared['auth'][$guard] = Auth::guard($guard)->check() ? $guard() : null;

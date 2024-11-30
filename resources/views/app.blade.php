@@ -18,15 +18,7 @@
     @else
     <link rel="stylesheet" href="/home/css/style.css" />
     @endif
-    <link rel="stylesheet" href="/home/css/shop.css" />
-    <link rel="stylesheet" href="/home/css/category.css" />
-    {{-- <link rel="stylesheet" href="/home/css/productdetails.css" /> --}}
-    <link rel="stylesheet" href="/home/css/login.css" />
-    <link rel="stylesheet" href="/home/css/mycart.css" />
-    <link rel="stylesheet" href="/home/css/checkoutTwo.css" />
-    <link rel="stylesheet" href="/home/css/admin.css" />
-    <link rel="stylesheet" href="/home/css/suceesfull.css" />
-    <link rel="stylesheet" href="/home/css/responsive.css" />
+
     <link rel="stylesheet" href="/home/css/custom.css" />
 
 

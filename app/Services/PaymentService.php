@@ -19,12 +19,13 @@ class PaymentService
     private $address = null;
     private $url = null;
 
-    public function loadTelrIframe($user_id, $carts, $currency = 'SAR')
+    public function loadTelrIframe($user_id, $currency = 'SAR')
     {
         $this->url = url('order_success');
         $this->user = User::find($user_id);
         $this->address = Address::where('user_id', $user_id)
             ->where('favourite', 1)->first();
+        $carts = (new GlobalService())->get_user_selected_cart($user_id);
         $this->modifyCart($carts, $currency);
         $response = Http::post('https://secure.telr.com/gateway/order.json', [
             'method' => "create",
@@ -74,13 +75,8 @@ class PaymentService
 
     protected function modifyCart($carts, $currency)
     {
-        $subtotal = (new OrderService())->calculateSubtotal($carts, $currency);
-        $shipping = get_shipping_price();
-        $cartDiscount = CartDiscount::where('user_id', $this->user->id)->where('status', 0)->first();
-        $discountPercentage = $cartDiscount ? $cartDiscount->discount_percentage : 0;
-        $total = (new OrderService())->calculateTotal($subtotal, $shipping, $discountPercentage);
-        $vat = (new OrderService())->calculateVat($carts);
-        $this->total = number_format($total + $vat, 2, '.');
+        $orderData=(new OrderService())->calculateOrder($carts);
+        $this->total =$orderData['total'];
         $this->cart_id = json_encode($carts->pluck('id')->toArray());
     }
 

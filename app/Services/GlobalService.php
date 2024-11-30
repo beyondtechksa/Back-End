@@ -14,6 +14,7 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\Rates;
 use App\Models\Settings;
+use App\Services\CurrencyService;
 use Illuminate\Support\Facades\Cache;
 
 
@@ -120,5 +121,30 @@ class GlobalService
             'size' => $request['size'] ?? null,
             'color' => $request['color'] ?? null,
         ]);
+    }
+
+    public function get_user_cart(){
+        $currencyService = new currencyService();
+        $carts = Cart::with('product.brand','product.sizes','product.colors')->where('user_id', user()->id)->get();
+        $carts->each(function ($cart) use ($currencyService){
+            $cart->product->final_selling_price = $currencyService->convertPrice($cart->product,$cart->product->final_selling_price);
+            $cart->product->old_price = $currencyService->convertPrice($cart->product,$cart->product->old_price);
+        });
+        return $carts;
+    }
+    public function get_user_selected_cart($user_id){
+        $currencyService=new CurrencyService();
+            $carts = Cart::with(['product' => function ($query) {
+                $query->select('id', 'final_selling_price','tax_percentage', 'currency_id');
+            }])
+            ->where('user_id', $user_id)
+            ->where('selected', 1)
+            ->get();
+
+            $carts->each(function ($cart) use ($currencyService){
+                $cart->product->final_selling_price = $currencyService->convertPrice($cart->product,$cart->product->final_selling_price);
+            });
+
+        return $carts;
     }
 }

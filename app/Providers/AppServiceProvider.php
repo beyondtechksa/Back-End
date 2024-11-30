@@ -13,6 +13,14 @@ use App\Models\Page;
 use App\Observers\PageObserver;
 use App\Models\Settings;
 use App\Observers\SettingObserver;
+use App\Models\Size;
+use App\Observers\SizeObserver;
+use App\Models\Color;
+use App\Observers\ColorObserver;
+use App\Models\Language;
+use App\Observers\LanguageObserver;
+use App\Models\Currency;
+use App\Observers\CurrencyObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -35,5 +43,9 @@ class AppServiceProvider extends ServiceProvider
         Category::observe(CategoryObserver::class);
         Page::observe(PageObserver::class);
         Settings::observe(SettingObserver::class);
+        Size::observe(SizeObserver::class);
+        Color::observe(ColorObserver::class);
+        Language::observe(LanguageObserver::class);
+        Currency::observe(CurrencyObserver::class);
     }
 }

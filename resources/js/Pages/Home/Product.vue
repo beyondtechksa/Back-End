@@ -203,17 +203,7 @@
         <div class="container-cum">
           <div class="row rows-info">
             <div class="col-lg-6 col-md-6 col-12">
-              <div class="pro-details">
-                <h2 class="">{{ __('Product Details') }} :</h2>
-              </div>
-              <div class="discription">
-                <p v-html="product['desc_'+$page.props.locale]">
-
-                </p>
-              </div>
-            </div>
-            <div class="col-lg-6 col-md-6 col-12">
-              <div class="pro-details">
+                <div class="pro-details">
                 <h2 class="">{{ __('Highlights') }} :</h2>
             </div>
               <div class="discription">
@@ -226,6 +216,9 @@
                   </li>
                 </ul>
               </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-12">
+
             </div>
           </div>
 
