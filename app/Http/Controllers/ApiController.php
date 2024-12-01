@@ -76,7 +76,7 @@ class ApiController extends Controller
 
     public function get_main_categories()
     {
-//        $categories = Cache::remember(CacheEnums::MAIN_CATEGORIES, CacheEnums::CACHE_TIME, function () {
+//        $categories = Cache::remember(CacheEnums::MAIN_CATEGORIES(), CacheEnums::CACHE_TIME, function () {
         $categories = Category::whereNull('category_id')
 //                ->whereStatus(1)
             ->get()
@@ -90,7 +90,7 @@ class ApiController extends Controller
 
     public function categoriesBanners()
     {
-        $setting = Cache::remember(CacheEnums::CATEGORIES_SETTING, CacheEnums::CACHE_TIME, function () {
+        $setting = Cache::remember(CacheEnums::CATEGORIES_SETTING(), CacheEnums::CACHE_TIME, function () {
             $setting = Settings::whereSlug('category_banners')
                 ->select('id', 'value', 'slug')
                 ->first();
@@ -112,7 +112,7 @@ class ApiController extends Controller
     public function colors()
     {
 
-        $colors = Cache::remember(CacheEnums::COLORS, CacheEnums::CACHE_TIME, function () {
+        $colors = Cache::remember(CacheEnums::COLORS(), CacheEnums::CACHE_TIME, function () {
             return Color::whereNull('color_id')->orderBy('id', 'DESC')->get();
         })->map(function ($color) {
             $color->image = url($color->image);
@@ -124,7 +124,7 @@ class ApiController extends Controller
 
     public function sizes()
     {
-        $sizes = Cache::remember(CacheEnums::SIZES, CacheEnums::CACHE_TIME, function () {
+        $sizes = Cache::remember(CacheEnums::SIZES(), CacheEnums::CACHE_TIME, function () {
             return Size::whereNull('size_id')->orderBy('id', 'DESC')->get();
         });
         return returnSuccess('sizes', $sizes, 'success');

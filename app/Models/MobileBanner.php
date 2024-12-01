@@ -28,9 +28,9 @@ class MobileBanner extends Model
     {
         parent::boot();
 
-        static::created(fn() => clearGlobalCache(CacheEnums::CACHE_MOBILE_BANNERS));
-        static::updated(fn() => clearGlobalCache(CacheEnums::CACHE_MOBILE_BANNERS));
-        static::deleted(fn() => clearGlobalCache(CacheEnums::CACHE_MOBILE_BANNERS));
+        static::created(fn() => clearGlobalCache(CacheEnums::CACHE_MOBILE_BANNERS()));
+        static::updated(fn() => clearGlobalCache(CacheEnums::CACHE_MOBILE_BANNERS()));
+        static::deleted(fn() => clearGlobalCache(CacheEnums::CACHE_MOBILE_BANNERS()));
     }
 
     public function collection()

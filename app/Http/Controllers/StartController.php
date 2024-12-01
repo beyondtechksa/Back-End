@@ -52,68 +52,68 @@ class StartController extends Controller
 
     public function home(Category $category, Product $product)
     {
-        $topCategories = top_categories()->take(20);
-        // Parent categories
-        $currencyService = new CurrencyService();
-        // Trending products
-
-        $trendingProducts = Cache::remember(CacheEnums::TRENDINGPRODUCTS, CacheEnums::CACHE_TIME, function () use($product, $currencyService) {
-            return $product->with('brand')
-                ->select('id','slug', 'name_en', 'name_ar', 'image', 'brand_id', 'final_selling_price', 'discount_percentage_selling_price', 'currency_id')
-                ->where('trending', 1)
-                ->where('status', 1)
-                ->latest()
-                ->paginate(15)
-                ->through(function($product) use($currencyService) {
-                    $product->final_selling_price = $currencyService->convertPrice($product, $product->final_selling_price);
-                    $product->old_price = $currencyService->convertPrice($product, $product->old_price);
-                    return $product;
-                });
-        });
-        // Featured products
-
-        $featuredProducts = Cache::remember(CacheEnums::FEATUREDPRODUCTS, CacheEnums::CACHE_TIME, function () use($product, $currencyService){
-            return $product->with('brand')
-            ->select('id','slug', 'name_en', 'name_ar', 'image', 'brand_id', 'final_selling_price', 'discount_percentage_selling_price', 'currency_id')
-            ->where('featured', 1)
-            ->where('status', 1)
-            ->latest()
-            ->paginate(15)
-                ->through(function($product) use($currencyService) {
-                    $product->final_selling_price = $currencyService->convertPrice($product, $product->final_selling_price);
-                    $product->old_price = $currencyService->convertPrice($product, $product->old_price);
-                    return $product;
-                });
-        });
-
-
-        // New arrival products
-        $newArrivalProducts = Cache::remember(CacheEnums::NEWARRIVALPRODUCTS, CacheEnums::CACHE_TIME, function () use($product, $currencyService){
-            return $product->with('brand')
-            ->select('id','slug', 'name_en', 'name_ar', 'image', 'brand_id', 'final_selling_price', 'discount_percentage_selling_price', 'currency_id')
-            ->where('new_arrival', 1)
-            ->where('status', 1)
-            ->latest()
-            ->paginate(15)
-                ->through(function($product) use($currencyService) {
-                    $product->final_selling_price = $currencyService->convertPrice($product, $product->final_selling_price);
-                    $product->old_price = $currencyService->convertPrice($product, $product->old_price);
-                    return $product;
-                });
-        });
-
-
-        // Brands
-        $brands = active_brands()->take(5);
-        // Settings
-
-        return inertia('Home/Index', [
-            'top_categories' => $topCategories,
-            'trending' => $trendingProducts,
-            'brands' => $brands,
-            'featured' => $featuredProducts,
-            'new_arrival' => $newArrivalProducts,
-        ])->with(['page_title' => __('Home')]);
+        // $cacheKey = CacheEnums::HOMEPAGECACHE();
+    
+        // return Cache::remember($cacheKey, CacheEnums::CACHE_TIME, function () use ($category, $product) {
+            $topCategories = top_categories()->take(20);
+            $currencyService = new CurrencyService();
+    
+            // Trending products
+            $trendingProducts = Cache::remember(CacheEnums::TRENDINGPRODUCTS(), CacheEnums::CACHE_TIME, function () use ($product, $currencyService) {
+                return $product->with('brand')
+                    ->select('id', 'slug', 'name_en', 'name_ar', 'image', 'brand_id', 'final_selling_price', 'discount_percentage_selling_price', 'currency_id')
+                    ->where('trending', 1)
+                    ->where('status', 1)
+                    ->latest()
+                    ->paginate(15)
+                    ->through(function ($product) use ($currencyService) {
+                        $product->final_selling_price = $currencyService->convertPrice($product, $product->final_selling_price);
+                        $product->old_price = $currencyService->convertPrice($product, $product->old_price);
+                        return $product;
+                    });
+            });
+    
+            // Featured products
+            $featuredProducts = Cache::remember(CacheEnums::FEATUREDPRODUCTS(), CacheEnums::CACHE_TIME, function () use ($product, $currencyService) {
+                return $product->with('brand')
+                    ->select('id', 'slug', 'name_en', 'name_ar', 'image', 'brand_id', 'final_selling_price', 'discount_percentage_selling_price', 'currency_id')
+                    ->where('featured', 1)
+                    ->where('status', 1)
+                    ->latest()
+                    ->paginate(15)
+                    ->through(function ($product) use ($currencyService) {
+                        $product->final_selling_price = $currencyService->convertPrice($product, $product->final_selling_price);
+                        $product->old_price = $currencyService->convertPrice($product, $product->old_price);
+                        return $product;
+                    });
+            });
+    
+            // New arrival products
+            $newArrivalProducts = Cache::remember(CacheEnums::NEWARRIVALPRODUCTS(), CacheEnums::CACHE_TIME, function () use ($product, $currencyService) {
+                return $product->with('brand')
+                    ->select('id', 'slug', 'name_en', 'name_ar', 'image', 'brand_id', 'final_selling_price', 'discount_percentage_selling_price', 'currency_id')
+                    ->where('new_arrival', 1)
+                    ->where('status', 1)
+                    ->latest()
+                    ->paginate(15)
+                    ->through(function ($product) use ($currencyService) {
+                        $product->final_selling_price = $currencyService->convertPrice($product, $product->final_selling_price);
+                        $product->old_price = $currencyService->convertPrice($product, $product->old_price);
+                        return $product;
+                    });
+            });
+    
+            // Brands
+            $brands = active_brands()->take(5);
+    
+            return inertia('Home/Index', [
+                'top_categories' => $topCategories,
+                'trending' => $trendingProducts,
+                'brands' => $brands,
+                'featured' => $featuredProducts,
+                'new_arrival' => $newArrivalProducts,
+            ])->with(['page_title' => __('Home')])->toResponse(request())->getContent();
+        // });
     }
 
     public function categories()
@@ -317,14 +317,14 @@ class StartController extends Controller
 
     protected function getAllColors()
     {
-        return Cache::remember(CacheEnums::COLORS, CacheEnums::CACHE_TIME, function () {
+        return Cache::remember(CacheEnums::COLORS(), CacheEnums::CACHE_TIME, function () {
             return Color::whereNull('color_id')->where('status', 1)->orderBy('name->en', 'asc')->get();
         });
     }
 
     protected function getAllSizes()
     {
-        return Cache::remember(CacheEnums::SIZES, CacheEnums::CACHE_TIME, function () {
+        return Cache::remember(CacheEnums::SIZES(), CacheEnums::CACHE_TIME, function () {
             return Size::whereNull('size_id')->where('status', 1)->orderBy('name->en', 'asc')->get();
         });
     }
@@ -627,14 +627,14 @@ class StartController extends Controller
 
     public function get_setting($slug)
     {
-        return Cache::remember(CacheEnums::NAV_NEWSBAR, CacheEnums::CACHE_TIME, function () use ($slug) {
+        return Cache::remember(CacheEnums::NAV_NEWSBAR(), CacheEnums::CACHE_TIME, function () use ($slug) {
             return Settings::whereSlug($slug)->first();
         });
     }
 
     public function get_nav_categories(Category $category)
     {
-        return Cache::remember(CacheEnums::NAV_CATEGORIES, CacheEnums::CACHE_TIME, function () use ($category) {
+        return Cache::remember(CacheEnums::NAV_CATEGORIES(), CacheEnums::CACHE_TIME, function () use ($category) {
             return $category->navCategories()
                 ->orderBy('list', 'asc')
                 ->limit(9)

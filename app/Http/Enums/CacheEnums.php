@@ -1,80 +1,210 @@
-<?php
-
+<?php 
 
 namespace App\Http\Enums;
 
 use BenSampo\Enum\Enum;
-use phpseclib3\Crypt\EC\Curves\secp112r1;
 
 final class CacheEnums extends Enum
 {
-    const ACTIVE_LANGUAGES = 'active_languages';
-    const LOCAL_LANGUAGES = 'locale_';
-    const CATEGORIES_WITH_PARENTS = 'categories_with_parents';
-    const MAIN_CATEGORIES = 'main_categories';
-    const MAINCURRENCY = 'MAINCURRENCY';
-    const CURRENCIES = 'currencies';
-    const CURRENCIES_SAR_USD_TRY = 'currencies_sar_usd_try';
-    const COLORS = 'all_colors';
-    const SIZES = 'all_sizes';
-    const NAV_CATEGORIES = 'nav_categories';
-    const NAV_NEWSBAR = 'nav_newsbar';
-    const SETTINGS = 'all_settings';
-    const NEWS = 'news_setting';
-    const CATEGORIES_SETTING = 'categories_setting';
-    const BANNER_SETTING = 'banner_setting';
-    const MEDIA = 'media';
-    const GENERALSETTINGS = 'general_settings';
-
-    const TRENDINGPRODUCTS = 'trending_products';
-    const FEATUREDPRODUCTS = 'featured_products';
-    const NEWARRIVALPRODUCTS = 'new_arrival_products';
-
-    const SOCIAL_LINKS = 'social_links';
-
     const CACHE_TIME = 60 * 60 * 24;
-    const ACTIVE_BRANDS = 'active_brands';
 
-    const TOP_CATEGORIES = 'top_categories';
-    const TOP_MOBILE_CATEGORIES = 'top_mobile_categories';
-    const ALL_MOBILE_BANNER = 'all_mobile_banner_';
+    // Define a method to get the prefix from the environment
+    private static function getPrefix(): string
+    {
+        return env('CACHE_PREFIX', 'default_prefix_');
+    }
 
-    const CACHE_CATEGORIES = [
-        self::CATEGORIES_WITH_PARENTS,
-        self::MAIN_CATEGORIES,
-        self::NAV_CATEGORIES,
-        self::TOP_CATEGORIES,
-        self::TOP_MOBILE_CATEGORIES,
+    // Define methods for each cache constant to apply the prefix dynamically
+    public static function HOMEPAGECACHE(): string
+    {
+        return self::getPrefix() . 'home_page_cache';
+    }
 
-    ];
-    const CACHE_PRODUCTS = [
-        self::TRENDINGPRODUCTS,
-        self::FEATUREDPRODUCTS,
-        self::NEWARRIVALPRODUCTS,
-    ];
-    const CACHE_MOBILE_BANNERS = [
-        self::ALL_MOBILE_BANNER,
-    ];
-    const CACHE_LANGUAGES = [
-        self::ACTIVE_LANGUAGES,
-        self::LOCAL_LANGUAGES,
-    ];
+    public static function ACTIVE_LANGUAGES(): string
+    {
+        return self::getPrefix() . 'active_languages';
+    }
 
-    const CACHE_CURRENCIES = [
-        self::CURRENCIES,
-        self::CURRENCIES_SAR_USD_TRY,
-    ];
+    public static function LOCAL_LANGUAGES(): string
+    {
+        return self::getPrefix() . 'locale_';
+    }
 
-    const CACHE_BRANDS = [
-        self::ACTIVE_BRANDS,
-    ];
-    const CACHE_SETTINGS = [
-        self::SETTINGS,
-        self::NEWS,
-        self::CATEGORIES_SETTING,
-        self::BANNER_SETTING,
-        self::NAV_NEWSBAR,
-        self::SOCIAL_LINKS
-    ];
+    public static function CATEGORIES_WITH_PARENTS(): string
+    {
+        return self::getPrefix() . 'categories_with_parents';
+    }
 
+    public static function MAIN_CATEGORIES(): string
+    {
+        return self::getPrefix() . 'main_categories';
+    }
+
+    public static function MAINCURRENCY(): string
+    {
+        return self::getPrefix() . 'MAINCURRENCY';
+    }
+
+    public static function CURRENCIES(): string
+    {
+        return self::getPrefix() . 'currencies';
+    }
+
+    public static function CURRENCIES_SAR_USD_TRY(): string
+    {
+        return self::getPrefix() . 'currencies_sar_usd_try';
+    }
+
+    public static function COLORS(): string
+    {
+        return self::getPrefix() . 'all_colors';
+    }
+
+    public static function SIZES(): string
+    {
+        return self::getPrefix() . 'all_sizes';
+    }
+
+    public static function NAV_CATEGORIES(): string
+    {
+        return self::getPrefix() . 'nav_categories';
+    }
+
+    public static function NAV_NEWSBAR(): string
+    {
+        return self::getPrefix() . 'nav_newsbar';
+    }
+
+    public static function SETTINGS(): string
+    {
+        return self::getPrefix() . 'all_settings';
+    }
+
+    public static function NEWS(): string
+    {
+        return self::getPrefix() . 'news_setting';
+    }
+
+    public static function CATEGORIES_SETTING(): string
+    {
+        return self::getPrefix() . 'categories_setting';
+    }
+
+    public static function BANNER_SETTING(): string
+    {
+        return self::getPrefix() . 'banner_setting';
+    }
+
+    public static function MEDIA(): string
+    {
+        return self::getPrefix() . 'media';
+    }
+
+    public static function GENERALSETTINGS(): string
+    {
+        return self::getPrefix() . 'general_settings';
+    }
+
+    public static function TRENDINGPRODUCTS(): string
+    {
+        return self::getPrefix() . 'trending_products';
+    }
+
+    public static function FEATUREDPRODUCTS(): string
+    {
+        return self::getPrefix() . 'featured_products';
+    }
+
+    public static function NEWARRIVALPRODUCTS(): string
+    {
+        return self::getPrefix() . 'new_arrival_products';
+    }
+
+    public static function SOCIAL_LINKS(): string
+    {
+        return self::getPrefix() . 'social_links';
+    }
+
+    public static function ACTIVE_BRANDS(): string
+    {
+        return self::getPrefix() . 'active_brands';
+    }
+
+    public static function TOP_CATEGORIES(): string
+    {
+        return self::getPrefix() . 'top_categories';
+    }
+
+    public static function TOP_MOBILE_CATEGORIES(): string
+    {
+        return 'top_mobile_categories'; // This does not need a prefix since it's already set
+    }
+
+    public static function ALL_MOBILE_BANNER(): string
+    {
+        return 'all_mobile_banner_'; // This does not need a prefix since it's already set
+    }
+
+    // Define the cache groups as methods as well
+    public static function CACHE_CATEGORIES(): array
+    {
+        return [
+            self::CATEGORIES_WITH_PARENTS(),
+            self::MAIN_CATEGORIES(),
+            self::NAV_CATEGORIES(),
+            self::TOP_CATEGORIES(),
+            self::TOP_MOBILE_CATEGORIES(),
+        ];
+    }
+
+    public static function CACHE_PRODUCTS(): array
+    {
+        return [
+            self::TRENDINGPRODUCTS(),
+            self::FEATUREDPRODUCTS(),
+            self::NEWARRIVALPRODUCTS(),
+        ];
+    }
+
+    public static function CACHE_MOBILE_BANNERS(): array
+    {
+        return [
+            self::ALL_MOBILE_BANNER(),
+        ];
+    }
+
+    public static function CACHE_LANGUAGES(): array
+    {
+        return [
+            self::ACTIVE_LANGUAGES(),
+            self::LOCAL_LANGUAGES(),
+        ];
+    }
+
+    public static function CACHE_CURRENCIES(): array
+    {
+        return [
+            self::CURRENCIES(),
+            self::CURRENCIES_SAR_USD_TRY(),
+        ];
+    }
+
+    public static function CACHE_BRANDS(): array
+    {
+        return [
+            self::ACTIVE_BRANDS(),
+        ];
+    }
+
+    public static function CACHE_SETTINGS(): array
+    {
+        return [
+            self::SETTINGS(),
+            self::NEWS(),
+            self::CATEGORIES_SETTING(),
+            self::BANNER_SETTING(),
+            self::NAV_NEWSBAR(),
+            self::SOCIAL_LINKS(),
+        ];
+    }
 }

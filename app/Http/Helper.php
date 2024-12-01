@@ -104,7 +104,7 @@ if (!function_exists('translations')) {
 if (!function_exists('locales')) {
     function locales()
     {
-        return Cache::remember(CacheEnums::ACTIVE_LANGUAGES, CacheEnums::CACHE_TIME, function () {
+        return Cache::remember(CacheEnums::ACTIVE_LANGUAGES(), CacheEnums::CACHE_TIME, function () {
             return Language::where('status', 1)->get();
         });
     }
@@ -112,7 +112,7 @@ if (!function_exists('locales')) {
 if (!function_exists('languages')) {
     function languages()
     {
-        return Cache::remember(CacheEnums::ACTIVE_LANGUAGES, CacheEnums::CACHE_TIME, function () {
+        return Cache::remember(CacheEnums::ACTIVE_LANGUAGES(), CacheEnums::CACHE_TIME, function () {
             return Language::where('status', 1)->get();
         });
     }
@@ -120,7 +120,7 @@ if (!function_exists('languages')) {
 if (!function_exists('locale')) {
     function locale()
     {
-        $cacheKey = CacheEnums::LOCAL_LANGUAGES . app()->getLocale();
+        $cacheKey = CacheEnums::LOCAL_LANGUAGES() . app()->getLocale();
 
         return Cache::remember($cacheKey, CacheEnums::CACHE_TIME, function () {
             $language = Language::where('symbol', app()->getLocale())->first();
@@ -199,7 +199,7 @@ if (!function_exists('getAllChildren')) {
 if (!function_exists('categories_with_parents')) {
     function categories_with_parents()
     {
-        return Cache::remember(CacheEnums::CATEGORIES_WITH_PARENTS, CacheEnums::CACHE_TIME, function () {
+        return Cache::remember(CacheEnums::CATEGORIES_WITH_PARENTS(), CacheEnums::CACHE_TIME, function () {
             return Category::with([
                 'children' => function ($query) {
                     $query->with('children')->where('status',true);
@@ -293,7 +293,7 @@ if (!function_exists('returnSuccess')) {
 if (!function_exists('currencies')) {
     function currencies()
     {
-        return Cache::remember(CacheEnums::CURRENCIES, CacheEnums::CACHE_TIME, function () {
+        return Cache::remember(CacheEnums::CURRENCIES(), CacheEnums::CACHE_TIME, function () {
             return Currency::get();
         });
     }
@@ -301,7 +301,7 @@ if (!function_exists('currencies')) {
 if (!function_exists('mainCurrency')) {
     function mainCurrency()
     {
-        return Cache::remember(CacheEnums::MAINCURRENCY, CacheEnums::CACHE_TIME, function () {
+        return Cache::remember(CacheEnums::MAINCURRENCY(), CacheEnums::CACHE_TIME, function () {
             return Currency::where('main',1)->get();
         });
     }
@@ -310,7 +310,7 @@ if (!function_exists('mainCurrency')) {
 if (!function_exists('active_brands')) {
     function active_brands()
     {
-        return Cache::remember(CacheEnums::ACTIVE_BRANDS, CacheEnums::CACHE_TIME, function () {
+        return Cache::remember(CacheEnums::ACTIVE_BRANDS(), CacheEnums::CACHE_TIME, function () {
             return Brand::where('status', 1)->orderBy('name','asc')->get();
         });
     }
@@ -319,7 +319,7 @@ if (!function_exists('active_brands')) {
 if (!function_exists('all_settings')) {
     function all_settings()
     {
-        return Cache::remember(CacheEnums::SETTINGS, CacheEnums::CACHE_TIME, function () {
+        return Cache::remember(CacheEnums::SETTINGS(), CacheEnums::CACHE_TIME, function () {
             return Settings::get();
         });
     }
@@ -328,7 +328,7 @@ if (!function_exists('all_settings')) {
 if (!function_exists('top_categories')) {
     function top_categories()
     {
-        return Cache::remember(CacheEnums::TOP_CATEGORIES, CacheEnums::CACHE_TIME, function () {
+        return Cache::remember(CacheEnums::TOP_CATEGORIES(), CacheEnums::CACHE_TIME, function () {
             return Category::where('status', 1)
                 ->where('mark_as_top_category', 1)
                 ->orderBy('top_list', 'asc')
@@ -341,7 +341,7 @@ if (!function_exists('top_categories')) {
 if (!function_exists('mobile_top_categories')) {
     function mobile_top_categories()
     {
-        return Cache::remember(CacheEnums::TOP_MOBILE_CATEGORIES, CacheEnums::CACHE_TIME, function () {
+        return Cache::remember(CacheEnums::TOP_MOBILE_CATEGORIES(), CacheEnums::CACHE_TIME, function () {
             return Category::where('status', 1)
                 ->where('mark_as_mobile_top_category', 1)
                 ->orderBy('mobile_top_list', 'asc')
@@ -354,7 +354,7 @@ if (!function_exists('mobile_top_categories')) {
 if (!function_exists('getCurrencies')) {
     function getCurrencies()
     {
-        return Cache::remember(CacheEnums::CURRENCIES_SAR_USD_TRY, CacheEnums::CACHE_TIME, function () {
+        return Cache::remember(CacheEnums::CURRENCIES_SAR_USD_TRY(), CacheEnums::CACHE_TIME, function () {
             return Currency::whereIn('prefix', ['SAR', 'USD', 'TRY'])->get()->keyBy('prefix');
         });
     }
@@ -549,7 +549,7 @@ if (!function_exists('unique_slug')) {
 if (!function_exists('general_settings')) {
     function general_settings()
     {
-        return Cache::remember(CacheEnums::GENERALSETTINGS, CacheEnums::CACHE_TIME, function () {
+        return Cache::remember(CacheEnums::GENERALSETTINGS(), CacheEnums::CACHE_TIME, function () {
             return GeneralSetting::get();
         });
     }
