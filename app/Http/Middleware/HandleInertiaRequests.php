@@ -47,10 +47,10 @@ class HandleInertiaRequests extends Middleware
                 'user' => $isAdminArea ? null : user(),
                 'default_img' => '/assets/images/faces/1.jpg',
             ],
-            // 'ziggy' => array_merge((new Ziggy)->toArray(), [
-            //     'location' => $request->url(),
-            //     'query' => $request->query()
-            // ]),
+            'ziggy' => array_merge((new Ziggy)->toArray(), [
+                'location' => $request->url(),
+                'query' => $request->query()
+            ]),
             'messages' => [
                 'success' => session('success'),
             ],

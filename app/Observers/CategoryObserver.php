@@ -5,12 +5,11 @@ namespace App\Observers;
 use App\Http\Enums\CacheEnums;
 use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class CategoryObserver
 {
-    /**
-     * Handle the Category "creating" event.
-     */
+
     public function creating(Category $category)
     {
         if (Auth::guard('admin')->check()) {
@@ -19,9 +18,7 @@ class CategoryObserver
         $category->slug = unique_slug($category->getTranslation('name', 'en'), 'Category');
     }
 
-    /**
-     * Handle the Category "updating" event.
-     */
+
     public function updating(Category $category)
     {
         if (Auth::guard('admin')->check()) {
@@ -29,27 +26,22 @@ class CategoryObserver
         }
     }
 
-    /**
-     * Handle the Category "saved" event.
-     */
+  
     public function saved(Category $category)
     {
         $this->clearCategoryCache();
     }
 
-    /**
-     * Handle the Category "deleted" event.
-     */
+ 
     public function deleted(Category $category)
     {
         $this->clearCategoryCache();
     }
 
-    /**
-     * Clear the categories cache.
-     */
+
     private function clearCategoryCache()
     {
         clearGlobalCache(CacheEnums::CACHE_CATEGORIES);
+        Cache::forget(CacheEnums::HOMEPAGECACHE());
     }
 }

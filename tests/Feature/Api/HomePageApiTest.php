@@ -78,7 +78,7 @@ class HomePageApiTest extends TestCase
         $this->assertCount(1, $firstCall);
         $this->assertCount(1, $secondCall);
         $this->assertEquals($firstCall->first()->id, $secondCall->first()->id);
-        $this->assertNotNull(Cache::get(CacheEnums::ACTIVE_BRANDS));
+        $this->assertNotNull(Cache::get(CacheEnums::ACTIVE_BRANDS()));
     }
 
     public function testGetAllCategories()
@@ -171,7 +171,7 @@ class HomePageApiTest extends TestCase
         );
 
         $this->assertTrue(
-            Cache::has(CacheEnums::CATEGORIES_WITH_PARENTS)
+            Cache::has(CacheEnums::CATEGORIES_WITH_PARENTS())
         );
     }
     public function test_get_main_categories()

@@ -264,7 +264,7 @@ class HomeController extends Controller
     }
     public function socials()
     {
-        $setting = Cache::remember(CacheEnums::SOCIAL_LINKS, CacheEnums::CACHE_TIME, function () {
+        $setting = Cache::remember(CacheEnums::SOCIAL_LINKS(), CacheEnums::CACHE_TIME, function () {
             return Settings::whereSlug('social')->first();
         });
         return returnSuccess('socials', $setting?->value, 'success');

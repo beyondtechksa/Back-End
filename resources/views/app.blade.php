@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- title -->
-    <title>BEYOND</title>
+    <title>Riya</title>
 
     <!-- favicon -->
     <link href="{{ favicon() }}" type="image/png" rel="icon" />

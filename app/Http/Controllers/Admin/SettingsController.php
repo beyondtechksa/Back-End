@@ -9,7 +9,8 @@ use App\Models\MobileBanner;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Artisan;
+use App\Rules\DomainCheck;
+
 
 class SettingsController extends Controller
 {
@@ -93,6 +94,9 @@ class SettingsController extends Controller
         return MobileBanner::with('collection')->find($mobile_banner->id);
     }
     public function update(Request $request){
+
+        $allowedDomains = ['riya.com.sa', 'uat.riya.com.sa','localhost:8000','beyond-fix.applaiteknoloji.online'];
+        
         $setting=Settings::findOrFail($request->id);
         if($setting->slug=='news_bar'){
             $data=$request->validate([
@@ -106,7 +110,7 @@ class SettingsController extends Controller
         }
         if($setting->slug=='latest_collection' || $setting->slug=='our_collection' || $setting->slug=='shop_by_brand' || $setting->slug=='banners3'|| $setting->slug=='shop_by_section'){
             $data=$request->validate([
-                'link'=>'nullable|string',
+                'link'=>'nullable|string|'.new DomainCheck($allowedDomains),
                 'key'=>'required|array',
                 'value'=>'required|array'
             ]);
@@ -114,7 +118,7 @@ class SettingsController extends Controller
 
         if($setting->slug=='single_banner' || $setting->slug=='single_banner2' || $setting->slug=='single_banner3'|| $setting->slug=='single_banner4'|| $setting->slug=='single_banner5'|| $setting->slug=='single_banner6'){
             $data=$request->validate([
-                'link'=>'required|string',
+                'link'=>['nullable','string',new DomainCheck($allowedDomains)],
                 'value'=>'required|array'
             ]);
         }
@@ -131,7 +135,7 @@ class SettingsController extends Controller
         if($setting->slug=='popup'){
             $data=$request->validate([
                 'value'=>'required|Array',
-                'link'=>'required|string',
+                'link'=>'nullable|string|'.new DomainCheck($allowedDomains),
                 'status'=>'nullable'
             ]);
         }
@@ -141,7 +145,6 @@ class SettingsController extends Controller
             ]);
         }
         $setting->update($data);
-        Artisan::call('cache:clear');
 
         return redirect()->back();
     }
