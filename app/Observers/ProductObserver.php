@@ -5,6 +5,7 @@ use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use App\Services\SkuGenerator;
 use App\Http\Enums\CacheEnums;
+use Illuminate\Support\Facades\Cache;
 
 class ProductObserver
 {
@@ -49,7 +50,8 @@ class ProductObserver
 
     private function clearCache()
     {
-        clearGlobalCache(CacheEnums::CACHE_PRODUCTS);
+        clearGlobalCache(CacheEnums::CACHE_PRODUCTS());
+        Cache::forget(CacheEnums::HOMEPAGECACHE());
     }
 
 

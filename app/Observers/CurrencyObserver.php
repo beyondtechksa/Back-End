@@ -20,7 +20,7 @@ class CurrencyObserver
 
     private function clearCache()
     {
-        clearGlobalCache(CacheEnums::CACHE_PRODUCTS);
+        clearGlobalCache(CacheEnums::CACHE_PRODUCTS());
     }
 
 

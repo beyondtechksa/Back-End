@@ -13,7 +13,7 @@ class SizeObserver
      */
     public function created(Size $size): void
     {
-        Cache::forget(CacheEnums::SIZES);
+        Cache::forget(CacheEnums::SIZES());
     }
 
     /**
@@ -21,7 +21,7 @@ class SizeObserver
      */
     public function updated(Size $size): void
     {
-        Cache::forget(CacheEnums::SIZES);
+        Cache::forget(CacheEnums::SIZES());
     }
 
     /**
@@ -29,7 +29,7 @@ class SizeObserver
      */
     public function deleted(Size $size): void
     {
-        Cache::forget(CacheEnums::SIZES);
+        Cache::forget(CacheEnums::SIZES());
     }
 
     /**

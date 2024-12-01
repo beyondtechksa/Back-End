@@ -49,7 +49,7 @@ class LanguageObserver
 
     private function clearLanguageCache()
     {
-        clearGlobalCache(CacheEnums::CACHE_LANGUAGES);
+        clearGlobalCache(CacheEnums::CACHE_LANGUAGES());
     }
 
 }

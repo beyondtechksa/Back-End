@@ -13,7 +13,7 @@ class ColorObserver
      */
     public function created(Color $color): void
     {
-        Cache::forget(CacheEnums::COLORS);
+        Cache::forget(CacheEnums::COLORS());
     }
 
     /**
@@ -21,7 +21,7 @@ class ColorObserver
      */
     public function updated(Color $color): void
     {
-        Cache::forget(CacheEnums::COLORS);
+        Cache::forget(CacheEnums::COLORS());
     }
 
     /**
@@ -29,7 +29,7 @@ class ColorObserver
      */
     public function deleted(Color $color): void
     {
-        Cache::forget(CacheEnums::COLORS);
+        Cache::forget(CacheEnums::COLORS());
     }
 
     /**

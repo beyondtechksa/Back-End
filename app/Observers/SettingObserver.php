@@ -24,7 +24,8 @@ class SettingObserver
 
     private function clearSettingCache()
     {
-        clearGlobalCache(CacheEnums::CACHE_SETTINGS);
+        clearGlobalCache(CacheEnums::CACHE_SETTINGS());
+        Cache::forget(CacheEnums::HOMEPAGECACHE());
     }
 
 

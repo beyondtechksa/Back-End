@@ -32,7 +32,7 @@ class GlobalService
     //new news
     public function news()
     {
-        return Cache::remember(CacheEnums::NEWS, CacheEnums::CACHE_TIME, function () {
+        return Cache::remember(CacheEnums::NEWS(), CacheEnums::CACHE_TIME, function () {
             return Settings::whereSlug('news_bar')
 //                ->where('type', 'mobile_web')
                 ->select('id', 'key', 'slug')->first();
@@ -41,7 +41,7 @@ class GlobalService
 
     public function mobileBanners($category_id = null)
     {
-//        $cache_key = CacheEnums::ALL_MOBILE_BANNER . '_' . $category_id;
+//        $cache_key = CacheEnums::ALL_MOBILE_BANNER() . '_' . $category_id;
 //        return Cache::remember($cache_key, CacheEnums::CACHE_TIME, function () use ($category_id) {
         return MobileBanner::with(['collection:id,name,slug'])
             ->where('category_id', $category_id)

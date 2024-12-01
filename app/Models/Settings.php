@@ -38,7 +38,7 @@ class Settings extends Model
     }
     public static function clearCachedSettings()
     {
-        foreach (CacheEnums::CACHE_SETTINGS as $cacheKey) {
+        foreach (CacheEnums::CACHE_SETTINGS() as $cacheKey) {
             Cache::forget($cacheKey);
         }
     }
