@@ -10,7 +10,7 @@ class FilterService
 {
     public function filter($filterData)
     {
-        $currencyService=new currencyService();
+        $currencyService=new CurrencyService();
         $query = Product::withRated()->where('status', 1);
 
         if (!empty($filterData['subCategories'])) {

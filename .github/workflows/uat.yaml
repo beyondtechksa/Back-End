@@ -1,8 +1,9 @@
 name: deploy to uat env
 
-# on:
-#   push:
-#     branches:
+on:
+  push:
+    branches:
+      - uat
       
 
 env:
