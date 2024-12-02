@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Product;
 use App\Models\Collection;
 
-
 class FilterService
 {
     public function filter($filterData)
@@ -20,7 +19,6 @@ class FilterService
         if (!empty($filterData['brands'])) {
             $query->whereIn('brand_id', $filterData['brands']);
         }
-
 //        if (isset($filterData['stock'])) {
 //            $query->where('stock_status', $filterData['stock']);
 //        }
