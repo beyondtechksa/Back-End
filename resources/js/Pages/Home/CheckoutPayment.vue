@@ -68,7 +68,7 @@
 
                                         <div class="payment-method">
                                             <div class="">
-                                                <a href="#" @click="loadPaymentIframe('paypal')"> PayPal </a>
+                                                <!-- <a href="#" @click="loadPaymentIframe('paypal')"> PayPal </a>
                                                 <a href="#" @click="loadPaymentIframe('credit')">
                                                     <img src="/home/img/Mathod.png" alt="" />
                                                 </a>
@@ -77,7 +77,7 @@
                                                 </a>
                                                 <a href="#" @click="loadPaymentIframe('tamara')">
                                                     <img src="/home/img/tamara.png" alt="" />
-                                                </a>
+                                                </a> -->
                                                 <a href="#" @click="loadPaymentIframe('clickPay')">
                                                     <img src="/home/img/ClickPayLogo.png" alt="" />
                                                 </a>
@@ -88,11 +88,11 @@
 
                                         <!-- ====== Response method  ===== -->
                                         <div class="response-method">
-                                            <a href="#"> PayPal </a>
+                                            <!-- <a href="#"> PayPal </a>
                                             <a href="#" class="active"> Card </a>
                                             <a href="#">
                                                 <img src="/home/img/mathod4.png" alt="" />
-                                            </a>
+                                            </a> -->
                                             <a href="#">
                                                 <img src="/home/img/mathod65.png" alt="" />
                                             </a>

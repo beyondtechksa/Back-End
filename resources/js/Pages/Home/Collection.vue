@@ -836,7 +836,11 @@
 </template>
 
 <script>
-
+import App from '@/HomeLayouts/AppLayout.vue';
+import ProductBox from './Components/ProductBox.vue';
+import Slider from '@vueform/slider'
+import {useForm} from '@inertiajs/vue3';
+import Form from 'vform';
 export default {
     components: {App, ProductBox, Slider},
     props: {
