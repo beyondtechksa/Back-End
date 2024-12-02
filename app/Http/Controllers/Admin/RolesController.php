@@ -20,14 +20,6 @@ class RolesController extends Controller
      */
 
     public function test(){
-        // $women_chilodren=Category::where('category_id',16)->where('id','!=',363)->get();
-        // foreach($women_chilodren as $child){
-        //     $child->update([
-        //         'category_id'=>363
-        //     ]);
-        // }
-        // return 'ok';
-        // $permission = Permission::create(['name' => 'edit order','guard_name'=>'admin']);
 
         $permissions=[
             'view','add','edit','delete'
