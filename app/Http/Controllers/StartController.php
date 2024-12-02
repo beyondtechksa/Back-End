@@ -268,12 +268,19 @@ class StartController extends Controller
         ])->with(['page_title' => __('Products')]);
     }
 
-    public function brands($slug)
+    public function brands($slug, CurrencyService $currencyService)
     {
         $brand = Brand::where('slug', $slug)->firstOrFail();
-        $products = Product::with('brand')->where('status', 1)->where('brand_id', $brand->id)
-            ->orderBy('ontop', 'desc')->limit(12)->get();
-
+          $products =  Product::with('brand')->select('id', 'slug', 'name_en', 'name_ar', 'image', 'brand_id', 'final_selling_price', 'discount_percentage_selling_price', 'currency_id')
+                    ->where('brand_id', $brand->id)
+                    ->where('status', 1)
+                    ->orderBy('ontop', 'desc')
+                    ->limit(15)
+                    ->get()->map(function ($product) use ($currencyService) {
+                        $product->final_selling_price = $currencyService->convertPrice($product, $product->final_selling_price);
+                        $product->old_price = $currencyService->convertPrice($product, $product->old_price);
+                        return $product;
+                    });
         return inertia('Home/Brand', [
             'brand' => $brand,
             'products' => $products,
@@ -581,13 +588,12 @@ class StartController extends Controller
                 $carts[] = $obj;
             }
 
-            return $carts;
         }
         return $carts;
     }
 
-    public function getCart(GlobalService $globalService){
-        $this->user_cart();
+    public function getCart(){
+       return  $this->user_cart();
     }
     public function getCookieCart()
     {
