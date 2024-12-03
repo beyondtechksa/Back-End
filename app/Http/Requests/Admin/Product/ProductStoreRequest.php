@@ -39,7 +39,7 @@ class ProductStoreRequest extends FormRequest
             'packaging_shipping_fees'          => ['nullable','integer', decimal_validation()],
             'management_fees'          => ['nullable','integer', decimal_validation()],
             'profit_percentage'          => ['nullable','integer', decimal_validation()],
-            'tax_percentage'          => ['nullable','integer', decimal_validation()],
+            'tax_percentage'          => ['required','integer', decimal_validation()],
             'commercial_percentage'          => ['nullable','integer', decimal_validation()],
             'manual_price_adjustment'          => ['nullable','integer', decimal_validation()],
             'final_price'          => ['required', decimal_validation()],
