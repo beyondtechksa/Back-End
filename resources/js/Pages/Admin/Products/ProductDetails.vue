@@ -59,11 +59,11 @@
             </select>
             <div class="text-danger" v-html="errors.brand_id" />
         </div>
-        <div class="mb-3 col-lg-4">
+        <!-- <div class="mb-3 col-lg-4">
             <label class="form-label"> {{ __('sku') }} </label>
             <input :placeholder="__('sku')" class="form-control" v-model="form.sku" :class="{ 'is-invalid': errors.name } ">
             <div class="text-danger" v-html="errors.sku" />
-        </div>
+        </div> -->
 
         <div class="mb-3 col-lg-4">
             <label class="form-label"> {{ __('tax type') }} </label>

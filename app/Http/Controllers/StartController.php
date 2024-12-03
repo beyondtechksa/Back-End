@@ -207,7 +207,7 @@ class StartController extends Controller
         return $filterService->filter($filterData);
     }
 
-    public function loadMoreProducts(Request $request)
+    public function loadMoreProducts(Request $request, CurrencyService $currencyService)
     {
         $type = $request->type;
         $collection_id = $request->collection_id;
@@ -226,7 +226,11 @@ class StartController extends Controller
             })->when($request->has('brand_id'), function ($q) use ($brand_id) {
                 $q->where('brand_id', $brand_id);
             })
-            ->orderBy('ontop', 'desc')->take($limit)->get();
+            ->orderBy('ontop', 'desc')->take($limit)->get()->map(function($product) use($currencyService) {
+                $product['final_selling_price'] = $currencyService->convertPrice($product,$product->final_selling_price);
+                $product['old_price'] = $currencyService->convertPrice($product,$product->old_price);
+                return $product;
+            });
     }
 
     public function products(CurrencyService $currencyService)
