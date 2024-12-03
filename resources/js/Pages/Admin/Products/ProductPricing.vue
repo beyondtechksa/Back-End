@@ -94,11 +94,11 @@
             </div>
             <div class="text-danger" v-html="errors.manual_price_adjustment" />
         </div>
-        <div class="col-12"  v-if="form.pricing_type=='out_house'">
+        <div class="col-12"  v-show="form.pricing_type=='out_house'">
             <label class="form-label"> {{ __('Final Price') }} </label>
             <currencies-exchange :value="form.final_price=final_price()" :currencies="currencies"></currencies-exchange>
         </div>
-        <div class="col-12"  v-if="form.pricing_type=='out_house'">
+        <div class="col-12"  v-show="form.pricing_type=='out_house'">
             <label class="form-label"> {{ __('Final Selling Price') }} </label>
             <currencies-exchange :value="form.final_selling_price=final_selling_price()" :currencies="currencies"></currencies-exchange>
         </div>
