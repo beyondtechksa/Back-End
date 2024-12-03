@@ -38,7 +38,7 @@ class ProductUpdateRequest extends FormRequest
             'packaging_shipping_fees'          => ['nullable', decimal_validation()],
             'management_fees'          => ['nullable', decimal_validation()],
             'profit_percentage'          => ['nullable', decimal_validation()],
-            'tax_percentage'          => ['nullable', decimal_validation()],
+            'tax_percentage'          => ['required', decimal_validation()],
             'commercial_percentage'          => ['nullable', decimal_validation()],
             'manual_price_adjustment'          => ['nullable', decimal_validation()],
             'final_price'          => [ decimal_validation()],

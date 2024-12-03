@@ -247,7 +247,7 @@ class StartController extends Controller
                 if (\request('type') == 'sale')
                     $q->where('discount_percentage_selling_price', '>', 0.00);
             })
-            ->latest()->limit(9)->get()->map(function ($product) use ($currencyService) {
+            ->latest()->limit(8)->get()->map(function ($product) use ($currencyService) {
                 $product->final_selling_price = $currencyService->convertPrice($product, $product->final_selling_price);
                 $product->old_price = $currencyService->convertPrice($product, $product->old_price);
                 return $product;

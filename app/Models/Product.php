@@ -14,7 +14,7 @@ class Product extends Model
 
     protected $fillable = [
         'company_product_id','company_name', 'name_en', 'name_ar', 'name_tr','slug', 'desc_en', 'desc_ar', 'desc_tr', 'group_id','pricing_type',
-         'sku', 'category_id', 'collection_id','return_policy_id', 'brand_id', 'vendor_id', 'quantity', 'admin_id',
+        'sku', 'category_id', 'collection_id','return_policy_id', 'brand_id', 'vendor_id', 'quantity', 'admin_id',
         'shipping', 'length', 'width', 'height', 'dimension_unit', 'weight', 'weight_unit',
         'attributes_ids', 'colors_ids', 'scraped_attributes','currency_id','discount_price', 'discount_percentage', 'start_at', 'end_at', 'points', 'image',
         'price', 'sale_price','old_price' ,'discount_percentage_selling_price', 'packaging_shipping_fees','vat',

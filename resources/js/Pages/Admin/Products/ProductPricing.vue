@@ -70,11 +70,11 @@
             </div>
             <div class="text-danger" v-html="errors.profit_percentage" />
         </div>
-        <div class="mb-3 col-lg-6" v-if="form.pricing_type=='out_house'">
+        <div class="mb-3 col-lg-6">
             <label class="form-label"> {{ __('Tax Percentage') }} (VAT) </label>
            <div class="input-group ">
             <span class="input-group-text" id="basic-addon1"><span class="fw-bold fs-14"> % </span></span>
-            <input type="number" min="0" step="0.1" :placeholder="__('Tax Percentage')" class="form-control" v-model="form.tax_percentage" :class="{ 'is-invalid': errors.name } ">
+            <input type="number" min="0" step="0.1" :placeholder="__('Tax Percentage')" class="form-control" v-model="form.tax_percentage" :class="{ 'is-invalid': errors.tax_percentage } ">
             </div>
             <div class="text-danger" v-html="errors.tax_percentage" />
         </div>
