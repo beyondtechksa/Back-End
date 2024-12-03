@@ -414,16 +414,13 @@ if (!function_exists('user_favourites')) {
 
                 $favourites->map(function ($favourite) use ($currencyService) {
                     if ($favourite->product) {
-                        // Clone the product to avoid shared references issues
                         $product = clone $favourite->product;
 
-                        // Update the final selling price
                         $product->final_selling_price = $currencyService->convertPrice(
                             $product,
                             $product->final_selling_price
                         );
 
-                        // Replace the original product with the updated one
                         $favourite->setRelation('product', $product);
                     }
                     return $favourite;

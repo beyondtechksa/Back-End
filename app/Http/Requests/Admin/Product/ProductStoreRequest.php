@@ -42,7 +42,7 @@ class ProductStoreRequest extends FormRequest
             'tax_percentage'          => ['nullable','integer', decimal_validation()],
             'commercial_percentage'          => ['nullable','integer', decimal_validation()],
             'manual_price_adjustment'          => ['nullable','integer', decimal_validation()],
-            'final_price'          => ['integer', decimal_validation()],
+            'final_price'          => ['required', decimal_validation()],
             'final_selling_price'          => [ decimal_validation()],
             'quantity'       => ['required', 'integer'],
             'shipping'       => ['nullable'],
