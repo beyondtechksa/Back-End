@@ -235,10 +235,8 @@ class ProductsController extends Controller
      */
     public function store(ProductStoreRequest $request)
     {
-        /* $request->attributes_ids; */ // will equal to array
-        // ex : [ {id:1,options:[{id:1,price:10,quantity}]},{id:1,options:[{id:1,price:10,quantity}]}  ]
+        
         $data = $request->validated();
-
         $product = Product::create([
             'admin_id' => admin()->id,
             'name_en' => $data['name_en'],

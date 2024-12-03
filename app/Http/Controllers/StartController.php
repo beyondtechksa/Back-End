@@ -229,11 +229,12 @@ class StartController extends Controller
             ->orderBy('ontop', 'desc')->take($limit)->get();
     }
 
-    public function products()
+    public function products(CurrencyService $currencyService)
     {
         if (!request()->has('type'))
             return redirect()->back();
-        $products = Product::with('brand')->where('status', 1)
+        $products = Product::with('brand')->select('id', 'slug', 'name_en', 'name_ar', 'image', 'brand_id', 'final_selling_price', 'discount_percentage_selling_price', 'currency_id')
+        ->where('status', 1)
             ->when(request()->has('type'), function ($q) {
                 if (\request('type') == 'trending')
                     $q->where('trending', 1);
@@ -242,7 +243,14 @@ class StartController extends Controller
                 if (\request('type') == 'sale')
                     $q->where('discount_percentage_selling_price', '>', 0.00);
             })
-            ->latest()->limit(9)->get();
+            ->latest()->limit(9)->get()->map(function ($product) use ($currencyService) {
+                $product->final_selling_price = $currencyService->convertPrice($product, $product->final_selling_price);
+                $product->old_price = $currencyService->convertPrice($product, $product->old_price);
+                return $product;
+            });
+
+            
+                    
 
         return inertia('Home/Products', [
             'products' => $products,

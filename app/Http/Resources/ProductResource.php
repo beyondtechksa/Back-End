@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+use App\Services\CurrencyService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductResource extends JsonResource
@@ -22,6 +23,7 @@ class ProductResource extends JsonResource
      */
     public function toArray($request): array
     {
+        $final_selling_price = $this->final_selling_price;
         return [
             'id'=>$this->id,
             'sku'=>$this->sku,
@@ -31,9 +33,9 @@ class ProductResource extends JsonResource
             'desc_en'=>$this->desc_en,
             'desc_tr'=>$this->desc_tr,
             'desc_ar'=>$this->desc_ar,
-            'final_selling_price'=>exchange_price($this->final_selling_price,$this->currency),
-            'old_price'=>exchange_price($this->old_price,$this->currency),
-            'discount_percentage'=>$this->discount_percentage_selling_price,
+            'old_price' => number_format($final_selling_price / (1-($this->discount_percentage_selling_price/100)),2),
+            'discount_percentage_selling_price' => $this->discount_percentage_selling_price,
+            'final_selling_price' => $final_selling_price,
             'image'=>$this->image,
             'brand'=>$this->brand,
             'discount_percentage_selling_price'=>$this->discount_percentage_selling_price,
