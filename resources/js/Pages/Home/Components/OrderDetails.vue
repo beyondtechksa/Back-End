@@ -71,7 +71,7 @@ import Form from 'vform';
             }
         },
         mounted(){
-            this.calculate_order()
+                this.calculate_order()
         },
         computed: {
 
@@ -84,9 +84,12 @@ import Form from 'vform';
                         this.data=resp.data
             })
             },
-
             add_coupon(){
-                this.form.post(route('cart.add_coupon'))
+                this.form.post(route('cart.add_coupon'),{
+                    onSuccess : ()=>{
+                        this.calculate_order()
+                    }
+                })
             }
 
         }

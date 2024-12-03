@@ -41,7 +41,6 @@ use App\Exceptions\OrderCreationException;
 use App\Services\ClickPayService;
 use App\Services\TamaraPaymentService;
 
-use Log;
 
 class StartController extends Controller
 {
@@ -112,7 +111,7 @@ class StartController extends Controller
                 'brands' => $brands,
                 'featured' => $featuredProducts,
                 'new_arrival' => $newArrivalProducts,
-            ])->with(['page_title' => __('Home')])->toResponse(request())->getContent();
+            ])->with(['page_title' => __('Home')]);
         // });
     }
 
@@ -407,8 +406,17 @@ class StartController extends Controller
             'product_id' => 'required'
         ]);
         if (\auth()->check()) {
-            $cart = Cart::where('user_id', user()->id)->where('product_id', $request->product_id)->first();
+            $userID=user()->id;
+            $cart = Cart::where('user_id', $userID)->where('product_id', $request->product_id)->first();
             $cart->delete();
+            $remainingCarts = Cart::where('user_id', $userID)->count();
+            if ($remainingCarts === 0) {
+                $discountCoupon = CartDiscount::where('user_id', $userID)->where('status',0)->latest()->first();
+                if ($discountCoupon) {
+                    $discountCoupon->delete();
+                }
+            }
+            
         } else {
             if (isset($_COOKIE['user_cart'])) {
                 $carts = json_decode($_COOKIE['user_cart'], true);
@@ -461,9 +469,7 @@ class StartController extends Controller
                 setcookie('user_cart', json_encode($carts), time() + (3600 * 90), "/");
             }
         }
-        return redirect()->route('cart')->with([
-            'preserveState' => true,
-        ]);
+        return redirect()->route('cart');
     }
 
     public function select_items(Request $request)
