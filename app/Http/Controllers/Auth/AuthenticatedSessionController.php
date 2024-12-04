@@ -37,14 +37,17 @@ class AuthenticatedSessionController extends Controller
         if (isset($_COOKIE['user_cart'])) {
             $carts = json_decode($_COOKIE['user_cart']);
             foreach ($carts as $key=>$item) {
-                Cart::updateOrCreate([
-                    'user_id' => Auth::id(),
-                    'product_id' => $item->product_id,
-                ], [
-                    'quantity' => $item->quantity,
-                    'color' => $item->color??null,
-                    'size' => $item->size??null,
-                ]);
+                if($item->product_id){
+                    Cart::updateOrCreate([
+                        'user_id' => Auth::id(),
+                        'product_id' => $item->product_id,
+                    ], [
+                        'quantity' => $item->quantity,
+                        'color' => $item->color??null,
+                        'size' => $item->size??null,
+                    ]);
+                }
+                
             }
             setcookie('user_cart', null, 0, "/");
             $carts = Cart::with('product.brand')->where('user_id', user()->id)->get();

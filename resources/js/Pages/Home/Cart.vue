@@ -130,7 +130,7 @@
             </div>
             <div class="col-lg-5">
               <div class="order-details">
-              <order-details :carts="carts"></order-details>
+              <order-details ref="orderDetails" :carts="carts"></order-details>
               <div class="order-button mt-3">
               <button @click="next()" :disabled="checked.length==0">{{__('Proceed to Checkout')}}</button>
               </div>
@@ -354,8 +354,20 @@
           this.form.id=cart.id
           this.form.product_id = cart.product_id
           this.form.quantity=cart.quantity
-          this.form.post(route('cart.update_quantity'))
+          this.form.post(route('cart.update_quantity'),{
+            onSuccess:()=>{
+              this.handleQuantityUpdated()
+            }
+          })
+          
         },
+        handleQuantityUpdated(){
+          if (this.$refs.orderDetails) {
+            this.$refs.orderDetails.calculate_order();
+          } else {
+            console.error('OrderDetails component is not available');
+          }
+        },  
         minus(cart){
           if(cart.quantity>1){
             cart.quantity-=1

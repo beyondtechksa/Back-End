@@ -500,6 +500,8 @@ class ApiController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'product_id' => 'required|exists:App\Models\Product,id',
+            'size'=>'string',
+            'color'=>'string',
         ]);
         if ($validator->fails())
             return response()->json(['errors' => $validator->errors()], 400);

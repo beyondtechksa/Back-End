@@ -610,7 +610,10 @@ class StartController extends Controller
                 $obj->color = $product->color ?? null;
                 $obj->selected = $product->selected ?? true;
                 $product2=Product::with(['brand'])->find($product->product_id);
-                $product2['final_selling_price']=$currencyService->convertPrice($product2,$product2->final_selling_price);
+                if($product2){
+                    $product2['final_selling_price']=$currencyService->convertPrice($product2,$product2->final_selling_price);
+                }
+                
                 $obj->product = $product2;
                 $carts[] = $obj;
             }
