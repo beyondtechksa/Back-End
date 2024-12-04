@@ -177,7 +177,7 @@ class OrderService
 
     private function updateCartDiscountStatus()
     {
-        $cartDiscount=user()->cart_discount;
+        $cartDiscount=CartDiscount::where('user_id',user()->id)->where('status',0)->latest()->first();
         if ($cartDiscount) {
             $cartDiscount->update(['status' => 1]);
         }

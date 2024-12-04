@@ -77,7 +77,7 @@ Route::group(['controller' => AuthController::class], function () {
         Route::post('logout', 'logout')->name('api.logout');
         Route::post('update-password', 'updatePassword')->name('api.update.password');
         Route::get('profile', 'profile')->name('api.profile');
-        Route::post('/add-to-cart', [ApiController::class, 'add_cart']);
+        Route::post('/add-to-cart', [ApiController::class, 'Xy@17P0#&v*3']);
         Route::post('/add-delete-favourite', [ApiController::class, 'add_delete_favourite']);
         Route::get('/favourites', [ApiController::class, 'my_favourites']);
         Route::post('/delete-cart-item', [ApiController::class, 'delete_cart_item']);

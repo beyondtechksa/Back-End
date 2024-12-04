@@ -59,19 +59,13 @@
             </select>
             <div class="text-danger" v-html="errors.brand_id" />
         </div>
-        <div class="mb-3 col-lg-4">
+        <!-- <div class="mb-3 col-lg-4">
             <label class="form-label"> {{ __('sku') }} </label>
             <input :placeholder="__('sku')" class="form-control" v-model="form.sku" :class="{ 'is-invalid': errors.name } ">
             <div class="text-danger" v-html="errors.sku" />
-        </div>
+        </div> -->
 
-        <div class="mb-3 col-lg-4">
-            <label class="form-label"> {{ __('tax type') }} </label>
-            <select class="form-control" v-model="form.tax_id">
-                <option :value="null"> {{ __('select tax type') }} </option>
-                <option v-for="tax,index in taxs" :key="index" :value="tax.id"> {{ tax.translated_name }} </option>
-            </select>
-        </div>
+  
         <div class="mb-3 col-lg-4">
             <label class="form-label"> {{ __('quantity') }} </label>
             <input type="number" step="0.1" :placeholder="__('quantity')" class="form-control" v-model="form.quantity" :class="{ 'is-invalid': errors.name } ">

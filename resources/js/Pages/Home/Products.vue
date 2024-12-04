@@ -80,7 +80,7 @@ export default {
     data() {
         return {
             loading: false,
-            limit: 9,
+            limit: 8,
         }
     },
     methods: {
@@ -89,7 +89,7 @@ export default {
         },
         load_more() {
             this.loading = true
-            this.limit += 9
+            this.limit += 8
             setTimeout((e) => {
                 axios.post('/load-more-products',
                     {'type': this.page_type, 'limit': this.limit}).then(res => {

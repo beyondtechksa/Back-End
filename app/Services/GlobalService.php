@@ -114,6 +114,7 @@ class GlobalService
 
     public function addToCart($request)
     {
+        
         return Cart::create([
             'product_id' => $request['product_id'],
             'user_id' => user()->id,
@@ -124,12 +125,16 @@ class GlobalService
     }
 
     public function get_user_cart(){
-        $currencyService = new currencyService();
+        $currencyService = new CurrencyService();
         $carts = Cart::with('product.brand','product.sizes','product.colors')->where('user_id', user()->id)->get();
-        $carts->each(function ($cart) use ($currencyService){
-            $cart->product->final_selling_price = $currencyService->convertPrice($cart->product,$cart->product->final_selling_price);
-            $cart->product->old_price = $currencyService->convertPrice($cart->product,$cart->product->old_price);
+        $carts->map(function ($cart) use ($currencyService) {
+            $product = clone $cart->product;
+            $product->final_selling_price = $currencyService->convertPrice($product, $product->final_selling_price);
+            $product->old_price = $currencyService->convertPrice($product, $product->old_price);
+        
+            $cart->setRelation('product', $product);
         });
+        
         return $carts;
     }
     public function get_user_selected_cart($user_id){
@@ -141,10 +146,14 @@ class GlobalService
             ->where('selected', 1)
             ->get();
 
-            $carts->each(function ($cart) use ($currencyService){
-                $cart->product->final_selling_price = $currencyService->convertPrice($cart->product,$cart->product->final_selling_price);
-            });
-
+            $carts->map(function ($cart) use ($currencyService) {
+            $product = clone $cart->product;
+            $product->final_selling_price = $currencyService->convertPrice($product, $product->final_selling_price);
+            $product->old_price = $currencyService->convertPrice($product, $product->old_price);
+        
+            $cart->setRelation('product', $product);
+        });
+        
         return $carts;
     }
 }

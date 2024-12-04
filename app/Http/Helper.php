@@ -23,6 +23,7 @@ use App\Models\GeneralSetting;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Cookie;
+use App\Services\CurrencyService;
 
 
 if (!function_exists('admin')) {
@@ -405,7 +406,28 @@ if (!function_exists('get_shipping_price')) {
 if (!function_exists('user_favourites')) {
     function user_favourites()
     {
-        return Favourite::with('product.brand')->where('user_id', user()->id)->get();
+        $currencyService = new CurrencyService();
+
+                $favourites = Favourite::with('product.brand')
+                    ->where('user_id', user()->id)
+                    ->get();
+
+                $favourites->map(function ($favourite) use ($currencyService) {
+                    if ($favourite->product) {
+                        $product = clone $favourite->product;
+
+                        $product->final_selling_price = $currencyService->convertPrice(
+                            $product,
+                            $product->final_selling_price
+                        );
+
+                        $favourite->setRelation('product', $product);
+                    }
+                    return $favourite;
+                });
+
+                return $favourites;
+        
     }
 }
 if (!function_exists('calc_final_price')) {
