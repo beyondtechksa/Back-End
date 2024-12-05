@@ -79,7 +79,7 @@
                                 <td>#{{order.id}} </td>
 
                                 <td>
-                                    <span v-if="order.user_id"> {{ order.user.name }} </span>
+                                    <span v-if="order.user"> {{ order.user.name }} </span>
                                 </td>
                                 <td>
                                     {{ order.subtotal_amount }}
