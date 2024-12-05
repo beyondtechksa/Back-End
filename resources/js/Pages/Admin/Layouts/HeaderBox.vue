@@ -59,7 +59,7 @@
                         </div>
                         <ul class="list-unstyled mb-0" id="header-cart-items-scroll">
                             <li class="dropdown-item" v-for="order,index in orders" :key="index">
-                                <div class="d-flex align-items-start cart-dropdown-item">
+                                <div class="d-flex align-items-start cart-dropdown-item" v-if="order.user">
                                     <img v-if="order.user.avatar" v-lazy="order.user.avatar" alt="img"
                                          class="avatar avatar-sm avatar-rounded br-5 me-3">
                                     <img v-else v-lazy="$page.props.auth.default_img" alt="img"
