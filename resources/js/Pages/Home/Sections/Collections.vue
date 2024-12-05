@@ -3,7 +3,7 @@
           <div class="container-cum">
             <div class="title-top d-flex justify-content-between">
               <h2>{{ setting.translated_key }}</h2>
-              <Link :href="setting.link??''">{{__('See All')}}</Link>
+              <Link :href="base_redirect_url(setting.link??'')">{{__('See All')}}</Link>
             </div>
 
             <div class="our_collection_content">
