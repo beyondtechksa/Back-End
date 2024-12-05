@@ -41,7 +41,7 @@ class CategoryObserver
 
     private function clearCategoryCache()
     {
-        clearGlobalCache(CacheEnums::CACHE_CATEGORIES);
+        clearGlobalCache(CacheEnums::CACHE_CATEGORIES());
         Cache::forget(CacheEnums::HOMEPAGECACHE());
     }
 }
