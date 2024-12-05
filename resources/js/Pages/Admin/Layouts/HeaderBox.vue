@@ -251,7 +251,7 @@
 
 
                 <!-- Start::header-element -->
-                <div class="header-element">
+                <div class="header-element" v-if="$page.props.auth.admin">
                     <!-- Start::header-link|dropdown-toggle -->
                     <a href="#" class="header-link dropdown-toggle" id="mainHeaderProfile" data-bs-toggle="dropdown"
                        data-bs-auto-close="outside" aria-expanded="false">
