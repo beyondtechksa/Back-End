@@ -7,7 +7,7 @@
                 <brand-box v-if="type=='brands'" :brand="swiper_data"></brand-box>
                 <div v-else-if="type=='banners'">
                   <div class="fblk" >
-                  <Link :href="swiper_data.link??''" class="d-block">
+                  <Link :href="base_redirect_url(swiper_data.link??'')" class="d-block">
                     <img v-lazy="swiper_data.image[$page.props.locale]" alt="" />
                   </Link>
                 </div>

@@ -283,6 +283,15 @@ export default {
         },
         isObjectWithValue(variable){
             return variable !== null && typeof variable === 'object' && !Array.isArray(variable);
+        },
+        base_redirect_url(url){
+            try {
+                const parsedUrl = new URL(url);
+                return `${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.hash}`;
+              } catch (error) {
+                console.error('Invalid URL:', error);
+                return ''; 
+              }
         }
 
 

@@ -15,7 +15,7 @@
     <!-- Favicon -->
     <link rel="icon" href="/assets/images/icon.png" type="image/x-icon">
     
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Main Theme Js -->
     <script src="/assets/js/main.js"></script>
     
