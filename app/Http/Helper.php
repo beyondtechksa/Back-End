@@ -380,9 +380,12 @@ if (!function_exists('get_shipping_price')) {
     {
         $shipping = Shipping::first();
         if ($shipping) {
-            $carts = Cart::with('product')->where('user_id', 3)->get();
+            $carts = Cart::with('product')->where('user_id', user()->id)->get();
             $totalPrice = $carts->sum(function ($cartItem) {
-                return $cartItem->product->final_selling_price * $cartItem->quantity;
+                if($cartItem->product){
+                    return $cartItem->product->final_selling_price * $cartItem->quantity;
+                }
+                return 0;
             });
 
             if ($shipping->free_shipping_start_at) {
