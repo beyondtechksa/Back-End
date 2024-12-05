@@ -20,7 +20,7 @@
     @endif
 
     <link rel="stylesheet" href="/home/css/custom.css" />
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link
       rel="stylesheet"

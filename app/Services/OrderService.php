@@ -226,7 +226,6 @@ class OrderService
         return $data;
     }
 
-    // Example method to get shipping price (you can modify this)
     private function getShippingPrice()
     {
         return get_shipping_price();

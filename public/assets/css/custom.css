@@ -86,3 +86,6 @@ span.required{
 
 .ql-toolbar,.ql-editor{background: #fff;}
 #header-notification-scroll{overflow: auto;}
+
+
+.app-sidebar .side-menu__item{font-weight: bold;}
