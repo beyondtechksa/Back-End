@@ -16,7 +16,7 @@
             <div class="swiper heroSider">
               <div class="swiper-wrapper">
                 <div class="swiper-slide hero_slider" v-for="slider,index in get_slider_setting().value" :key="index">
-                 <Link :href="slider.link">
+                 <Link :href="base_redirect_url(slider.link)">
                    <img class="mobile-hidden" v-lazy="slider[$page.props.locale]" alt="" />
                    <img class="web-hidden" v-lazy="slider['mobile_'+$page.props.locale]" alt="" />
                   </Link>
@@ -42,14 +42,14 @@
             <!-- <div class="row banner-hero-content mobile-hidden" v-show="get_top_banner().status==1">
               <div class="col-lg-6 col-md-12 gap-s-5 gap-e-5">
                 <div class=""  v-for="banner,index in get_top_banner_setting('left')" :key="index">
-                  <Link :href="banner.link??''" class="d-block">
+                  <Link :href="base_redirect_url(banner.link??'')" class="d-block">
                     <img style="height:370px" v-lazy="banner.image[$page.props.locale]" alt="" />
                   </Link>
                 </div>
               </div>
               <div class="col-lg-6 col-md-12 gap-s-5 gap-e-5 right-content">
                 <div :class="{'gap-t-10':index>0}" v-for="banner,index in get_top_banner_setting('right')" :key="index">
-                  <Link :href="banner.link??''" class="d-block">
+                  <Link :href="base_redirect_url(banner.link??'')" class="d-block">
                     <img v-lazy="banner.image[$page.props.locale]" alt="" />
                   </Link>
                 </div>
@@ -59,14 +59,14 @@
             <div class="row banner-hero-content web-hidden"  v-show="get_top_banner().status==1">
               <div class="col-12 mb-2">
                 <div class=""  v-for="banner,index in get_top_banner_setting('left')" :key="index">
-                  <Link :href="banner.link??''" class="d-block">
+                  <Link :href="base_redirect_url(banner.link??'')" class="d-block">
                     <img style="height:370px" v-lazy="banner.image[$page.props.locale]" alt="" />
                   </Link>
                 </div>
               </div>
               <div class="col-12 mb-2 right-content">
                 <div :class="{'gap-t-10':index>0}" v-for="banner,index in get_top_banner_setting('right')" :key="index">
-                  <Link :href="banner.link??''" class="d-block">
+                  <Link :href="base_redirect_url(banner.link??'')" class="d-block">
                     <img v-lazy="banner.image[$page.props.locale]" alt="" />
                   </Link>
                 </div>
@@ -79,7 +79,7 @@
             <div class="row mobile-hidden"  v-show="get_top_banner().status==1">
               <div class="col-lg-3 col-md-6 gap-s-5 gap-e-5  gap-t-10" v-for="banner,index in get_top_banner_setting('bottom')" :key="index">
                 <div class="fblk" >
-                  <Link :href="banner.link??''" class="d-block">
+                  <Link :href="base_redirect_url(banner.link??'')" class="d-block">
                     <img v-lazy="banner.image[$page.props.locale]" alt="" />
                   </Link>
                 </div>
@@ -101,7 +101,7 @@
             <div class="row mobile-hidden">
               <div class="col-xl-2 col-lg-3 gap-s-5 gap-e-5 gap-t-10 " v-for="banner,index in get_small_banners_setting().value" :key="index">
                 <div class="fblk" >
-                  <Link :href="banner.link??''" class="d-block">
+                  <Link :href="base_redirect_url(banner.link??'')" class="d-block">
                     <img style="height:120px;width:100%" v-lazy="banner.image[$page.props.locale]" alt="" />
                   </Link>
                 </div>
@@ -148,7 +148,7 @@
           <div class="container-cum pt-4 pb-4">
             <div class="row">
               <div class="col-lg-2 col-md-4 col-4 gap-s-5 gap-e-5" v-for="banner,index in get_banners2_setting().value" :key="index">
-                <Link :href="banner.link??''">
+                <Link :href="base_redirect_url(banner.link??'')">
                   <div class="sale-branner">
                     <img v-lazy="banner.image[$page.props.locale]" alt="" />
                   </div>

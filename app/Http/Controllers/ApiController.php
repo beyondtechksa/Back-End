@@ -498,7 +498,6 @@ class ApiController extends Controller
 
     public function add_cart(Request $request)
     {
-        
         $validator = Validator::make($request->all(), [
             'product_id' => 'required|exists:App\Models\Product,id',
             'size'=>'nullable|string',
