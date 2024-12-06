@@ -8,7 +8,7 @@
         <div v-if="slug=='top_slider' || slug=='small_banners'">
             <top-slider :slug="slug" :category_id="category_id" :mobile_banners="mobile_banners" :collections="collections" :categories="categories"></top-slider>
         </div>
-        <div v-if="slug=='single_banner1' || slug=='single_banner2'|| slug=='banners1'">
+        <div v-if="slug=='single_banner1' || slug=='single_banner2' || slug=='single_banner3' || slug=='banners1'">
             <single-banner :slug="slug" :category_id="category_id" :mobile_banners="mobile_banners" :collections="collections" :categories="categories"></single-banner>
         </div>
         <div v-if="slug=='shop_by_brand' || slug=='shop_by' || slug=='category_banners'|| slug=='search_banners'|| slug=='banners2'">
