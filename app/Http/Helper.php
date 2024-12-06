@@ -423,6 +423,7 @@ if (!function_exists('user_favourites')) {
                             $product,
                             $product->final_selling_price
                         );
+                        $product->old_price = number_format($product->final_selling_price / (1-($product->discount_percentage_selling_price/100)),2);
 
                         $favourite->setRelation('product', $product);
                     }
