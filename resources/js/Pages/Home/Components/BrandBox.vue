@@ -1,5 +1,5 @@
 <template>
-    <Link :href="brand.link??''">
+    <Link :href="base_redirect_url(brand.link??'')">
     <div class="shop_brand_box">
         <img v-lazy="brand.image[$page.props.locale]" alt="" />
         <div class="shop_brand_title">
