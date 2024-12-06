@@ -22,6 +22,7 @@ use App\Services\OrderService;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Services\CurrencyService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -199,11 +200,13 @@ class HomeController extends Controller
             })
             ->latest();
         $products = $productsQuery->paginate($perPage);
-
-        $products->getCollection()->transform(function ($product) {
+        $currencyService=new CurrencyService();
+        $products->getCollection()->transform(function ($product) use($currencyService){
             if ($product->brand && $product->brand->image) {
                 $product->brand->image = url($product->brand->image);
+
             }
+            $product['final_selling_price'] = $currencyService->convertPrice($product,$product->final_selling_price);
             return $product;
         });
         $products = new ProductResourceCollection($products, $currency);
