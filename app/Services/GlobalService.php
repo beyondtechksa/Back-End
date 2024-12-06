@@ -71,6 +71,7 @@ class GlobalService
     //featured , new arrival and trending products
     public function homeProducts($currency, $type, $category_id = null)
     {
+        $currencyService = new CurrencyService();
         $leafCategories = collect();
         $products = Product::with('brand:id,name,image,slug')
             ->where('status', 1)
@@ -93,7 +94,10 @@ class GlobalService
             })
             ->orderBy('ontop', 'desc')
 //            ->orderByRaw('RAND() * id')
-            ->get();
+            ->get()->map(function($product) use($currencyService) {
+                $product['final_selling_price'] = $currencyService->convertPrice($product,$product->final_selling_price);
+                return $product;
+            });
         return new ProductResourceCollection($products, $currency);
     }
 
