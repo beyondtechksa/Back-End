@@ -110,7 +110,7 @@ class SettingsController extends Controller
         }
         if($setting->slug=='latest_collection' || $setting->slug=='our_collection' || $setting->slug=='shop_by_brand' || $setting->slug=='banners3'|| $setting->slug=='shop_by_section'){
             $data=$request->validate([
-                'link'=>['nullable','string',new DomainCheck($allowedDomains)],
+                // 'link'=>['nullable','string',new DomainCheck($allowedDomains)],
                 'key'=>'required|array',
                 'value'=>'required|array'
             ]);

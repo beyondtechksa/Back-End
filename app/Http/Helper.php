@@ -380,7 +380,8 @@ if (!function_exists('get_shipping_price')) {
     {
         $shipping = Shipping::first();
         if ($shipping) {
-            $carts = Cart::with('product')->where('user_id', user()->id)->get();
+            if(user()){
+                $carts = Cart::with('product')->where('user_id', user()->id)->get();
             $totalPrice = $carts->sum(function ($cartItem) {
                 if($cartItem->product){
                     return $cartItem->product->final_selling_price * $cartItem->quantity;
@@ -398,7 +399,7 @@ if (!function_exists('get_shipping_price')) {
             } elseif ($shipping->free_shipping_start_at_amount > 0 && $shipping->free_shipping_start_at_amount <= exchange_price($totalPrice, 'SAR')) {
                 return 0;
             }
-
+            }         
             return $shipping->price;
         }
         return 0;
