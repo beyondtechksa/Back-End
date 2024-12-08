@@ -129,7 +129,7 @@ class StartController extends Controller
 
     public function get_children($id)
     {
-        return Category::where('category_id', $id)->where('status', 1)->get();
+        return Category::where('category_id', $id)->where('status', true)->get();
     }
 
     // shop

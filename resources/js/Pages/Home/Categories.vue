@@ -48,8 +48,8 @@
                 <div class="col-lg-3 col-md-3 col-4 ps-1 pe-1" v-if="children2.length==0">
                   <category-circle-box v-if="selected_child" :category="selected_child"></category-circle-box>
                 </div>
-                <div class="col-lg-3 col-md-3 col-4 ps-1 pe-1" v-for="child2,index in children2" :key="index">
-                  <category-circle-box :category="child2"></category-circle-box>
+                <div v-show="child2.status" class="col-lg-3 col-md-3 col-4 ps-1 pe-1" v-for="child2,index in children2" :key="index">
+                  <category-circle-box  :category="child2"></category-circle-box>
                 </div>
               </div>
             </div>
