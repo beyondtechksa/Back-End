@@ -1,11 +1,11 @@
 <template>
-    <a @click="go_shop(category)" href="javascript:void(0)" class="box-inner-categories">
+    <a @click="go_shop(category)" href="javascript:void(0)" class="box-inner-categories"> 
         <div class="Categories-card-inner">
         <div class="image-box">
             <img v-lazy="category.image" alt="" />
         </div>
         <div class="title pt-3">
-            <h5>  {{ category.translated_name }}   </h5>
+            <h5>  {{ category.translated_name }}    </h5>
         </div>
         </div>
     </a>
