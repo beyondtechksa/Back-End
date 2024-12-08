@@ -148,8 +148,7 @@ class ClickPayService
         if ($responseStatus === 'A') { // 'A' for Authorized
              $user_id=auth()->user()->id;
             $user=User::find($user_id);
-            // dd(  $user);
-            $transaction =  $user->payment_transactions()->latest()->first();
+             $transaction =  $user->payment_transactions()->latest()->first();
             $transaction->status = 1;
              $payment =  $transaction;
             $order = (new OrderService())->order($user->id, $payment->id, $tranCurrency );
@@ -190,11 +189,10 @@ class ClickPayService
         ]);
 
         $result = $response->json();
-        dd($result);
 
          if (
-            isset( $result['paymentResult']['responseStatus']) &&
-            $result['paymentResult']['responseStatus'] == 'A'
+            isset( $result['payment_result']['response_status']) &&
+            $result['payment_result']['response_status'] == 'A'
         )
         {
             return true;
