@@ -78,7 +78,8 @@ class ApiController extends Controller
     {
 //        $categories = Cache::remember(CacheEnums::MAIN_CATEGORIES(), CacheEnums::CACHE_TIME, function () {
         $categories = Category::whereNull('category_id')
-//                ->whereStatus(1)
+               ->whereStatus(1)
+               ->where('show_in_navbar',1)
             ->get()
             ->map(function ($cat) {
                 $cat->image = url($cat->image);

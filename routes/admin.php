@@ -128,6 +128,7 @@ Route::group(['middleware' => 'admin:admin'], function () {
         Route::get('/view-order/{id}', [OrdersController::class, 'show'])->name('orders.show');
         Route::post('/category/update_shown_status', [CategoriesController::class, 'update_shown_status']);
         Route::post('/category/update_top_status', [CategoriesController::class, 'update_top_status']);
+        Route::post('/category/update_status', [CategoriesController::class, 'update_status']);
         Route::get('/customer_filter', [UsersController::class, 'filter']);
         Route::get('/customers-export/excel', [UsersController::class, 'export']);
         Route::get('/orders-export/excel', [OrdersController::class, 'export']);

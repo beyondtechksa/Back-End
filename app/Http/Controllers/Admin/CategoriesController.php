@@ -186,6 +186,15 @@ class CategoriesController extends Controller
 
         return $status;
     }
+    public function update_status(Request $request){
+        $category=Category::find($request->id);
+        $status=$category->status==1?0:1;
+        $category->update([
+            'status'=>$status
+        ]);
+
+        return $status;
+    }
     public function update_top_status(Request $request){
         $category=Category::find($request->id);
         if($request->type=='mobile'){
