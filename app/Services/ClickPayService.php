@@ -109,10 +109,8 @@ class ClickPayService
                 'total' =>$res['tranTotal'],
                 'uuid' => $res['transactionReference'],
                 'user_id' =>auth()->user()->id,
-                // 'user_id' =>1,
-                'address_id' =>$res['address_id'],
-                // 'address_id' =>1,
-                'status' => 0,
+                 'address_id' =>$res['address_id'],
+                 'status' => 0,
             ]);
         }
         return $payment;
@@ -126,8 +124,7 @@ class ClickPayService
         $responseStatus = $paymentResult['responseStatus'] ?? null;
         $tranCurrency = $paymentResult['tranCurrency'] ?? 'SAR';
         $responseMessage = $paymentResult['responseMessage'] ?? 'No response message';
-        // dd($paymentDetails);
-         // Find the transaction in your database
+
         $transaction = PaymentTransaction::where('uuid', $transactionReference)->first();
 
         if (!$transaction) {
@@ -195,8 +192,8 @@ class ClickPayService
         $result = $response->json();
 
          if (
-            isset( $result['payment_result']['response_status']) &&
-            $result['payment_result']['response_status'] == 'A'
+            isset( $result['paymentResult']['responseStatus']) &&
+            $result['paymentResult']['responseStatus'] == 'A'
         )
         {
             return true;
@@ -207,18 +204,5 @@ class ClickPayService
 
     }
 
-    // Handle refund requests
-    // public function refund($tran_ref, $order_id, $amount, $reason)
-    // {
-    //     $response = Http::withHeaders([
-    //         'authorization' => config('app.clickpay_api_key'),
-    //     ])->post('https://secure.clickpay.com.sa/payment/refund', [
-    //         'tran_ref' => $tran_ref,
-    //         'order_id' => $order_id,
-    //         'amount' => $amount,
-    //         'refund_reason' => $reason,
-    //     ]);
 
-    //     return $response->json();
-    // }
 }
