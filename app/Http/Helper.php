@@ -380,7 +380,7 @@ if (!function_exists('get_shipping_price')) {
     {
         $shipping = Shipping::first();
         if ($shipping) {
-            if(uaer()){
+            if(user()){
                 $carts = Cart::with('product')->where('user_id', user()->id)->get();
             $totalPrice = $carts->sum(function ($cartItem) {
                 if($cartItem->product){
