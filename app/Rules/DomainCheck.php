@@ -17,6 +17,10 @@ class DomainCheck implements Rule
     }
 
     public function passes($attribte,$value){       
+        if (is_null($value)) {
+            return true;
+        }
+
         $url = parse_url($value, PHP_URL_HOST);
 
         return $url && in_array($url, $this->allowedDomains);
