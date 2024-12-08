@@ -37,6 +37,7 @@
                                     <th scope="col"> Show In Navbar </th>
                                     <th scope="col"> mark as top category </th>
                                     <th scope="col"> mark as mobile top category </th>
+                                    <th scope="col"> status </th>
                                     <th scope="col"> updated by</th>
                                     <th scope="col">{{__('action')}}</th>
                                 </tr>
@@ -84,6 +85,12 @@
                                     <td>
                                         <div class="form-check form-check-lg form-switch">
                                             <input @change="update_top_status(category,'mobile')" :checked="category.mark_as_mobile_top_category!=0"  class="form-check-input" type="checkbox" role="switch"
+                                                id="switch-lg">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-check form-check-lg form-switch">
+                                            <input @change="update_status(category)" :checked="category.status!=0"  class="form-check-input" type="checkbox" role="switch"
                                                 id="switch-lg">
                                         </div>
                                     </td>
@@ -148,6 +155,13 @@ export default {
     update_shown_status(category){
         this.vform.id=category.id
         this.vform.post('/admin/category/update_shown_status')
+             .then((resp)=>{
+
+             })
+    },
+    update_status(category){
+        this.vform.id=category.id
+        this.vform.post('/admin/category/update_status')
              .then((resp)=>{
 
              })
