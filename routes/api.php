@@ -73,6 +73,7 @@ Route::group(['controller' => AuthController::class], function () {
     Route::middleware(['auth:sanctum'])->group(function () {
 
         Route::post('/mobile/payment/click-pay', [MobilePaymentController::class, 'initiatePayment']);
+        Route::post('test/mobile/payment/click-pay', [MobilePaymentController::class, 'testInitiatePayment']);
 
         Route::post('logout', 'logout')->name('api.logout');
         Route::post('update-password', 'updatePassword')->name('api.update.password');
