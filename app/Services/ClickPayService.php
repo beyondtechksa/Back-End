@@ -222,12 +222,12 @@ class ClickPayService
         if (!$responseresult) {
             return [
                 'status' => 'error',
-                'message' => 'Payment verification failed with ClickPay.',
+                'message' => 'Payment verification failed with ClickPay.'.$responseresult,
             ];
         }else {
             return [
                 'status' => 'success',
-                'message' => 'Payment verification completed.',
+                'message' => 'Payment verification completed.'.$responseresult,
             ];
         }
     }
