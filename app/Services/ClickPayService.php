@@ -17,7 +17,7 @@ class ClickPayService
     private $currency = 'SAR'; // Set default currency
 
     // Load ClickPay payment page
-    public function loadClickpayPaymentPage($user_id )
+    public function loadClickpayPaymentPage($user_id)
     {
         $callback_url = route('payment.callback');
         $return_url = route('payment.return');
@@ -26,7 +26,7 @@ class ClickPayService
             ->where('favourite', 1)->first();
         $carts = (new GlobalService())->get_user_selected_cart($user_id);
         $this->modifyCart($carts);
-         $response = Http::withHeaders([
+        $response = Http::withHeaders([
             'authorization' => config('clickpay.server_key'),
         ])->post('https://secure.clickpay.com.sa/payment/request', [
             'profile_id' => config('clickpay.profile_id'),
@@ -64,23 +64,23 @@ class ClickPayService
         ]);
 
         $result = $response->json();
-        $trans=  $this->storeTransaction($result);
-         return $result;
+        $trans =  $this->storeTransaction($result);
+        return $result;
     }
 
     // Modify cart and calculate totals
     protected function modifyCart($carts)
     {
-        $orderData=(new OrderService())->calculateOrder($carts);
-        $this->total =$orderData['total'];
+        $orderData = (new OrderService())->calculateOrder($carts);
+        $this->total = $orderData['total'];
         $this->cart_id = json_encode($carts->pluck('id')->toArray());
     }
 
     // Store transaction details in DB
     protected function storeTransaction($res)
     {
-          if (isset($res) && isset($res['tran_ref'])) {
-          $payment=  PaymentTransaction::create([
+        if (isset($res) && isset($res['tran_ref'])) {
+            $payment =  PaymentTransaction::create([
                 'total' => $this->total,
                 'uuid' => $res['tran_ref'],
                 'user_id' => $this->user->id,
@@ -88,29 +88,29 @@ class ClickPayService
                 'status' => 0,
             ]);
         }
-//          TODO undefined $payment outside the if
+        //          TODO undefined $payment outside the if
         return $payment;
     }
 
     // Check the payment status
     public function checkPayment($transaction_ref, $status)
     {
-//        TODO just update the specific coloumn not the the raw  $paymentTransactions->update(['status'=>$status == 'A' ? 'active' : 'close']);
-           $paymentTransactions = PaymentTransaction::where('uuid' , $transaction_ref)->latest()->fisrt();
-            $paymentTransactions->status =  $status == 'A' ? 'active' : 'close';
-            $paymentTransactions->update();
+        //        TODO just update the specific coloumn not the the raw  $paymentTransactions->update(['status'=>$status == 'A' ? 'active' : 'close']);
+        $paymentTransactions = PaymentTransaction::where('uuid', $transaction_ref)->latest()->fisrt();
+        $paymentTransactions->status =  $status == 'A' ? 'active' : 'close';
+        $paymentTransactions->update();
     }
 
 
     public function storeMobileTransaction($res)
     {
-          if (isset($res) && isset($res['transactionReference'])) {
-          $payment=  PaymentTransaction::create([
-                'total' =>$res['tranTotal'],
+        if (isset($res) && isset($res['transactionReference'])) {
+            $payment =  PaymentTransaction::create([
+                'total' => $res['tranTotal'],
                 'uuid' => $res['transactionReference'],
-                'user_id' =>auth()->user()->id,
-                 'address_id' =>$res['address_id'],
-                 'status' => 0,
+                'user_id' => auth()->user()->id,
+                'address_id' => $res['address_id'],
+                'status' => 0,
             ]);
         }
         return $payment;
@@ -119,7 +119,7 @@ class ClickPayService
     public function processPaymentDetails($paymentDetails)
     {
 
-          $transactionReference = $paymentDetails['transactionReference'];
+        $transactionReference = $paymentDetails['transactionReference'];
         $paymentResult = $paymentDetails['paymentResult'];
         $responseStatus = $paymentResult['responseStatus'] ?? null;
         $tranCurrency = $paymentResult['tranCurrency'] ?? 'SAR';
@@ -146,12 +146,12 @@ class ClickPayService
 
         // Update transaction status based on the response status
         if ($responseStatus === 'A') { // 'A' for Authorized
-             $user_id=auth()->user()->id;
-            $user=User::find($user_id);
-             $transaction =  $user->payment_transactions()->latest()->first();
+            $user_id = auth()->user()->id;
+            $user = User::find($user_id);
+            $transaction =  $user->payment_transactions()->latest()->first();
             $transaction->status = 1;
-             $payment =  $transaction;
-            $order = (new OrderService())->order($user->id, $payment->id, $tranCurrency );
+            $payment =  $transaction;
+            $order = (new OrderService())->order($user->id, $payment->id, $tranCurrency);
             $transaction->response = $order;
             $transaction->update();
 
@@ -163,12 +163,11 @@ class ClickPayService
 
 
 
-             return [
+            return [
                 'status' => 'success',
                 'data' => $transaction,
             ];
-        }
-        else {
+        } else {
             $transaction->status = 0;
             $transaction->save();
 
@@ -190,17 +189,15 @@ class ClickPayService
 
         $result = $response->json();
 
-         if (
-            isset( $result['payment_result']['response_status']) &&
+        if (
+            isset($result['payment_result']['response_status']) &&
             $result['payment_result']['response_status'] == 'A'
-        )
-        {
+        ) {
             return true;
-        }else{
+        } else {
 
-        return false;
+            return false;
         }
-
     }
 
     public function getVerifyPaymentWithClickPay($transactionReference)
@@ -211,21 +208,27 @@ class ClickPayService
             'profile_id' => config('clickpay.profile_id'),
             'tran_ref' => $transactionReference,
         ]);
-
+        $responseresult = false;
         $result = $response->json();
-        return $result;
-        //   if (
-        //     isset( $result['payment_result']['response_status']) &&
-        //     $result['payment_result']['response_status'] == 'A'
-        // )
-        // {
-        //     return true;
-        // }else{
+        if (
+            isset($result['payment_result']['response_status']) &&
+            $result['payment_result']['response_status'] == 'A'
+        ) {
+            $responseresult = true;
+        } else {
 
-        // return false;
-        // }
-
+            $responseresult = false;
+        }
+        if (!$responseresult) {
+            return [
+                'status' => 'error',
+                'message' => 'Payment verification failed with ClickPay.'.$responseresult,
+            ];
+        }else {
+            return [
+                'status' => 'success',
+                'message' => 'Payment verification completed.'.$responseresult,
+            ];
+        }
     }
-
-
 }
