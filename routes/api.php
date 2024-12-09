@@ -70,10 +70,10 @@ Route::group(['controller' => AuthController::class], function () {
     Route::post('register2Auth', 'register2Auth')->name('api.register.2auth');
     Route::post('forget-password', 'forgetPassword')->name('api.forget.password');
     Route::post('reset-password', 'resetPassword')->name('api.reset.password');
+    Route::post('test/mobile/payment/click-pay', [MobilePaymentController::class, 'testInitiatePayment']);
     Route::middleware(['auth:sanctum'])->group(function () {
 
         Route::post('/mobile/payment/click-pay', [MobilePaymentController::class, 'initiatePayment']);
-        Route::post('test/mobile/payment/click-pay', [MobilePaymentController::class, 'testInitiatePayment']);
 
         Route::post('logout', 'logout')->name('api.logout');
         Route::post('update-password', 'updatePassword')->name('api.update.password');
