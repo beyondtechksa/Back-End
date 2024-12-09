@@ -224,6 +224,11 @@ class ClickPayService
                 'status' => 'error',
                 'message' => 'Payment verification failed with ClickPay.',
             ];
+        }else {
+            return [
+                'status' => 'success',
+                'message' => 'Payment verification completed.',
+            ];
         }
     }
 }
