@@ -213,8 +213,7 @@ class ClickPayService
         ]);
 
         $result = $response->json();
-        dd( $result);
-         if (
+          if (
             isset( $result['payment_result']['response_status']) &&
             $result['payment_result']['response_status'] == 'A'
         )
