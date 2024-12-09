@@ -203,5 +203,29 @@ class ClickPayService
 
     }
 
+    public function getVerifyPaymentWithClickPay($transactionReference)
+    {
+        $response = Http::withHeaders([
+            'authorization' => config('clickpay.server_key'),
+        ])->post('https://secure.clickpay.com.sa/payment/query', [
+            'profile_id' => config('clickpay.profile_id'),
+            'tran_ref' => $transactionReference,
+        ]);
+
+        $result = $response->json();
+        dd( $result);
+         if (
+            isset( $result['payment_result']['response_status']) &&
+            $result['payment_result']['response_status'] == 'A'
+        )
+        {
+            return true;
+        }else{
+
+        return false;
+        }
+
+    }
+
 
 }

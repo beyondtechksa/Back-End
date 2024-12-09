@@ -21,4 +21,12 @@ class MobilePaymentController extends Controller
         $createOrder = $paymentService->processPaymentDetails($request);
         return response()->json([ 'data' => $createOrder]);
     }
+    public function testInitiatePayment(Request $request)
+    {
+
+        $res=$request->all();
+        $paymentService = new ClickPayService();
+        $paymentResponse = $paymentService->getVerifyPaymentWithClickPay(   $res['transactionReference']);
+         return response()->json([ 'data' => $paymentResponse]);
+    }
 }
