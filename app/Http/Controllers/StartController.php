@@ -322,7 +322,7 @@ class StartController extends Controller
         $related = Product::with('brand')->where('status', true)->where('category_id', $product->category_id)
         ->limit(5)->inRandomOrder()->get()->map(function($product) use($currencyService) {
             $product['final_selling_price'] = $currencyService->convertPrice($product,$product->final_selling_price);
-            $product['old_price'] = $currencyService->convertPrice($product,$product->old_price);
+            $product['old_price'] = number_format($product->final_selling_price / (1-($product->discount_percentage_selling_price/100)),2);
             return $product;
         });
 
