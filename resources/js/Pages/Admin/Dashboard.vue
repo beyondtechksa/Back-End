@@ -19,7 +19,7 @@
                                 <div class="mb-2">Total Sales  </div>
                                 <div class="text-muted mb-1 fs-12">
                                     <span class="text-dark fw-semibold fs-20 lh-1 vertical-bottom">
-                                        {{ total_sell}} SAR
+                                        <!-- {{ total_sell}}  --> 0 SAR
                                     </span>
                                 </div>
 <!--                                <div>-->
