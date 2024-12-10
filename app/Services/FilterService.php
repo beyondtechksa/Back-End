@@ -47,7 +47,7 @@ class FilterService
         }
 
         if (isset($filterData['slug'])) {
-            $collection = Collection::where('slug', 'like', '%' . $filterData['slug'] . '%')->firstOrFail();
+            $collection = Collection::where('slug', $filterData['slug'])->firstOrFail();
             $query->where('collection_id', $collection->id);
         }
 
