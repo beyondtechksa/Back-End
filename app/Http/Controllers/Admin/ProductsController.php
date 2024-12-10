@@ -560,7 +560,7 @@ class ProductsController extends Controller
 
     return response()->json([
         'products' => $products->paginate($pagination),
-        'totalDistinctCount' => $products->count() // Ensure this is a unique count
+        'totalCount' => DB::table('products')->count(),
     ]);
 }
 

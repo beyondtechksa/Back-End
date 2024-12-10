@@ -1207,6 +1207,7 @@ import { useForm } from '@inertiajs/vue3';
                 this.search_form.post('/admin/api/search_products?page='+page)
                 .then((resp)=>{
                     this.products=resp.data.products
+                    this.totalCount=resp.data.totalCount
                 })
            },
            reset(){
