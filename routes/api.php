@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\MobilePaymentController;
 use App\Http\Controllers\StartController;
+use Illuminate\Support\Facades\Cache;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,7 +24,10 @@ use App\Http\Controllers\StartController;
 //Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //    return $request->user();
 //});
-Route::post('cart/checkout/payment/return', [StartController::class,'handleReturn'])->name('payment.return');
+Route::get('/clear-cache', function () {
+    Cache::flush();
+});
+Route::post('cart/checkout/payment/return', [StartController::class, 'handleReturn'])->name('payment.return');
 
 
 Route::get('/get_all_categories', [ApiController::class, 'get_all_categories']);
