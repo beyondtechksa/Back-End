@@ -126,7 +126,7 @@ class ClickPayService
         $responseMessage = $paymentResult['responseMessage'] ?? 'No response message';
 
         $transaction = PaymentTransaction::where('uuid', $transactionReference)->first();
-
+        dd($paymentDetails);
         if (!$transaction) {
             return [
                 'status' => 'error',
@@ -188,7 +188,6 @@ class ClickPayService
         ]);
 
         $result = $response->json();
-        dd( $result);
 
         if (
             isset($result['payment_result']['response_status']) &&
