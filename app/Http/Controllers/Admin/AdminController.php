@@ -35,6 +35,7 @@ class AdminController extends Controller
             ->select('o.id', 'o.subtotal_amount',
                 'o.discount', 'o.shipping', 'o.total_amount', 'o.status', 'u.name', 'o.created_at')
             ->limit(5)
+            ->latest()
             ->get();
         $year = date('Y');
         $orderChart = $this->orderChart($year);
