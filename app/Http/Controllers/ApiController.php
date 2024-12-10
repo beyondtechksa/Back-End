@@ -438,6 +438,7 @@ class ApiController extends Controller
 
     public function single_product(Request $request)
     {
+        $currencyService = new CurrencyService();
         $currency = $request->header('currency', 'SAR');
         $headerValidator = Validator::make(['currency' => $currency], [
             'currency' => 'nullable|in:USD,SAR,TRY'
@@ -468,7 +469,11 @@ class ApiController extends Controller
             ->where('category_id', $productQuery->category_id)
             ->orderByRaw('RAND() * id')
             ->limit(3)
-            ->get();
+            ->get()->map(function($product) use($currencyService) {
+                $product['final_selling_price'] = $currencyService->convertPrice($product,$product->final_selling_price);
+                $product['old_price'] = number_format($product->final_selling_price / (1-($product->discount_percentage_selling_price/100)),2);
+                return $product;
+            });
         $related_products = new ProductResourceCollection($relatedProductsQuery, $currency);
         $canRate = false;
         if (Auth::check())
