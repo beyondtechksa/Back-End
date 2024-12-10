@@ -560,7 +560,7 @@ class ProductsController extends Controller
 
     return response()->json([
         'products' => $products->paginate($pagination),
-        'totalCount' => DB::table('products')->count(),
+        'totalCount' => DB::table('products')->whereNull('deleted_at')->count(),
     ]);
 }
 
