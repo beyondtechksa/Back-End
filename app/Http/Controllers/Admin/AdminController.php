@@ -27,7 +27,7 @@ class AdminController extends Controller
             ->sum('total_amount');
         $total_sell = number_format($sell, 2);
 
-        $total_products = DB::table('products')->count();
+        $total_products = DB::table('products')->whereNull('deleted_at')->count();
         $total_users = DB::table('users')->count();
         $total_orders = DB::table('orders')->count();
         $orders = DB::table('orders as o')
