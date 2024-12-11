@@ -24,6 +24,9 @@ final class CompanyEnums extends Enum
     const MODAYAKAMOZ = 'modayakamoz';
     const MITELOVE = 'mite love';
     const DENOKIDS = 'denokids';
+    const PANAYIRHOME = 'panayirhome';
+    const JAMMYBABY = 'jammybaby';
+    const VAVINOR = 'vavinor';
 
     const COMPANY_CATEGORIES = [
         self::TRENDYOL => [],
@@ -45,6 +48,9 @@ final class CompanyEnums extends Enum
         self::MODAYAKAMOZ => ["all" => 1],
         self::MITELOVE => ["all" => 1],
         self::DENOKIDS => ["kids" => 1],
+        self::PANAYIRHOME => ["home" => 1],
+        self::JAMMYBABY => ["baby" => 1],
+        self::VAVINOR => ["Modest" => 1],
     ];
 
     const COMPANY_EMAILS = [
@@ -67,6 +73,9 @@ final class CompanyEnums extends Enum
         self::MODAYAKAMOZ => 'test@me.com',
         self::MITELOVE => 'MITELOVE@me.com',
         self::DENOKIDS => 'denokids@me.com',
+        self::PANAYIRHOME => 'paynayirhome@me.com',
+        self::JAMMYBABY => 'jammybaby@me.com',
+        self::VAVINOR => 'vavinor@me.com',
     ];
 
     const getCompaniesValues = [
@@ -89,6 +98,9 @@ final class CompanyEnums extends Enum
         self::MODAYAKAMOZ,
         self::MITELOVE,
         self::DENOKIDS,
+        self::PANAYIRHOME,
+        self::JAMMYBABY,
+        self::VAVINOR,
     ];
 
     public static function getCategories($company)

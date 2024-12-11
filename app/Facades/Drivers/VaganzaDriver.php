@@ -22,7 +22,7 @@ class VaganzaDriver implements CompanyDriverInterface
         $productsData = simplexml_load_string($xml, "SimpleXMLElement", LIBXML_NOCDATA);
         $products = $images = $attributes= [];
         $productIds = TempProduct::where('type' , 'company')->where('company_name' , $company_name)->pluck('product_id')->toArray();
-        // return $productsData;
+        return $productsData;
         $vendor=Vendor::where('name',$company_name)->first();
         foreach ($productsData->Urun as $product) {
             Log::info($product->Name);

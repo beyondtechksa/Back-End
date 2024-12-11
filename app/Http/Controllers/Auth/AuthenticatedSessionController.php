@@ -31,6 +31,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+
         $request->authenticate();
 
         $request->session()->regenerate();
@@ -53,6 +54,12 @@ class AuthenticatedSessionController extends Controller
             $carts = Cart::with('product.brand')->where('user_id', user()->id)->get();
 
             return redirect('/cart')->with(['page_title' => __('Checkout Address'), 'carts' => $carts]);
+        }
+        if (!user()->wallet()->exists()) {
+            user()->wallet()->create([
+                'balance' => 0,
+                'currency'=>'SAR'
+            ]);
         }
         return redirect()->intended(RouteServiceProvider::HOME);
     }

@@ -248,7 +248,7 @@ class ProductsController extends Controller
             'pricing_type' => $data['pricing_type'],
             'price' => $data['price'],
             'sale_price' => $data['sale_price'],
-            'discount_percentage_selling_price' => $data['discount_percentage_selling_price'],
+            'discount_percentage_selling_price' => $data['discount_percentage_selling_price']??0,
             'packaging_shipping_fees' => $data['packaging_shipping_fees'],
             'management_fees' => $data['management_fees'],
             'profit_percentage' => $data['profit_percentage'],
@@ -560,7 +560,7 @@ class ProductsController extends Controller
 
     return response()->json([
         'products' => $products->paginate($pagination),
-        'totalCount' => DB::table('products')->whereNull('deleted_at')->count(),
+        'totalCount' => 0,
     ]);
 }
 

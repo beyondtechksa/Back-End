@@ -118,7 +118,7 @@
                             </div>
                             <div class="d-sm-block d-none">
                                 <p class="fw-semibold mb-0 lh-1">{{ $page.props.auth.vendor.name }}</p>
-                                <span class="op-7 fw-normal d-block fs-11"> vendor </span>
+                                <span class="op-7 fw-normal d-block fs-11"> Balance : {{$page.props.auth.vendor.wallet?$page.props.auth.vendor.wallet.balance:0}} </span>
                             </div>
                         </div>
                     </a>

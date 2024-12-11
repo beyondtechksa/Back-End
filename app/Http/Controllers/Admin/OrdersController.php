@@ -18,6 +18,7 @@ use App\Models\Color;
 use App\Models\Size;
 use App\Models\OrderItem;
 use App\Models\CompanyRequest;
+use App\Models\User;
 use App\Http\Enums\CompanyEnums;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -223,10 +224,28 @@ class OrdersController extends Controller
             'return_status_id'=>$request->status_id])->with('page_name','return requests');
     }
     public function update_status(Request $request){
-        $return_item=ReturnItem::findOrFail($request->id);
+        $return_item=ReturnItem::with('order_item.order')->findOrFail($request->id);
         $return_item->update([
             'return_status_id'=>$request->status_id
         ]);
+
+        $lastStatus = ReturnStatus::latest('id')->value('id');
+
+        $isLastRecord = $request->status_id == $lastStatus;
+
+        if($isLastRecord){
+            $user_id = $return_item->order_item->order->user_id;
+            $user=User::find($user_id);
+            if($user){
+                if (!$user->wallet()->exists()) {
+                    $user->wallet()->create([
+                        'balance' => 0
+                    ]);
+                }
+
+                $user->wallet->credit(($return_item->order_item->price * $return_item->quantity) , 'refund from order '.$return_item->order_item->order_id);
+            }
+        }
 
         return redirect()->back()->with('success','updated successfully');
     }

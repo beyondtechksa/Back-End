@@ -10,6 +10,9 @@
     <div>
     <h3>{{$page.props.auth.user.name}}</h3>
     <p>{{$page.props.auth.user.email}}</p>
+    <p> 
+    <strong> {{ __('Balance') }}  : {{ $page.props.auth.user.wallet?$page.props.auth.user.wallet.balance:0}}</strong>    
+    </p>
     </div>
     <div class="show_menu" @click="show_menu=!show_menu">
         <a href="javascript:void(0)" class=""> <i class="fa fa-bars"></i> </a>

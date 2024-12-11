@@ -69,13 +69,16 @@ Route::get('/pages', [ApiController::class, 'pages']);
 
 
 Route::group(['controller' => AuthController::class], function () {
-    Route::post('login', 'login')->name('api.login');
+    Route::post('login', 'login')->middleware('verified')->name('api.login');
     Route::post('register', 'register')->name('api.register');
+    Route::post('email/verify', 'verifyEmail')->name('api.email.verify');
+    Route::post('resend/verification/code', 'resendVerificationCode')->name('api.resend.email.verify');
     Route::post('register2Auth', 'register2Auth')->name('api.register.2auth');
     Route::post('forget-password', 'forgetPassword')->name('api.forget.password');
     Route::post('reset-password', 'resetPassword')->name('api.reset.password');
     Route::post('test/mobile/payment/click-pay', [MobilePaymentController::class, 'testInitiatePayment']);
-    Route::middleware(['auth:sanctum'])->group(function () {
+
+    Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
         Route::post('/mobile/payment/click-pay', [MobilePaymentController::class, 'initiatePayment']);
 

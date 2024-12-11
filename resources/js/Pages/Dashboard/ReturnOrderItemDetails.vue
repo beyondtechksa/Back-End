@@ -39,6 +39,28 @@
                         </div>
                         <div class="step-preview">
                             <div class="step-header">
+                                <h3 class="fs-18"> {{__('return options')}} </h3>
+                            </div>
+                            <div class=" pt-3 px-3">
+                                <div class="selection mx-2 mb-3">
+                                  <label class="custom-checkbox">
+                                      <input  v-model="form.return_funds" :value="'wallet'" type="radio" class="d-none">
+                                      <span class="checkmark">  </span>
+                                      <span class="mx-2">{{ __('Wallet') }} </span>
+                                  </label>
+                              </div>
+                                <!-- <div class="selection mx-2">
+                                  <label class="custom-checkbox">
+                                      <input  v-model="form.return_funds" :value="'cash'" type="radio" class="d-none">
+                                      <span class="checkmark">  </span>
+                                      <span class="mx-2">{{ __('Cash on visa') }} </span>
+                                  </label>
+                              </div> -->
+                            </div>
+                        </div>
+                        <!-- <button class="custom-btn mt-3"> {{ __('save changes') }} </button> -->
+                        <div class="step-preview">
+                            <div class="step-header">
                                 <h3 class="fs-18"> {{__('manage your return')}} </h3>
                             </div>
                             <div class="pt-3 px-3">
@@ -92,6 +114,7 @@ export default{
       form : useForm({
         order_item_id:this.order_item.id,
         return_item_id:this.return_item.id,
+        return_funds:this.return_item.return_option
     })
     }
   },

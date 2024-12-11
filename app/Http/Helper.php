@@ -11,6 +11,7 @@ use App\Models\Language;
 use App\Models\Settings;
 use App\Models\Shipping;
 use App\Models\Product;
+use App\Models\Vendor;
 use App\Models\Favourite;
 use Illuminate\Support\Str;
 use App\Models\CartDiscount;
@@ -36,8 +37,8 @@ if (!function_exists('admin')) {
 }
 if (!function_exists('vendor')) {
     function vendor()
-    {
-        $vendor = auth()->guard('vendor')->user();
+    {   
+        $vendor =Vendor::with('wallet')->find(auth()->guard('vendor')->user()->id);
         // $vendor['permissions']=$vendor->getPermissionsViaRoles()->pluck('name');
         return $vendor;
     }
@@ -57,7 +58,7 @@ if (!function_exists('user')) {
     {
         if (auth()->check()) {
             // $currencyService=new currencyService();
-            $user = User::with('favourites')->find(auth()->user()->id);
+            $user = User::with('favourites','wallet')->find(auth()->user()->id);
             // $user['carts']=$user->carts->map(function($cart) use($currencyService){
             //     $cart->product->final_selling_price = $currencyService->convertPrice($cart->product,$cart->product->final_selling_price);
             //     return $cart;
