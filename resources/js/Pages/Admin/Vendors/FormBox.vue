@@ -55,6 +55,14 @@
             <div class="text-danger" v-html="errors.note" />
         </div>
         <div class="mb-3 col-md-6">
+            <label class="form-label"> {{ __('wallet currency') }} </label>
+            <select class="form-control" :class="{'is-invalid':errors.note}" v-model="form.currency"> 
+                <option :value="'TRY'"> TRY </option>
+                <option :value="'SAR'"> SAR </option>
+            </select>
+            <div class="text-danger" v-html="errors.currency" />
+        </div>
+        <div class="mb-3 col-md-6">
             <label for="input-label" class="form-label d-block"> {{ __('vendor logo') }} </label>
             <div data-bs-toggle="modal" data-bs-target="#filemanagerModal" for="profile-img-file-input" class="profile-photo-edit avatar-xs">
                 <input @input="upload" id="profile-img-file-input" type="file" class="profile-img-file-input">

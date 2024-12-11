@@ -12,7 +12,7 @@
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label class="form-label"> {{ __('amount') }} (SAR) </label>
+                    <label class="form-label"> {{ __('amount') }} ({{vendor.wallet?vendor.wallet.currency:null }}) </label>
                     <input v-model="form.amount" :placeholder="__('enter amount')" type="number" class="form-control" :class="{'is-invalid':errors.amount}" >
                     <div class="text-danger" v-html="errors.amount" />
                 </div>
@@ -39,7 +39,7 @@
                     <div class="card-header">
                         <div class="d-flex justify-content-between w-100">
                             <div> 
-                                Transactions ({{ vendor.wallet?vendor.wallet.balance:0 }})
+                                Transactions ({{ vendor.wallet?vendor.wallet.balance:0 }})  ( {{ vendor.wallet?vendor.wallet.currency:null }} )
                             </div>
                             <div>
                                 <button data-bs-toggle="modal" data-bs-target="#TransactionModal" class="btn btn-primary"> Add Balance </button>

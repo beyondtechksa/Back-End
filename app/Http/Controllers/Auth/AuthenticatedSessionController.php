@@ -57,7 +57,8 @@ class AuthenticatedSessionController extends Controller
         }
         if (!user()->wallet()->exists()) {
             user()->wallet()->create([
-                'balance' => 0
+                'balance' => 0,
+                'currency'=>'SAR'
             ]);
         }
         return redirect()->intended(RouteServiceProvider::HOME);

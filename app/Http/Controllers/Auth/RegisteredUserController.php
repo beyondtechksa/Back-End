@@ -74,7 +74,8 @@ class RegisteredUserController extends Controller
         }
 
         user()->wallet()->create([
-            'balance'=>0
+            'balance'=>0,
+            'currency'=>'SAR'
         ]);
 
         return redirect(RouteServiceProvider::HOME);

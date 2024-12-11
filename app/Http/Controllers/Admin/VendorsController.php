@@ -80,14 +80,15 @@ class VendorsController extends Controller
             'address' => 'required|string|max:255',
             'note' => 'required|string|max:255',
             'logo' => 'required|string|max:255',
+            'currency' => 'required|string|max:255',
         ]);
            if ($request->password) {
                 $data['password'] = Hash::make($request->password);
             }
 
         $vendor=Vendor::create($data);
-
-        $vendor->wallet()->create(['balance' => 0]);
+    
+        $vendor->wallet()->create(['balance' => 0,'currency'=>$request->currency]);
         return redirect()->route('vendors.index')->with('success',__('item created successfully'));
     }
 
@@ -132,7 +133,11 @@ class VendorsController extends Controller
             });
         }
         $vendor->update($data);
-
+        if($request->currency){
+            $vendor->wallet->update([
+                'currency'=>$request->currency
+            ]);
+        }
 
         return redirect()->route('vendors.index')->with('success',__('item updated successfully'));
     }
