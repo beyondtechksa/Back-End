@@ -20,6 +20,9 @@ use App\Facades\Drivers\EminnaDriver;
 use App\Facades\Drivers\ModayakamozDriver;
 use App\Facades\Drivers\MiteloveDriver;
 use App\Facades\Drivers\DenokidsDriver;
+use App\Facades\Drivers\PanayirHomeDriver;
+use App\Facades\Drivers\JammyBabyDriver;
+use App\Facades\Drivers\VavinorDriver;
 
 
 class CompanyFacade
@@ -43,6 +46,9 @@ class CompanyFacade
         CompanyEnums::MODAYAKAMOZ   => ModayakamozDriver::class,
         CompanyEnums::MITELOVE   => MiteloveDriver::class,
         CompanyEnums::DENOKIDS   => DenokidsDriver::class,
+        CompanyEnums::PANAYIRHOME   => PanayirHomeDriver::class,
+        CompanyEnums::JAMMYBABY   => JammyBabyDriver::class,
+        CompanyEnums::VAVINOR   => VavinorDriver::class,
     ];
 
     public static function driver($driver)

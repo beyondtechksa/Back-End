@@ -10,6 +10,7 @@ use App\Models\ExternalShippingCompany;
 
 use App\Exports\OrderRequestExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
 
 class VendorController extends Controller
 {
@@ -36,9 +37,30 @@ class VendorController extends Controller
         $order_requests=CompanyRequest::whereIn('id',$request->checked)->where('vendor_status',0)->update([
             'vendor_status'=>$request->status
         ]);
+        
+        $wallet = vendor()->wallet;
+        if($wallet){
+        $updatedRequests = CompanyRequest::with(['order_item.product' => function ($query) {
+            $query->withTrashed()->select('id','sale_price'); 
+        }])
+        ->whereIn('id', $request->checked)
+        ->get();
+
+        foreach ($updatedRequests as $company_request) {
+        DB::transaction(function () use ($company_request,$wallet) {
+            $product = $company_request->order_item->product;
+            if ($product) {
+                $wallet->debit($product->sale_price,'for accepting product '.$product->id);
+            }
+    
+        });
+        }
+    }
+      
 
         return redirect()->back();
     }
+
     public function update_traking_code(Request $request){
         $request->validate([
             'traking_code'=>'required|string|max:255',

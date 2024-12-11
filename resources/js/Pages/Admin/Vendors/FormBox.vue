@@ -23,6 +23,7 @@
             <input v-model="form.password" :placeholder="__('password')" type="password" class="form-control" :class="{'is-invalid':errors.password}" >
             <div class="text-danger" v-html="errors.password" />
         </div>
+        
         <div class="mb-3 col-md-6">
             <label class="form-label"> {{ __('discount percentage') }} (%) </label>
             <input v-model="form.discount_percentage" :placeholder="__('discount percentage')" type="number" class="form-control" :class="{'is-invalid':errors.discount_percentage}" >
