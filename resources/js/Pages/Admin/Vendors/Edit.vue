@@ -64,6 +64,7 @@ export default {
             address:this.vendor.address,
             note:this.vendor.note,
             logo:this.vendor.logo,
+            currency:this.vendor.currency,
         }),
     }
   },

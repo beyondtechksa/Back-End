@@ -31,6 +31,7 @@
                                     <th scope="col">{{__('image')}}</th>
                                     <th scope="col">{{__('vendor name')}}</th>
                                     <th scope="col">{{__('email')}}</th>
+                                    <!-- <th scope="col">{{__('wallet')}}</th> -->
                                     <th scope="col">{{__('discount percentage')}}</th>
                                     <th scope="col">{{__('phone')}}</th>
                                     <th scope="col">{{__('website')}}</th>
@@ -56,6 +57,9 @@
                                     <td>
                                         {{vendor.email}}
                                     </td>
+                                    <!-- <td>
+                                        {{vendor.wallet}}
+                                    </td> -->
                                     <td>
                                         {{vendor.discount_percentage}} %
                                     </td>
@@ -79,6 +83,7 @@
 
                                     <td>
                                         <div class="hstack gap-2 fs-15">
+                                            <Link v-if="check_permissions(['view vendor'])" :href="route('vendors.show',vendor.id)" class="btn btn-sm btn-primary"><i class="ri-eye-line"></i> Transactions </Link>
                                             <Link v-if="check_permissions(['view vendor'])" :href="route('orders.vendor_requests',vendor.id)" class="btn btn-sm btn-primary"><i class="ri-eye-line"></i> orders </Link>
                                             <Link v-if="check_permissions(['edit vendor'])" :href="route('vendors.edit',vendor.id)" class="btn btn-icon btn-sm btn-primary"><i class="ri-edit-line"></i></Link>
                                         </div>

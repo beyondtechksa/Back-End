@@ -92,6 +92,9 @@
                                             <div class="mb-1">
                                               <span class="me-1">Quantity:</span><span class="text-muted">{{company_request.order_item.quantity}}</span>
                                             </div>
+                                            <div class="mb-1" v-if="company_request.order_item.product">
+                                              <span class="me-1">Sale Price:</span><span class="text-muted">{{company_request.order_item.product.sale_price}}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </td>

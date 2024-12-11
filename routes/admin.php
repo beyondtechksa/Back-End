@@ -85,7 +85,8 @@ Route::group(['middleware' => 'admin:admin'], function () {
         Route::get('/get-companies', [ProductsController::class, 'getCompanies']);
         Route::post('/scrap-product-companies', [ProductsController::class, 'companyScrapData']);
         Route::post('/return-request/update-status', [OrdersController::class, 'update_status'])->name('return_request.update_status');
-
+        Route::post('/vendors/transactions/store',[VendorsController::class,'store_transaction'])->name('vendors.transaction.store');
+        Route::delete('/vendor/transactions/delete/{id}',[VendorsController::class,'delete_transaction'])->name('vendors.transaction.delete');
 
 
         Route::get('/companies-categories', [ProductsController::class, 'getCompanyCategories']);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Vendor;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\Hash;
 use App\Jobs\UpdateVendorProductsDiscount;
 use App\Models\Product;
@@ -14,6 +15,7 @@ class VendorsController extends Controller
     public function __construct(){
         $this->index_page_name=__('vendors');
         $this->create_page_name=__('create vendor');
+        $this->view_page_name=__('view vendor');
         $this->edit_page_name=__('edit vendor');
     }
     /**
@@ -32,9 +34,23 @@ class VendorsController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function show(Vendor $vendor)
+    public function show($id)
     {
-        return '';
+        $vendor=Vendor::with('wallet')->findOrFail($id);
+        if(admin()->hasPermissionTo('view vendor')){
+            if(!$vendor->wallet){
+                $vendor->wallet()->create(['balance' => 0]);
+                $vendor->load('wallet');
+            }
+            $wallet=$vendor->wallet;
+            $transactions = $wallet->transactions()->orderBy('created_at', 'desc')->paginate(20);
+                return inertia('Vendors/Show',[
+                    'vendor'=>$vendor,
+                    'transactions'=>$transactions,
+                    ])->with(['page_name'=>$this->view_page_name]);
+            }else{
+                return  no_permission_redirect();
+            }
     }
 
 
@@ -64,12 +80,15 @@ class VendorsController extends Controller
             'address' => 'required|string|max:255',
             'note' => 'required|string|max:255',
             'logo' => 'required|string|max:255',
+            'currency' => 'required|string|max:255',
         ]);
            if ($request->password) {
                 $data['password'] = Hash::make($request->password);
             }
 
         $vendor=Vendor::create($data);
+    
+        $vendor->wallet()->create(['balance' => 0,'currency'=>$request->currency]);
         return redirect()->route('vendors.index')->with('success',__('item created successfully'));
     }
 
@@ -109,11 +128,16 @@ class VendorsController extends Controller
         if($request->discount_percentage!=$vendor->discount_percentage){
             // job
             $products=Product::where('company_name',$vendor->name)->get();
-            collect($products)->chunk(100)->each(function ($batch) use($vendor) {
+            collect($products)->chunk(1000)->each(function ($batch) use($vendor) {
                 UpdateVendorProductsDiscount::dispatch($batch->toArray(),$vendor->discount_percentage);
             });
         }
         $vendor->update($data);
+        if($request->currency){
+            $vendor->wallet->update([
+                'currency'=>$request->currency
+            ]);
+        }
 
         return redirect()->route('vendors.index')->with('success',__('item updated successfully'));
     }
@@ -151,6 +175,42 @@ class VendorsController extends Controller
         $vendor->update([
             'status'=>!$vendor->status
         ]);
+    }
+
+
+    public function store_transaction(Request $request){
+        $request->validate([
+            'vendor_id'=>'required|integer|exists:vendors,id',
+            'amount'=>'required|integer|min:1',
+            'description'=>'required|string|max:255',
+        ]);
+
+        $vendor = Vendor::find($request->vendor_id);
+        $wallet = $vendor->wallet;
+        $wallet->credit($request->amount,$request->description);
+        return redirect()->back()->with('success',__('item created successfully'));
+    }
+    
+    public function delete_transaction($id){
+        $transaction = Transaction::findOrFail($id);
+
+        $wallet = $transaction->wallet;
+
+        if (!$wallet) {
+            return redirect()->back()->with('error',__('wallet not found'));
+        }
+
+        if ($transaction->type === 'credit') {
+            $wallet->balance -= $transaction->amount;
+        } elseif ($transaction->type === 'debit') {
+            $wallet->balance += $transaction->amount;
+        }
+
+        $wallet->save();
+
+        $transaction->delete();
+        return redirect()->back()->with('success',__('item deleted successfully'));
+
     }
 
 

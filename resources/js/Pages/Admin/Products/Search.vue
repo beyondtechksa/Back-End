@@ -830,7 +830,7 @@
             <div class="card card-body">
                 <div class="d-flex justify-content-between mb-2">
                     <div>
-                        <span class="mx-2"> All Results  : <span class="badge bg-primary"> {{ totalCount ? totalCount : products.total }} </span> </span>
+                        <span class="mx-2"> All Results  : <span class="badge bg-primary"> {{  products.total }} </span> </span>
                         <span class="mx-2"> Shown Products  : <span class="badge bg-primary"> <span v-if="products.data"> {{ products.data.length }} </span> </span> </span>
                         <span class="mx-2"> Selected Products  : <span class="badge bg-primary"> {{ checked.length }} </span> </span>
                     </div>

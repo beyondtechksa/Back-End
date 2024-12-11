@@ -84,4 +84,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(PaymentTransaction::class);
     }
+
+    public function wallet()
+    {
+        return $this->morphOne(Wallet::class, 'walletable');
+    }
 }

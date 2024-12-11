@@ -39,10 +39,10 @@ class UpdateProductsCompany implements ShouldQueue
             // Add any additional fields you want to update or set on the new record
             if($product){
                 \Log::info('product old name '.$product->name_tr);
-                \Log::info('product old sizes '.$product->sizes_ids);
+                \Log::info('product old sizes '.$product->sizes());
                 $i+=1;
                 $product->update([
-                    'company_name' => $this->company,
+                    // 'company_name' => $this->company,
                     'name_tr'=>$company_product['name'],
                     'desc_tr'=>$company_product['desc'],
                     'price'=>$company_product['price'],
@@ -50,12 +50,26 @@ class UpdateProductsCompany implements ShouldQueue
                     'discount_percentage'=>$company_product['discount_percentage'],
                     'final_price'=>$company_product['final_price'],
                     'sale_price'=>$company_product['final_price'],
-                    'sizes_ids'=>$company_product['sizes_ids'] ?? [],
-                    'colors_ids'=>$company_product['colors_ids'] ?? [],
                     'tracked_at'=>now()
                 ]);
+
+                $sizes = json_decode($company_product['sizes_ids'],true);
+                $colors = json_decode($company_product['colors_ids'],true);
+
+                $sizesData = array_map(function ($size) {
+                    return ['inStock' => $size['inStock']];
+                }, $sizes);
+                
+                $sizesToSync = [];
+                foreach ($sizes as $size) {
+                    $sizesToSync[$size['id']] = ['inStock' => $size['inStock']];
+                }
+                $product->sizes()->syncWithoutDetaching($sizesToSync);
+
+                $product->colors()->syncWithoutDetaching($colors);
+
                 \Log::info('product new name '.$product->name_tr);
-                \Log::info('product new sizes '.$product->sizes_ids);
+                \Log::info('product new sizes '.$product->sizes);
                 // files
                 try{
                     $existingFiles = $product->files()->pluck('image')->toArray();

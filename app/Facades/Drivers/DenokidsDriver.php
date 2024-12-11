@@ -21,7 +21,6 @@ class DenokidsDriver implements CompanyDriverInterface
         // $type  = scrap or track
         $xml = fetchDataFromUrl("http://b2b.ayensoftware.com/xml/reply/IdeasoftVaryantV4XmlRequest?MusteriId=5168&DukkanId=19&MusteriTedarikciId=42");
         $productsData = simplexml_load_string($xml, "SimpleXMLElement", LIBXML_NOCDATA);
-        return $productsData;
         $products = [];
 
         $productIds = TempProduct::where('type', 'company')
@@ -29,7 +28,7 @@ class DenokidsDriver implements CompanyDriverInterface
             ->pluck('product_id')
             ->toArray();
             $vendor=Vendor::where('name',$company_name)->first();
-        foreach ($productsData->Products->Product as $product) {
+        foreach ($productsData->item as $product) {
         // $product=$productsData->ProductXml[0];
             if (!in_array((string)$product->ProductId, $productIds)) {
                 $colors_ids = [];
@@ -39,48 +38,48 @@ class DenokidsDriver implements CompanyDriverInterface
                 $attributes = [];
                 $images = [];
                 // Convert prices to float for calculations
-                $priceAfterDiscount = (float) $product->Price;
+                $priceAfterDiscount = (float) $product->price1;
                 $finalPrice = $priceAfterDiscount;
 
-                if (!empty($product->Image1)) {
-                    $images[] = (string)$product->Image1;
+                if (!empty($product->picture1Path)) {
+                    $images[] = (string)$product->picture1Path;
                 }
-                if (!empty($product->Image2)) {
-                    $images[] = (string)$product->Image2;
+                if (!empty($product->picture2Path)) {
+                    $images[] = (string)$product->picture2Path;
                 }
-                if (!empty($product->Image3)) {
-                    $images[] = (string)$product->Image3;
+                if (!empty($product->picture3Path)) {
+                    $images[] = (string)$product->picture3Path;
                 }
-                if (!empty($product->Image4)) {
-                    $images[] = (string)$product->Image4;
+                if (!empty($product->picture4Path)) {
+                    $images[] = (string)$product->picture4Path;
                 }
-                if (!empty($product->Image5)) {
-                    $images[] = (string)$product->Image5;
+                if (!empty($product->picture5Path)) {
+                    $images[] = (string)$product->picture5Path;
                 }
 
                 if (isset($images) && is_array($images)) {
-                    $images = json_encode(array_values($images));
+                    $images = json_encode($images);
                 }
 
 
-                foreach($product->Variants->Variant as $secenek){
-                    $size_name['or'] = (string)$secenek->VariantValue1;
-                    $size = Size::firstOrCreate(['name_tr' =>  $secenek->VariantValue1], [
+                foreach($product->variants->variant as $secenek){
+                    $size_name_tr= (string)$secenek->options->option[1]->variantValue;
+                    $size_name['or'] =$size_name;
+                    $size = Size::firstOrCreate(['name_tr' =>  $size_name_tr], [
                         'name' => $size_name,
-                        'name_tr' => $secenek->VariantValue1,
+                        'name_tr' => $size_name_tr,
                     ]);
                     if($size){
-                        $sizes_ids[] =  ['id'=>$size->id,'inStock'=>(int)$secenek->VariantQuantity > 0];
+                        $sizes_ids[] =  ['id'=>$size->id,'inStock'=>(int)$secenek->vStockAmount > 0];
                     }
-
-                    $color_name['or'] = (string)$secenek->VariantValue1;
-                    $color = Color::firstOrCreate(['name_tr' => $secenek->VariantValue1], [
+                    $color_name_tr= (string)$secenek->options->option[0]->variantValue;
+                    $color_name['or'] = $color_name_tr;
+                    $color = Color::firstOrCreate(['name_tr' =>$color_name_tr], [
                         'name' => $color_name,
-                        'name_tr' => $secenek->VariantValue1,
+                        'name_tr' => $color_name_tr,
                         'color_code' => '#ffffff',
                     ]);
                     $colors_ids[] =  $color->id;
-                    // $attributes['options'][] = (string)$secenek->Size;
 
                 }
 
@@ -98,7 +97,7 @@ class DenokidsDriver implements CompanyDriverInterface
                     'discount_percentage' => $company_discount_percentage,
                     'link' => (string)$product->Url,
                     'group_link' => '',
-                    'images' => json_encode($images),
+                    'images' => $images,
                     // 'attributes' => $attributes,
                     'type' => 'company',
                     'sizes_ids' =>  json_encode($sizes_ids),

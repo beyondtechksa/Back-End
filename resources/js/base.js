@@ -289,7 +289,7 @@ export default {
                 const parsedUrl = new URL(url);
                 return `${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.hash}`;
               } catch (error) {
-                console.error('Invalid URL:', error);
+                // console.error('Invalid URL:', error);
                 return ''; 
               }
         }

@@ -62,6 +62,7 @@ export default {
             address:null,
             note:null,
             logo:null,
+            currency:'TRY',
 
         })
     }
