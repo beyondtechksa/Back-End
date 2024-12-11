@@ -172,3 +172,6 @@ ALTER TABLE `temp_products` ADD CONSTRAINT `temp_products_currency_id_foreign` F
 ALTER TABLE `products` ADD `pricing_type` VARCHAR(255) NULL DEFAULT NULL AFTER `currency_id`;
 ===============================
 ALTER TABLE `return_requests` ADD `image` VARCHAR(255) NULL DEFAULT NULL AFTER `reason`;
+======================================================================
+
+ALTER TABLE `return_items` ADD `return_option` VARCHAR(255) NOT NULL DEFAULT 'wallet' AFTER `return_status_id`;

@@ -28,6 +28,6 @@ class CustomEmailVerificationMobile extends VerifyEmail
             ->line('Please use the following code to verify your email address:')
             ->line('Verification Code: ' . $this->verificationCode)
             ->line('If you did not create an account, no further action is required.')
-            ->salutation('Regards, Beyond Store');
+            ->salutation('Regards, Riya Store');
     }
 }

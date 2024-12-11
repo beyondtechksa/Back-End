@@ -10,7 +10,7 @@ class ReturnItem extends Model
     use HasFactory;
 
     protected $fillable = [
-        'return_request_id', 'order_item_id', 'quantity', 'status','return_status_id'
+        'return_request_id', 'order_item_id', 'quantity', 'status','return_status_id','return_option'
     ];
 
     public function return_request()

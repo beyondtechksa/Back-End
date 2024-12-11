@@ -47,7 +47,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
         event(new Registered($user));
-        $admin = Admin::first();
+        // $admin = Admin::first();
 
         // $admin->notify(new CustomerNotifications($user->id));
         Auth::login($user);
@@ -55,22 +55,28 @@ class RegisteredUserController extends Controller
         if (isset($_COOKIE['user_cart'])) {
             $carts = json_decode($_COOKIE['user_cart']);
             foreach ($carts as $key=>$item) {
-                Cart::updateOrCreate([
-                    'user_id' => $user->id,
-                    'product_id' => $item->product_id,
-                ], [
-                    'quantity' => $item->quantity,
-                    'color' => json_decode(json_encode($item->color), true),
-                    'size' => json_decode(json_encode($item->size), true),
-                ]);
+                if($item->product_id){
+                    Cart::updateOrCreate([
+                        'user_id' => $user->id,
+                        'product_id' => $item->product_id,
+                    ], [
+                        'quantity' => $item->quantity,
+                        'color' => $item->color,
+                        'size' => $item->size
+                    ]);
+
+                }
             }
             setcookie('user_cart', null, 0, "/");
             $carts = Cart::with('product.brand')->where('user_id', $user->id)->get();
-
+            
             return redirect('/cart')->with(['page_title' => __('Checkout Address'), 'carts' => $carts]);
         }
 
-        
+        user()->wallet()->create([
+            'balance'=>0,
+            'currency'=>'SAR'
+        ]);
 
         return redirect(RouteServiceProvider::HOME);
     }

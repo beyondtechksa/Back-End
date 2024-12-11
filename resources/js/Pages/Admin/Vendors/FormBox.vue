@@ -23,6 +23,7 @@
             <input v-model="form.password" :placeholder="__('password')" type="password" class="form-control" :class="{'is-invalid':errors.password}" >
             <div class="text-danger" v-html="errors.password" />
         </div>
+        
         <div class="mb-3 col-md-6">
             <label class="form-label"> {{ __('discount percentage') }} (%) </label>
             <input v-model="form.discount_percentage" :placeholder="__('discount percentage')" type="number" class="form-control" :class="{'is-invalid':errors.discount_percentage}" >
@@ -52,6 +53,14 @@
             <label class="form-label"> {{ __('note') }} </label>
             <input v-model="form.note" :placeholder="__('note')" type="text" class="form-control" :class="{'is-invalid':errors.note}" >
             <div class="text-danger" v-html="errors.note" />
+        </div>
+        <div class="mb-3 col-md-6">
+            <label class="form-label"> {{ __('wallet currency') }} </label>
+            <select class="form-control" :class="{'is-invalid':errors.note}" v-model="form.currency"> 
+                <option :value="'TRY'"> TRY </option>
+                <option :value="'SAR'"> SAR </option>
+            </select>
+            <div class="text-danger" v-html="errors.currency" />
         </div>
         <div class="mb-3 col-md-6">
             <label for="input-label" class="form-label d-block"> {{ __('vendor logo') }} </label>

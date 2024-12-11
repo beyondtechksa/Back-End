@@ -12,22 +12,21 @@ use Illuminate\Support\Facades\Log;
 use App\Facades\Contracts\CompanyDriverInterface;
 use Illuminate\Support\Facades\Auth;
 
-class MixrayDriver implements CompanyDriverInterface
+class JammyBabyDriver implements CompanyDriverInterface
 {
     public function extract($category,$type='scrap')
     {
-        $company_name=CompanyEnums::MIXRAY;
-        $xml = fetchDataFromUrl("https://www.mixray.com/TicimaxXml/5D3719A2668545819072B839B0B45560/");
+        $company_name=CompanyEnums::JAMMYBABY;
+        $xml = fetchDataFromUrl("https://www.jammybaby.com/TicimaxXml/D8D4AD58FCA74685B26E342E041128CB");
         $productsData = simplexml_load_string($xml, "SimpleXMLElement", LIBXML_NOCDATA);
         $products = [];
+        // return $productsData;
         $productIds = TempProduct::where('type', 'company')
             ->where('company_name', $company_name)
             ->pluck('product_id')
             ->toArray();
         $vendor=Vendor::where('name',$company_name)->first();
-        return $productsData;
-        foreach ($productsData->Urunler->Urun as $key=>$product) {
-        // $product=$productsData->Urunler->Urun[0];
+        foreach ($productsData->Urunler->Urun as $product) {
             if (!in_array((string)$product->UrunKartiID, $productIds)) {
                 $colors_ids = [];
                 $color_name = [];
@@ -35,40 +34,52 @@ class MixrayDriver implements CompanyDriverInterface
                 $size_name  = [];
                 $attributes = [];
                 // Convert prices to float for calculations
-                    if($product->VARYASYON_GRUBU_XMLKOD_KONTROL_EDINIZ){
-                        $size_name_tr=(string) $product->VARYASYON_GRUBU_XMLKOD_KONTROL_EDINIZ[1];
-                        if($size_name_tr!=null){
-                            $size_name['or'] = $size_name_tr;
-                            $size = Size::firstOrCreate(['name_tr' => $size_name_tr], [
-                                'name' => $size_name,
-                                'name_tr' => $size_name_tr,
-                            ]);
-                            $sizes_ids[] =  ['id'=>$size->id,'inStock'=>true];
-                        }
+                $priceBeforeDiscount = (float) $product->UrunSecenek->Secenek->SatisFiyati;
+                $priceAfterDiscount = (float) $product->UrunSecenek->Secenek->IndirimliFiyat;
 
-                        $color_name_tr=(string)$product->VARYASYON_GRUBU_XMLKOD_KONTROL_EDINIZ[0];
-                        if($color_name_tr!=null){
-                            $color_name['or'] = $color_name_tr;
-                            $color = Color::firstOrCreate(['name_tr' => $color_name_tr], [
-                                'name' => $color_name,
-                                'name_tr' => $color_name_tr,
-                                'color_code' => '#ffffff',
-                            ]);
-                            $colors_ids[] =  $color->id;
-                        }
+                // Initialize variables
+                $discountAmount = 0;
+                $discountPercentage = 0;
+                $finalPrice = $priceAfterDiscount?$priceAfterDiscount:$priceBeforeDiscount;
+
+                foreach($product->UrunSecenek->Secenek as $secenek){
+                    if($secenek->EkSecenekOzellik){
+                        $size_name_tr=(string) $secenek->EkSecenekOzellik->Ozellik[1];
+                                if($size_name_tr!=null){
+                                    $size_name['or'] = $size_name_tr;
+                                    $size = Size::firstOrCreate(['name_tr' => $size_name_tr], [
+                                        'name' => $size_name,
+                                        'name_tr' => $size_name_tr,
+                                    ]);
+                                    $sizes_ids[] =  ['id'=>$size->id,'inStock'=>true];
+                                }
+
+                                $color_name_tr=(string)$secenek->EkSecenekOzellik->Ozellik[0];
+                                if($color_name_tr!=null){
+                                    $color_name['or'] = $color_name_tr;
+                                    $color = Color::firstOrCreate(['name_tr' => $color_name_tr], [
+                                        'name' => $color_name,
+                                        'name_tr' => $color_name_tr,
+                                        'color_code' => '#ffffff',
+                                    ]);
+                                    $colors_ids[] =  $color->id;
+                                }
+
+
+
                     }
-
-
-                $priceAfterDiscount = (float) $product->IndirimliFiyat;
-                $finalPrice = $priceAfterDiscount;
+                    // Check if VAT is included
+                    $priceBeforeDiscount = (float) $secenek->SatisFiyati;
+                    $priceAfterDiscount = (float) $secenek->IndirimliFiyat;
+                    $finalPrice = $priceAfterDiscount?$priceAfterDiscount:$priceBeforeDiscount;
+                }
 
                 // Encode images and attributes as JSON strings
                 $images = isset($product->Resimler->Resim) ? json_encode($product->Resimler->Resim) : json_encode([]);
-
+                // Prepare product data
                 $company_discount_percentage=$vendor?$vendor->discount_percentage:0;
                 $company_discount_price=$finalPrice * $company_discount_percentage / 100;
 
-                // Prepare product data
                 $products[] = [
                     'product_id' => (string)$product->UrunKartiID,
                     'admin_id' => Auth::guard('admin')->check()?admin()->id:null,
@@ -87,10 +98,10 @@ class MixrayDriver implements CompanyDriverInterface
                     'colors_ids' => json_encode($colors_ids),
                     'company_name' => $company_name,
                     'attributes' => json_encode($attributes),
-                    // 'stock_status' => $stock_status,
                 ];
             }
         }
+        $products=array_unique($products, SORT_REGULAR);
         if($type=='scrap'){
             ScrapeProductsCompany::dispatch($products);
         }elseif($type=='track'){

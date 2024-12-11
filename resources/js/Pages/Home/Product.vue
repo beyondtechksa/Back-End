@@ -579,6 +579,7 @@ import SwiperSlider from '@/Components/SwiperSlider.vue';
     font-style: normal;
     font-weight: 500;
     line-height: normal;
+    padding-bottom: 7px;
   }
 
   .discription p {
@@ -734,6 +735,7 @@ import SwiperSlider from '@/Components/SwiperSlider.vue';
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+  padding-bottom: 7px;
 }
 
 .product-info-content {
