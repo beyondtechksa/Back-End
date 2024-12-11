@@ -7,9 +7,15 @@ use App\Models\Collection;
 
 class FilterService
 {
+    public function __construct(
+        protected CurrencyService $currencyService
+    )
+    {
+    }
+
     public function filter($filterData)
     {
-        $currencyService=new CurrencyService();
+
         $query = Product::withRated()->where('status', 1);
 
         if (!empty($filterData['subCategories'])) {
@@ -32,7 +38,7 @@ class FilterService
         }
 
         if (!empty($filterData['size'])) {
-            $sizeId=$filterData['size'];
+            $sizeId = $filterData['size'];
             $query->whereHas('sizes', function ($q) use ($sizeId) {
                 $q->where('sizes.id', $sizeId);
             });
@@ -40,8 +46,8 @@ class FilterService
 
         if (!empty($filterData['color'])) {
             // $query->whereJsonContains('colors_ids', $filterData['color']);
-            $colorId=$filterData['color'];
-            $query->whereHas('colors', function($q) use ($colorId) {
+            $colorId = $filterData['color'];
+            $query->whereHas('colors', function ($q) use ($colorId) {
                 $q->where('color_product.color_id', $colorId);
             });
         }
@@ -76,9 +82,9 @@ class FilterService
             ->orderBy('ontop', 'desc')
             ->offset($offset)
 //            ->inRandomOrder()
-            ->get()->map(function($product) use($currencyService) {
-                $product['final_selling_price'] = $currencyService->convertPrice($product,$product->final_selling_price);
-                $product['old_price'] = number_format($product->final_selling_price / (1-($product->discount_percentage_selling_price/100)),2);
+            ->get()->map(function ($product) {
+                $product['final_selling_price'] = $this->currencyService->convertPrice($product, $product->final_selling_price);
+                $product['old_price'] = number_format($product->final_selling_price / (1 - ($product->discount_percentage_selling_price / 100)), 2);
                 return $product;
             });
 

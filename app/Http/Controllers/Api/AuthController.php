@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Middleware\Authenticate;
 use App\Models\User;
 use App\Notifications\CustomEmailNotification;
+use App\Notifications\CustomEmailVerificationMobile;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Category;
@@ -31,19 +32,88 @@ class AuthController extends Controller
         if ($validator->fails())
             return response()->json(['errors' => $validator->errors()], 400);
         $data = $request->all();
+        $verificationCode = str_pad(rand(100000, 999999), 6, '0', STR_PAD_LEFT);
+
         $user = User::create([
             'name' => $data['name'],
             'phone' => $data['phone'],
             'email' => $data['email'],
             'gender' => $data['gender'],
             'password' => Hash::make($data['password']),
+            'email_verification_code' => $verificationCode,
+            'email_verification_expires_at' => now()->addMinutes(10),
         ]);
+        $user->notify(new CustomEmailVerificationMobile($verificationCode));
         $data = [
             'phone' => $user->phone,
             'name' => $user->name,
         ];
         return returnSuccess('data', $data, 'user created successfully');
     }
+
+    public function verifyEmail(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'verification_code' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+
+        if (
+            $user->email_verification_code !== $request->verification_code ||
+            now()->isAfter($user->email_verification_expires_at)
+        ) {
+            return response()->json(['message' => 'Invalid or expired verification code.'], 400);
+        }
+        $user->email_verified_at = now();
+        $user->email_verification_code = null;
+        $user->email_verification_expires_at = null;
+        $user->save();
+        return response()->json(['message' => 'Verification code resent to your email.'], 200);
+    }
+
+    public function resendVerificationCode(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+
+        if ($user->email_verified_at) {
+            return response()->json(['message' => 'Email already verified.'], 400);
+        }
+
+        $verificationCode = str_pad(rand(100000, 999999), 6, '0', STR_PAD_LEFT);
+        $expiresAt = now()->addMinutes(10);
+
+        $user->email_verification_code = $verificationCode;
+        $user->email_verification_expires_at = $expiresAt;
+        $user->save();
+
+
+        $user->notify(new CustomEmailVerificationMobile($verificationCode));
+
+        return response()->json(['message' => 'Verification code resent to your email.'], 200);
+    }
+
     public function register2Auth(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -68,7 +138,8 @@ class AuthController extends Controller
                 'email' => $data['email'],
                 'gender' => $data['gender'],
                 'password' => Hash::make(Str::random(20)),
-                'uuid'=>$request->uuid
+                'uuid' => $request->uuid,
+                'email_verified_at' => now(),
             ]);
         }
         $token = $user->createToken('AuthToken')->plainTextToken;
@@ -118,6 +189,7 @@ class AuthController extends Controller
         $user->avatar = url($user->avatar ?? '/image/default.png');
         return returnSuccess('data', $user, 'success');
     }
+
     public function updatePassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -135,6 +207,7 @@ class AuthController extends Controller
 
         return returnSuccess('data', $user, 'success');
     }
+
     protected function updateVerifiedUser(User $user, $request): void
     {
         $user->forceFill([
@@ -160,6 +233,7 @@ class AuthController extends Controller
             ? response()->json(['message' => __($status)], 200)
             : response()->json(['message' => __($status)], 400);
     }
+
     public function resetPassword(Request $request)
     {
         $request->validate([
