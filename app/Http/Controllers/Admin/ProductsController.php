@@ -973,8 +973,10 @@ private function applyGeneralFilters($products, Request $request)
     }
 
     public function tracking_history(){
-        $traking_products= TrakingProduct::with('product')->whereNotNull('product_id')->whereColumn('price','<>','old_price')->orWhereColumn('final_price','<>','old_final_price')
+        $traking_products= TrakingProduct::with('product')->whereNotNull('product_id')
         ->orderBy('updated_at','desc')->paginate(100);
+        // $traking_products= TrakingProduct::with('product')->whereNotNull('product_id')->whereColumn('price','<>','old_price')->orWhereColumn('final_price','<>','old_final_price')
+        // ->orderBy('updated_at','desc')->paginate(100);
         $sizes=Size::get();
         $colors=Color::get();
         return inertia('Products/Tracking', ['traking_products' => $traking_products,'sizes'=>$sizes,'colors'=>$colors])->with(['page_name' => 'tracking history']);

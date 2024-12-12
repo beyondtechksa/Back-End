@@ -175,3 +175,7 @@ ALTER TABLE `return_requests` ADD `image` VARCHAR(255) NULL DEFAULT NULL AFTER `
 ======================================================================
 
 ALTER TABLE `return_items` ADD `return_option` VARCHAR(255) NOT NULL DEFAULT 'wallet' AFTER `return_status_id`;
+
+======================================================================
+
+ALTER TABLE `traking_products` CHANGE `trendyol_product_id` `company_product_id` BIGINT(20) NULL DEFAULT NULL;

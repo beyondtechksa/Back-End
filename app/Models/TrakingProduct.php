@@ -10,7 +10,15 @@ class TrakingProduct extends Model
     use HasFactory;
 
     protected $fillable=[
-        'product_id','company_product_id'
+        'product_id','company_product_id','images','colors_ids','sizes_ids',
+        'price',
+        'discount_price',
+        'discount_percentage',
+        'final_price',
+        'old_price',
+        'old_discount_price',
+        'old_discount_percentage',
+        'old_final_price',
     ];
     protected $casts = [
         'images' => 'json',
