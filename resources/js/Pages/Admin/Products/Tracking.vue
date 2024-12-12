@@ -82,7 +82,7 @@
                                         <span v-if="product.product.status==0" class="badge bg-warning-transparent"> {{ __('not active') }} </span>
                                         <span v-else  class="badge bg-success-transparent"> {{ __('active') }} </span>
                                     </td>
-                                    <td> {{ formateDate(product.updated_at) }} </td>
+                                    <td> {{ formateDate(product.product.tracked_at) }} </td>
                                     <td>
                                         <div class="hstack gap-2 fs-15">
                                             <a style="width:120px" target="_blank" :href="product.product.source_link" class="btn btn-sm btn-warning"><i class="ri-eye-line"></i> {{ __('source Link') }} </a>
