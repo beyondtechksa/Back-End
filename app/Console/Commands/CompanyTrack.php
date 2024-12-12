@@ -30,13 +30,15 @@ class CompanyTrack extends Command
     public function handle()
     {
         $companies=Vendor::get();
-        foreach($companies as $company){
-            if($company->name!='trendyol'){
-        // $company='bigdart';
-        \Log::info('trak '.$company->name);
-                $driver = CompanyFacade::driver($company->name);
-                $products = $driver->extract('test','track');
-            }
+        foreach($companies as $key=>$company){
+            // if($key==0){
+                if($company->name!='trendyol'){
+                    // $company='bigdart';
+                    \Log::info('trak '.$company->name);
+                    $driver = CompanyFacade::driver($company->name);
+                    $products = $driver->extract('test','track');
+                }
+            // }
         }
     }
 }

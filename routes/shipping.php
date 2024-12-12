@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\Shipping\ShippingAuthController;
 use App\Http\Controllers\Shipping\ShippingController;
+use App\Http\Controllers\Admin\OrdersController;
 
 
 Config::set('auth.defines', 'shipping');

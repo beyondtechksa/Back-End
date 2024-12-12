@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Product;
+use Carbon\Carbon;
 
 class UpdateProductsDefaultCurrency extends Seeder
 {
@@ -13,10 +14,10 @@ class UpdateProductsDefaultCurrency extends Seeder
      */
     public function run(): void
     {
-        Product::where('currency_id',null)->chunk(1000,function($products){
+        Product::whereDate('tracked_at',Carbon::today())->chunk(1000,function($products){
             foreach($products as $product){
                 $product->update([
-                    'currency_id'=>3
+                    'tracked_at'=>null
                 ]);
                 $this->command->info('Product updated successfully. '.$product->id.' '.$product->currency_id);
             }
