@@ -9,22 +9,24 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Product;
 use App\Models\File;
+use App\Models\TrakingProduct;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class UpdateProductsCompany implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $products;
-    public $company;
+    protected $products;
+    protected $company;
+
     /**
      * Create a new job instance.
      */
-    public function __construct(array $products,string $company)
+    public function __construct(array $products, string $company)
     {
-      $this->products=$products;
-      $this->company=$company;
-
+        $this->products = $products;
+        $this->company = $company;
     }
 
     /**
@@ -32,65 +34,87 @@ class UpdateProductsCompany implements ShouldQueue
      */
     public function handle(): void
     {
-        $i=0;
-        foreach($this->products as $company_product){
-            $company_product_id=$company_product['product_id'];
-            $product = Product::where('company_product_id',$company_product_id)->whereDate('tracked_at', '!=', Carbon::today())->first();
-            // Add any additional fields you want to update or set on the new record
-            if($product){
-                \Log::info('product old name '.$product->name_tr);
-                \Log::info('product old sizes '.$product->sizes());
-                $i+=1;
+        $trackedCount = 0;
+        try{
+
+        
+        foreach ($this->products as $companyProduct) {
+            $companyProductId = $companyProduct['product_id'] ?? null;
+
+            if (!$companyProductId) {
+                \Log::warning("Invalid product data received: " . json_encode($companyProduct));
+                continue;
+            }
+
+            $product = Product::where('company_product_id', $companyProductId)
+                ->whereDate('tracked_at', '!=', Carbon::today())
+                ->first();
+
+            if ($product) {
+                \Log::info("Updating product: {$product->id}");
+
+                $oldValues = $product->only(['price', 'discount_price', 'final_price', 'discount_percentage']);
+
+                // Update product fields
                 $product->update([
-                    // 'company_name' => $this->company,
-                    'name_tr'=>$company_product['name'],
-                    'desc_tr'=>$company_product['desc'],
-                    'price'=>$company_product['price'],
-                    'discount_price'=>$company_product['discount_price'],
-                    'discount_percentage'=>$company_product['discount_percentage'],
-                    'final_price'=>$company_product['final_price'],
-                    'sale_price'=>$company_product['final_price'],
-                    'tracked_at'=>now()
+                    'name_tr' => $companyProduct['name'] ?? $product->name_tr,
+                    'desc_tr' => $companyProduct['desc'] ?? $product->desc_tr,
+                    'price' => $companyProduct['price'] ?? $product->price,
+                    'discount_price' => $companyProduct['discount_price'] ?? $product->discount_price,
+                    'final_price' => $companyProduct['final_price'] ?? $product->final_price,
+                    'sale_price' => $companyProduct['final_price'] ?? $product->sale_price,
+                    'discount_percentage' => $companyProduct['discount_percentage'] ?? $product->discount_percentage,
+                    'tracked_at' => now(),
                 ]);
 
-                $sizes = json_decode($company_product['sizes_ids'],true);
-                $colors = json_decode($company_product['colors_ids'],true);
+                // Sync sizes and colors
+                $sizes = json_decode($companyProduct['sizes_ids'] ?? '[]', true);
+                $colors = json_decode($companyProduct['colors_ids'] ?? '[]', true);
 
-                $sizesData = array_map(function ($size) {
-                    return ['inStock' => $size['inStock']];
-                }, $sizes);
-                
-                $sizesToSync = [];
-                foreach ($sizes as $size) {
-                    $sizesToSync[$size['id']] = ['inStock' => $size['inStock']];
-                }
-                $product->sizes()->syncWithoutDetaching($sizesToSync);
+                $product->sizes()->syncWithoutDetaching(
+                    collect($sizes)->mapWithKeys(fn($size) => [$size['id'] => ['inStock' => $size['inStock']]])->toArray()
+                );
 
                 $product->colors()->syncWithoutDetaching($colors);
 
-                \Log::info('product new name '.$product->name_tr);
-                \Log::info('product new sizes '.$product->sizes);
-                // files
-                try{
+                // Sync files
+                try {
+                    $newFiles = json_decode($companyProduct['images'] ?? '[]', true) ?? [];
                     $existingFiles = $product->files()->pluck('image')->toArray();
-                    $newFiles = $product['images'] ?? [];
+
                     $filesToAdd = array_diff($newFiles, $existingFiles);
                     $filesToRemove = array_diff($existingFiles, $newFiles);
+
                     foreach ($filesToAdd as $filePath) {
                         $product->files()->create(['image' => $filePath]);
-                        \Log::info('file '.$filePath);
                     }
-                    // Remove old files
-                    File::whereIn('image', $filesToRemove)->where('product_id', $product->id)->delete();
-                    $product->save();
-                    \Log::info('product tracked at '.$product->tracked_at);
-                }catch(\Exception $e){
 
+                    File::whereIn('image', $filesToRemove)->where('product_id', $product->id)->delete();
+                } catch (\Exception $e) {
+                    \Log::error("Error syncing files for product {$product->id}: " . $e->getMessage());
                 }
 
+                // Track changes
+                TrakingProduct::create([
+                    'product_id' => $product->id,
+                    'company_product_id' => $companyProduct['product_id'],
+                    'sizes_ids' => json_decode($companyProduct['sizes_ids']),true,
+                    'price' => $companyProduct['price'],
+                    'discount_price' => $companyProduct['discount_price'],
+                    'final_price' => $companyProduct['final_price'],
+                    'discount_percentage' => $companyProduct['discount_percentage'],
+                    'old_price' => $oldValues['price'],
+                    'old_discount_price' => $oldValues['discount_price'],
+                    'old_final_price' => $oldValues['final_price'],
+                    'old_discount_percentage' => $oldValues['discount_percentage'],
+                ]);
+
+                $trackedCount++;
             }
         }
-
-        \Log::info($i .' products tracked for '.$this->company);
+    }catch(\Exception $e){
+        \Log::error("Error tracking products  for company {$this->company}" );
+    }
+        \Log::info("$trackedCount products tracked for company {$this->company}");
     }
 }
