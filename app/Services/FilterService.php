@@ -34,6 +34,9 @@ class FilterService
         }
 
         if (!empty($filterData['discount']) && is_array($filterData['discount'])) {
+            $filterData['discount'] = array_map(function ($value) {
+                return number_format((float)$value, 2, '.', '');
+            }, $filterData['discount']);
             $query->whereBetween('discount_percentage_selling_price', $filterData['discount']);
         }
 
