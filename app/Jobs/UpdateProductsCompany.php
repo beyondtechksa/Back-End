@@ -35,7 +35,7 @@ class UpdateProductsCompany implements ShouldQueue
     public function handle(): void
     {
         $trackedCount = 0;
-        try{
+        // try{
 
         
         foreach ($this->products as $companyProduct) {
@@ -112,9 +112,9 @@ class UpdateProductsCompany implements ShouldQueue
                 $trackedCount++;
             }
         }
-    }catch(\Exception $e){
-        \Log::error("Error tracking products  for company {$this->company}" );
-    }
+    // }catch(\Exception $e){
+    //     \Log::error("Error tracking products  for company {$this->company}" );
+    // }
         \Log::info("$trackedCount products tracked for company {$this->company}");
     }
 }
