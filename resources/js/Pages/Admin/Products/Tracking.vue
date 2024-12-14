@@ -16,6 +16,7 @@
                                 <tr>
                                     <th scope="col">{{__('image')}}</th>
                                     <th scope="col">{{__('sku')}}</th>
+                                    <th scope="col">{{__('product company')}}</th>
                                     <th scope="col">{{__('product name')}}</th>
                                     <th scope="col">{{__('price')}}</th>
                                     <th scope="col">{{__('old price')}}</th>
@@ -40,6 +41,7 @@
                                     </td>
 
                                     <td>{{product.product.sku}}</td>
+                                    <td>{{product.product.company_name}}</td>
                                     <td>{{product.product.name_ar}} / {{ product.product.name_en }}</td>
                                     <td>
                                         <span v-if="product.old_price != product.price" class="text-success"> {{product.price}} </span>
