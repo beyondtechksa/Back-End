@@ -818,3 +818,12 @@ button:disabled{cursor: not-allowed;}
     margin-top: 10px;
     background: #fff;
 }
+
+span.wallet{
+  width: 100%;
+  display: block;
+  height: 100%;
+  border: 1px solid #ddd;
+  padding: 25px;
+  border-radius: 10px;
+}
