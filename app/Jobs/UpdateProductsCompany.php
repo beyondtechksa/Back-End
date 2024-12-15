@@ -20,6 +20,8 @@ class UpdateProductsCompany implements ShouldQueue
 
     protected $products;
     protected $company;
+    public $timeout = 600;
+    public $tries = 3;
 
     /**
      * Create a new job instance.
