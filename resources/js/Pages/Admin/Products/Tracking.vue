@@ -24,6 +24,8 @@
                                     <th scope="col">{{__('old discount price')}}</th>
                                     <th scope="col">{{__('final price')}}</th>
                                     <th scope="col">{{__('old final price')}}</th>
+                                    <th scope="col">{{__('final selling price')}}</th>
+                                    <th scope="col">{{__('old final selling price')}}</th>
                                     <th scope="col">{{__('sizes')}}</th>
                                     <th scope="col">{{__('status')}}</th>
                                     <th scope="col">{{__('updated at')}}</th>
@@ -66,6 +68,14 @@
                                     <td>
                                         <span v-if="product.old_final_price != product.final_price" class="text-danger"> {{product.old_final_price}} </span>
                                        <span v-else class="text-primary"> {{product.old_final_price}} </span>
+                                    </td>
+                                    <td>
+                                        <span v-if="product.old_final_selling_price != product.final_selling_price" class="text-danger"> {{product.final_selling_price}} </span>
+                                       <span v-else class="text-primary"> {{product.final_selling_price}} </span>
+                                    </td>
+                                    <td>
+                                        <span v-if="product.old_final_selling_price != product.final_selling_price" class="text-danger"> {{product.old_final_selling_price}} </span>
+                                       <span v-else class="text-primary"> {{product.old_final_selling_price}} </span>
                                     </td>
                                     <td>
                                         <span v-if="product.sizes_ids">
