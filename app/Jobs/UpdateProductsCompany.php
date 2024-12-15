@@ -12,6 +12,7 @@ use App\Models\File;
 use App\Models\TrakingProduct;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UpdateProductsCompany implements ShouldQueue
 {
@@ -35,7 +36,7 @@ class UpdateProductsCompany implements ShouldQueue
     public function handle(): void
     {
         $trackedCount = 0;
-        try{
+        // try{
 
         
         foreach ($this->products as $companyProduct) {
@@ -53,8 +54,8 @@ class UpdateProductsCompany implements ShouldQueue
             if ($product) {
                 \Log::info("Updating product: {$product->id}");
 
-                $oldValues = $product->only(['price', 'discount_price', 'final_price', 'discount_percentage']);
-
+                $oldValues = $product->only(['price', 'discount_price', 'final_price', 'discount_percentage','final_selling_price']);
+                Log::info('old price '.$product->final_selling_price);
                 // Update product fields
                 $product->update([
                     'name_tr' => $companyProduct['name'] ?? $product->name_tr,
@@ -63,9 +64,11 @@ class UpdateProductsCompany implements ShouldQueue
                     'discount_price' => $companyProduct['discount_price'] ?? $product->discount_price,
                     'final_price' => $companyProduct['final_price'] ?? $product->final_price,
                     'sale_price' => $companyProduct['final_price'] ?? $product->sale_price,
+                    'final_selling_price'=>update_final_price($product,$companyProduct['final_price']),
                     'discount_percentage' => $companyProduct['discount_percentage'] ?? $product->discount_percentage,
                     'tracked_at' => now(),
                 ]);
+                Log::info('new price '.$product->final_selling_price);
 
                 // Sync sizes and colors
                 $sizes = json_decode($companyProduct['sizes_ids'] ?? '[]', true);
@@ -76,24 +79,26 @@ class UpdateProductsCompany implements ShouldQueue
                 );
 
                 $product->colors()->syncWithoutDetaching($colors);
-
-                // Sync files
-                try {
+                File::where('product_id', $product->id)->delete();
+         
                     $newFiles = json_decode($companyProduct['images'] ?? '[]', true) ?? [];
+                    Log::info('new files' . json_encode($newFiles));
                     $existingFiles = $product->files()->pluck('image')->toArray();
-
+                    Log::info('existing files' .json_encode($existingFiles));
+                    
                     $filesToAdd = array_diff($newFiles, $existingFiles);
+                    $filesToAdd=array_diff($filesToAdd,[$product->image]);
                     $filesToRemove = array_diff($existingFiles, $newFiles);
+                    Log::info('files to add' .json_encode($filesToAdd));
+                    Log::info('files to remove' .json_encode($filesToRemove));
 
                     foreach ($filesToAdd as $filePath) {
-                        $product->files()->create(['image' => $filePath]);
+                            $product->files()->create(['image' => $filePath]);
                     }
+                    Log::info('after updating files'.json_encode($product->files()->pluck('image')->toArray()));
 
                     File::whereIn('image', $filesToRemove)->where('product_id', $product->id)->delete();
-                } catch (\Exception $e) {
-                    \Log::error("Error syncing files for product {$product->id}: " . $e->getMessage());
-                }
-
+             
                 // Track changes
                 TrakingProduct::create([
                     'product_id' => $product->id,
@@ -102,19 +107,22 @@ class UpdateProductsCompany implements ShouldQueue
                     'price' => $companyProduct['price'],
                     'discount_price' => $companyProduct['discount_price'],
                     'final_price' => $companyProduct['final_price'],
+                    'final_selling_price' => $product->final_selling_price,
                     'discount_percentage' => $companyProduct['discount_percentage'],
                     'old_price' => $oldValues['price'],
                     'old_discount_price' => $oldValues['discount_price'],
                     'old_final_price' => $oldValues['final_price'],
                     'old_discount_percentage' => $oldValues['discount_percentage'],
+                    'old_final_selling_price' => $oldValues['final_selling_price'],
+                    'images'=>json_decode($companyProduct['images'] ?? '[]', true) ?? []
                 ]);
 
                 $trackedCount++;
             }
         }
-    }catch(\Exception $e){
-        \Log::error("Error tracking products  for company {$this->company}" );
-    }
+    // }catch(\Exception $e){
+    //     \Log::error("Error tracking products  for company {$this->company}" );
+    // }
         \Log::info("$trackedCount products tracked for company {$this->company}");
     }
 }
