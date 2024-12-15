@@ -38,7 +38,7 @@ class CompanyTrack extends Command
                     \Log::info('trak '.$company->name);
                     $driver = CompanyFacade::driver($company->name);
                     $products = $driver->extract('test','track');
-                    sleep(20);
+                    sleep(120);
                 }
             // }
         }
