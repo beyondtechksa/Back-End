@@ -460,7 +460,7 @@ if (!function_exists('update_final_price')) {
         $final_price += ($product->commercial_percentage * $new_price / 100); // shipping
         $final_price += $product->manual_price_adjustment;
         $final_price+=($final_price*$product->tax_percentage/100);  //vat
-        $final_price+=($final_price*$product->discount_percentage_selling_price/100);  //discount
+        $final_price-=($final_price*$product->discount_percentage_selling_price/100);  //discount
         return $final_price;
     }
 }
