@@ -31,12 +31,14 @@ class CompanyTrack extends Command
     {
         $companies=Vendor::get();
         foreach($companies as $key=>$company){
+            $products=[];
             // if($key==0){
                 if($company->name!='trendyol'){
                     // $company='bigdart';
                     \Log::info('trak '.$company->name);
                     $driver = CompanyFacade::driver($company->name);
                     $products = $driver->extract('test','track');
+                    sleep(20);
                 }
             // }
         }
