@@ -266,7 +266,7 @@ class ProductsController extends Controller
             'weight' => $data['weight'],
             'weight_unit' => $data['weight_unit'],
             'discount_price' => $data['discount_price'],
-            'image' => $data['image'],
+            'image' => url($data['image']),
             'start_at' => $data['start_at'],
             'end_at' => $data['end_at'],
         ]);
@@ -297,7 +297,7 @@ class ProductsController extends Controller
                 if ($file['image'] != null) {
                     File::create([
                         'product_id' => $product->id,
-                        'image' => $file['image']
+                        'image' => url($file['image'])
                     ]);
                 }
             }
