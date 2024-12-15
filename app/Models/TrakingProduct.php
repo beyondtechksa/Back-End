@@ -19,6 +19,8 @@ class TrakingProduct extends Model
         'old_discount_price',
         'old_discount_percentage',
         'old_final_price',
+        'final_selling_price',
+        'old_final_selling_price',
     ];
     protected $casts = [
         'images' => 'json',

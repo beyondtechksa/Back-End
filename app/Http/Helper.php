@@ -449,6 +449,19 @@ if (!function_exists('calc_final_price')) {
         return $final_price;
     }
 }
+if (!function_exists('update_final_price')) {
+    function update_final_price(Product $product,$new_price)
+    {
+        $final_price = $new_price;
+        $final_price += ($product->packaging_shipping_fees * $new_price / 100);
+        $final_price += ($product->management_fees * $new_price / 100);
+        $final_price += ($product->profit_percentage * $new_price / 100);
+        $final_price += ($product->commercial_percentage * $new_price / 100); // shipping
+        $final_price += $product->manual_price_adjustment;
+        $final_price+=($final_price*$product->tax_percentage/100);  //vat
+        return $final_price;
+    }
+}
 if (!function_exists('calc_product_finale_price')) {
     function calc_product_finale_price(Product $product, $discount)
     {
