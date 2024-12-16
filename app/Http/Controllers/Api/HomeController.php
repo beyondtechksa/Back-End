@@ -39,6 +39,7 @@ class HomeController extends Controller
         ]);
         if ($validator->fails())
             return response()->json(['errors' => $validator->errors()], 400);
+        $subCategories = [];
         $filter_data = $request->input('filter_data', []);
         if (\request()->has('category_id') && \request('category_id') != null) {
             $leafCategories = collect();
@@ -59,11 +60,15 @@ class HomeController extends Controller
             $filter_data['subCategories'] = array_key_exists('subCategories', $filter_data) && is_array($filter_data['subCategories'])
                 ? collect($filter_data['subCategories'])->merge($leafCategories)->unique()->values()->all()
                 : $leafCategories->values()->all();
+            $subCategories = Category::where('status', 1)->whereIn('id', $leafCategories)->get();
         }
 
         $products = new ProductResourceCollection($filterService->filter($filter_data), $currency);
-
-        return returnSuccess('products', $products, 'success');
+        $data = [
+            'products' => $products,
+            'subCategories' => $subCategories,
+        ];
+        return returnSuccess('products', $data, 'success');
     }
 
     public function storeOrder(OrderService $orderService, Request $request)
