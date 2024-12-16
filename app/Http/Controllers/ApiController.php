@@ -601,7 +601,7 @@ class ApiController extends Controller
         $cart_items = Cart::with([
             'product' => function ($query) {
                 $query->with(['sizes','colors'])->select('id', 'name_en', 'name_ar', 'sku',
-                    'brand_id', 'image', 'final_selling_price',
+                    'brand_id', 'image', 'final_selling_price','currency_id',
                     'discount_percentage_selling_price as discount_percentage','tax_percentage');
             }, 'product.brand' => function ($query) {
                 $query->select('id', 'name');
