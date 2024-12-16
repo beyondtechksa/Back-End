@@ -379,31 +379,41 @@ if (!function_exists('exchange_price')) {
 if (!function_exists('get_shipping_price')) {
     function get_shipping_price()
     {
+        $currencyService = new CurrencyService();
         $shipping = Shipping::first();
-        if ($shipping) {
-            if(user()){
-                $carts = Cart::with('product')->where('user_id', user()->id)->get();
-            $totalPrice = $carts->sum(function ($cartItem) {
-                if($cartItem->product){
-                    return $cartItem->product->final_selling_price * $cartItem->quantity;
-                }
-                return 0;
-            });
 
-            if ($shipping->free_shipping_start_at) {
-                $now = Carbon::now();
-                $startDate = Carbon::parse($shipping->free_shipping_start_at);
-                $endDate = Carbon::parse($shipping->free_shipping_end_at);
-                if ($now->between($startDate, $endDate)) {
-                    return 0;
-                }
-            } elseif ($shipping->free_shipping_start_at_amount > 0 && $shipping->free_shipping_start_at_amount <= exchange_price($totalPrice, 'SAR')) {
+        if (!$shipping) {
+            return 0; 
+        }
+
+        $shippingPrice = $shipping->price;
+
+        if (!user()) {
+            return $shippingPrice; 
+        }
+
+        $carts = Cart::with('product')->where('user_id', user()->id)->get();
+        $totalPrice = $carts->sum(function ($cartItem) use ($currencyService) {
+            return $cartItem->product
+                ? $currencyService->convertPrice($cartItem->product, $cartItem->product->final_selling_price) * $cartItem->quantity
+                : 0;
+        });
+
+        if ($shipping->free_shipping_start_at && $shipping->free_shipping_end_at) {
+            $now = Carbon::now();
+            $startDate = Carbon::parse($shipping->free_shipping_start_at);
+            $endDate = Carbon::parse($shipping->free_shipping_end_at);
+
+            if ($now->between($startDate, $endDate)) {
                 return 0;
             }
-            }         
-            return $shipping->price;
         }
-        return 0;
+
+        if ($shipping->free_shipping_start_at_amount > 0 && $totalPrice >= $shipping->free_shipping_start_at_amount) {
+            return 0; 
+        }
+
+        return $shippingPrice; 
     }
 
 

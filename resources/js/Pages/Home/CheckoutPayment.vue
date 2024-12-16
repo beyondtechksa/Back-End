@@ -74,10 +74,10 @@
                                                 </a>
                                                 <a href="#" @click="loadPaymentIframe('tabby')">
                                                     <img src="/home/img/mathod1.png" alt="" />
-                                                </a>
+                                                </a> -->
                                                 <a href="#" @click="loadPaymentIframe('tamara')">
                                                     <img src="/home/img/tamara.png" alt="" />
-                                                </a> -->
+                                                </a>
                                                 <a href="#" @click="loadPaymentIframe('clickPay')">
                                                     <img src="/home/img/ClickPayLogo.png" alt="" />
                                                 </a>
@@ -129,7 +129,18 @@
 
                             <div class="col-lg-5">
                                 <div class="order-details">
-                                    <order-details :carts="carts"></order-details>
+                                    <order-details :carts="carts" ref="orderDetails"></order-details>
+                                    <div v-if="$page.props.auth.user.wallet && $page.props.auth.user.wallet.balance>0">
+                                    <div class="Amount d-flex justify-content-between">
+                                        <h3>{{ __('wallet') }}</h3>
+                                        <h3 class="Total-amount">{{'SAR'}} {{ $page.props.auth.user.wallet.balance }}</h3>
+                                    </div>
+                                    <div class="order-button mt-5">
+                                    <button type="button" @click="update_user_wallet_used()" v-if="$page.props.auth.user.wallet_used"> Don't Use wallet </button>
+                                    <button type="button" @click="update_user_wallet_used()" v-else> Use wallet </button>
+                                    <button v-if="total_after_wallet==0" class="mt-3" type="button" @click="place_order()" > Place order </button>
+                                    </div>
+                                    </div>
                                     <div class="mt-4 order-button">
                                         <!-- Pay Now button -->
                                     </div>
@@ -163,6 +174,7 @@ import OrderDetails from './Components/OrderDetails.vue';
 export default {
     components: { App, ProductBox, OrderDetails },
     props: {
+        total_after_wallet : Number,
         carts: Array,
         frame: String  // Tamara payment iframe URL coming from the backend
     },
@@ -178,8 +190,26 @@ export default {
         }
     },
     methods: {
+        handleQuantityUpdated(){
+          if (this.$refs.orderDetails) {
+            this.$refs.orderDetails.calculate_order();
+          } else {
+            console.error('OrderDetails component is not available');
+          }
+        }, 
+
+        place_order(){
+            this.form.post(route('order.place'))
+        },
         pay() {
             this.form.post(route('order.create'))
+        },
+        update_user_wallet_used(){
+            this.form.post(route('user.update_wallet_used_status'),{
+                onSuccess : ()=>{
+                    this.handleQuantityUpdated()
+                }
+            })
         },
         loadPaymentIframe(method) {
             if(method == 'clickPay'){
@@ -252,6 +282,7 @@ export default {
     },
     mounted() {
         this.startApiCalls(); // Start the interval when the component is mounted
+
     },
     beforeDestroy() {
         this.stopApiCalls(); // Clear the interval if the component is destroyed
