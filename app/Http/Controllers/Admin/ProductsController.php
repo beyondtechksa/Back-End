@@ -413,7 +413,7 @@ class ProductsController extends Controller
                 if ($file['image'] != null) {
                     File::create([
                         'product_id' => $product->id,
-                        'image' => $file['image']
+                        'image' => url($file['image'])
                     ]);
                 }
             }

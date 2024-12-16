@@ -20,7 +20,7 @@ class UpdateSarProductsImage extends Seeder
                 'image'=>url($product->image)
             ]);
 
-            foreach ($product->files() as $file){
+            foreach ($product->files as $file){
                 $file->update([
                     'image'=>url($file->image)
                 ]);
