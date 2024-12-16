@@ -266,7 +266,7 @@ class ProductsController extends Controller
             'weight' => $data['weight'],
             'weight_unit' => $data['weight_unit'],
             'discount_price' => $data['discount_price'],
-            'image' => $data['image'],
+            'image' => url($data['image']),
             'start_at' => $data['start_at'],
             'end_at' => $data['end_at'],
         ]);
@@ -297,7 +297,7 @@ class ProductsController extends Controller
                 if ($file['image'] != null) {
                     File::create([
                         'product_id' => $product->id,
-                        'image' => $file['image']
+                        'image' => url($file['image'])
                     ]);
                 }
             }
@@ -413,7 +413,7 @@ class ProductsController extends Controller
                 if ($file['image'] != null) {
                     File::create([
                         'product_id' => $product->id,
-                        'image' => $file['image']
+                        'image' => url($file['image'])
                     ]);
                 }
             }
@@ -781,7 +781,7 @@ private function applyGeneralFilters($products, Request $request)
         foreach ($checked as $product_id) {
             $product = Product::find($product_id);
             $formula = PriceFormula::find($request->formula_id);
-            $final_price = calc_final_price($product->final_price, $formula);
+            $final_price = calc_final_price($product->final_price, $formula,$product->discount_percentage_selling_price);
             $product->update([
                 'tax_percentage' => $formula->discount_percentage_selling_price, // vat
                 'packaging_shipping_fees' => $formula->packaging_shipping_fees,

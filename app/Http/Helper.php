@@ -437,7 +437,7 @@ if (!function_exists('user_favourites')) {
     }
 }
 if (!function_exists('calc_final_price')) {
-    function calc_final_price($price, PriceFormula $formula)
+    function calc_final_price($price, PriceFormula $formula,$discount_percentage_selling_price=0)
     {
         $final_price = $price;
         $final_price += ($formula->packaging_shipping_fees * $price / 100);
@@ -446,6 +446,21 @@ if (!function_exists('calc_final_price')) {
         $final_price += ($formula->commercial_percentage * $price / 100); // shipping
         $final_price += $formula->manual_price_adjustment;
         $final_price+=($final_price*$formula->discount_percentage_selling_price/100);  //vat
+        $final_price-=($final_price*$discount_percentage_selling_price/100);  //discount
+        return $final_price;
+    }
+}
+if (!function_exists('update_final_price')) {
+    function update_final_price(Product $product,$new_price)
+    {
+        $final_price = $new_price;
+        $final_price += ($product->packaging_shipping_fees * $new_price / 100);
+        $final_price += ($product->management_fees * $new_price / 100);
+        $final_price += ($product->profit_percentage * $new_price / 100);
+        $final_price += ($product->commercial_percentage * $new_price / 100); // shipping
+        $final_price += $product->manual_price_adjustment;
+        $final_price+=($final_price*$product->tax_percentage/100);  //vat
+        $final_price-=($final_price*$product->discount_percentage_selling_price/100);  //discount
         return $final_price;
     }
 }
