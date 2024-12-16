@@ -118,8 +118,11 @@ Route::middleware(['auth','verified'])->group(function () {
 
     Route::post('/cart_checkout', [StartController::class, 'go_checkout'])->name('cart.go_checkout');
     Route::post('/cart_add_coupon', [StartController::class, 'add_coupon'])->name('cart.add_coupon');
+    Route::post('/update_wallet_used_status', [StartController::class, 'update_wallet_used_status'])->name('user.update_wallet_used_status');
     Route::post('/create_order', [StartController::class, 'create_order'])->name('order.create');
-    Route::get('/order_success', action: [StartController::class, 'order_success'])->name('order.success');
+    Route::post('/place_order', [StartController::class, 'place_order'])->name('order.place');
+    Route::get('/order_success',[StartController::class, 'order_success'])->name('order.success');
+    Route::get('/order_success/{id}',[StartController::class, 'place_order_success'])->name('order.place_success');
 
     Route::post('/create_rate', [StartController::class, 'storeRate'])->name('store.rating');
     Route::post('/delete-account', [StartController::class, 'deleteAccount'])->name('delete.account');
