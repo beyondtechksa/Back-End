@@ -36,11 +36,13 @@ class UpdateVendorProductsDiscount implements ShouldQueue
             if ($product) {
                 $discount_price=$product->price * $this->discount_percentage/100;
                 $sale_price = $product->price - $discount_price;
+                $final_selling_price = update_final_price($product,$sale_price);
                 $product->update([
                     'discount_percentage'=>$this->discount_percentage,
                     'discount_price'=>$discount_price,
                     'sale_price'=>$sale_price,
                     'final_price'=>$sale_price,
+                    'final_selling_price'=>$final_selling_price,
                 ]);
 
                 Log::info("Product ID {$product->id} updated.");

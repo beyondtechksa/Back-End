@@ -29,6 +29,7 @@ class User extends Authenticatable
         'uuid',
         'gender',
         'apple_id',
+        'wallet_used'
     ];
 
 

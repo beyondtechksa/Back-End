@@ -72,7 +72,7 @@ class ClickPayService
     protected function modifyCart($carts)
     {
         $orderData = (new OrderService())->calculateOrder($carts);
-        $this->total = $orderData['total'];
+        $this->total = $orderData['total_after_wallet'];
         $this->cart_id = json_encode($carts->pluck('id')->toArray());
     }
 

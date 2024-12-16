@@ -687,10 +687,13 @@ class StartController extends Controller
 
     public function payment()
     {
-        $carts = Cart::with('product.brand')->where('user_id', user()->id)->where('selected',1)->get();
-        $res = (new PaymentService())->loadTelrIframe(user()->id);
+        $orderService = new OrderService();
+        $carts = (new GlobalService())->get_user_selected_cart(user()->id);
+        // $res = (new PaymentService())->loadTelrIframe(user()->id);
         $frame = isset($res) && $res['order'] && $res['order']['url'] ? $res['order']['url'] : null;
-        return inertia('Home/CheckoutPayment', ['carts' => $carts, 'frame' => $frame])->with(['page_title' => __('Checkout Payment')]);
+        $order_data = $orderService->calculateOrder($carts);
+        $total_after_wallet = $order_data['total_after_wallet'];
+        return inertia('Home/CheckoutPayment', ['carts' => $carts, 'frame' => $frame,'total_after_wallet'=>$total_after_wallet])->with(['page_title' => __('Checkout Payment')]);
     }
 
 
@@ -818,6 +821,24 @@ class StartController extends Controller
             return back()->withErrors(['error' => 'Something went wrong']);
         }
     }
+    public function place_order(OrderService $orderService)
+    {
+        // try {
+            $order = $orderService->order(user()->id);
+            return redirect()->route('order.place_success', $order->id);
+        // } catch (OrderCreationException $exception) {
+        //     return back()->withErrors(['error' => 'Order creation failed']);
+        // } catch (\Exception $e) {
+        //     return back()->withErrors(['error' => 'Something went wrong']);
+        // }
+    }
+
+    public function place_order_success($id){
+        $order=Order::findOrFail($id);
+        return inertia('Home/OrderSuccess', [
+            'order' => $order
+        ]);
+    }
 
     public function order_success()
     {
@@ -912,7 +933,7 @@ class StartController extends Controller
     {
         $currencyService = new CurrencyService();
         $products = Product::with('brand')->latest()
-            ->select('id','name_en','name_ar','brand_id','image','final_selling_price','old_price')
+            ->select('id','name_en','name_ar','brand_id','image','final_selling_price','old_price','currency_id')
             ->where('status', 1)
             ->where(function ($query) use ($request) {
                 $query->where('name_en', 'like', '%' . $request->search_value . '%')
@@ -940,5 +961,14 @@ class StartController extends Controller
         }
         $user->delete();
         return redirect('login');
+    }
+
+
+    public function update_wallet_used_status(Request $request){
+        $user=Auth::user();
+        $user->update([
+            'wallet_used'=>! $user->wallet_used
+        ]);
+        return redirect()->back();
     }
 }

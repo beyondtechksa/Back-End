@@ -26,7 +26,7 @@ class OrderService
     /**
      * @throws OrderCreationException
      */
-    public function order($user_id, $payment_id, $currency = 'SAR')
+    public function order($user_id, $payment_id=null, $currency = 'SAR')
     {
         try {
             DB::beginTransaction();
@@ -97,22 +97,34 @@ class OrderService
         return $vat;
     }
 
-    private function createOrder($carts,$userId, $address,$currency, $payment_id)
+    private function createOrder($carts,$userId, $address,$currency, $payment_id=null)
     {
         $orderData = $this->calculateOrder($carts);
-        return Order::create([
+        $order = Order::create([
             'user_id' => $userId,
             'address' => $address,
             'subtotal_amount' => $orderData['subtotal'],
             'shipping' => $orderData['shipping'],
             'discount' => $orderData['cart_discount_coupon'],
             'total_amount' => $orderData['total'],
+            'wallet_amount' => $orderData['wallet_amount'],
             'status' => 0,
             'payment_id' => $payment_id,
             'vat' => $orderData['vat'],
             'currency' => $currency,
             'status'=>2
         ]);
+        if($orderData['wallet_amount'] > 0){
+            $user=User::find($userId);
+            if($user->wallet && $user->wallet->balance >= $orderData['wallet_amount']){
+                $user->wallet->update([
+                    'balance'=>$user->wallet->balance - $orderData['wallet_amount']
+                ]);
+            }
+        }
+
+        return $order;
+
     }
 
     private function createOrderItems($order, $carts)
@@ -214,6 +226,9 @@ class OrderService
             }
         }
         $totalBeforeDiscount = $subtotal + $shipping;
+        $total = number_format($totalBeforeDiscount - ($totalBeforeDiscount*$cart_discount_coupon/100) ,2);
+        $user_balance = user()->wallet?user()->wallet->balance:0;
+        $wallet_amount = min($user_balance, $total);
         $data=[
             'subtotal' => number_format($subtotal,2),
             'subtotalBeforeVat' => number_format($subtotalBeforeVat,2),
@@ -221,7 +236,9 @@ class OrderService
             'cart_discount_coupon' => number_format($cart_discount_coupon,2),
             'shipping' => number_format($shipping,2),
             'totalBeforeDiscount' => number_format($totalBeforeDiscount,2),
-            'total' => number_format($totalBeforeDiscount - ($totalBeforeDiscount*$cart_discount_coupon/100) ,2),
+            'total' => $total,
+            'wallet_amount' => $wallet_amount,
+            'total_after_wallet' =>  user()->wallet_used ? $total - $wallet_amount : $total,
         ];
         return $data;
     }
