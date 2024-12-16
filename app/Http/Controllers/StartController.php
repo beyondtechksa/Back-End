@@ -493,7 +493,7 @@ class StartController extends Controller
             Cart::where('user_id', user()->id)->whereNotIn('id', $request->checked)->update([
                 'selected' => 0
             ]);
-            return 'success';
+            return redirect()->back();
         }
     }
 
@@ -910,13 +910,19 @@ class StartController extends Controller
 
     public function search_products(Request $request)
     {
+        $currencyService = new CurrencyService();
         $products = Product::with('brand')->latest()
+            ->select('id','name_en','name_ar','brand_id','image','final_selling_price','old_price')
             ->where('status', 1)
             ->where(function ($query) use ($request) {
                 $query->where('name_en', 'like', '%' . $request->search_value . '%')
                     ->orwhere('name_ar', 'like', '%' . $request->search_value . '%')
                     ->orwhere('sku', $request->search_value);
-            })->limit(10)->get();
+            })->limit(10)->get()->map(function($product) use($currencyService) {
+                $product['final_selling_price'] = $currencyService->convertPrice($product,$product->final_selling_price);
+                $product['old_price'] = number_format($product->final_selling_price / (1-($product->discount_percentage_selling_price/100)),2);
+                return $product;
+            });
         return $products;
     }
 

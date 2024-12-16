@@ -56,7 +56,7 @@
                 </div>
                 <div class="selection d-flex gap-3 mt-3">
                       <label id="checkAll" class="custom-checkbox">
-                        <input  v-model="checkAll" type="checkbox">
+                        <input @change="update_cart_checked()"  v-model="checkAll" type="checkbox">
                         <span class="checkmark"></span>
                         {{ __('select all') }}
                       </label>
@@ -65,7 +65,7 @@
                   <div class="d-flex align-items-center gap-3">
                     <div class="selection mx-2">
                       <label class="custom-checkbox">
-                        <input  v-model="checked" :value="cart.id" type="checkbox">
+                        <input @change="update_cart_checked()"  v-model="checked" :value="cart.id" type="checkbox">
                         <span class="checkmark"></span>
                       </label>
                     </div>
@@ -327,6 +327,7 @@
             quantity:0,
             size:null,
             color:null,
+            checked:[]
           }),
           vform:new Form({
             checked:[]
@@ -336,12 +337,22 @@
         }
       },
       methods:{
+
+        update_cart_checked(){
+          this.form.checked = this.checked
+          this.form.post(route('cart.select_items'),{
+            onSuccess:()=>{
+              this.handleQuantityUpdated()
+            }
+          })
+
+        },
         next(){
-          this.vform.checked=this.checked
-          this.vform.post((route('cart.select_items')))
-              .then((resp)=>{
+          // this.vform.checked=this.checked
+          // this.vform.post((route('cart.select_items')))
+          //     .then((resp)=>{
                 this.$inertia.visit(route('cart.checkout.address'))
-              })
+              // })
         },
         update_size_color(cart){
           this.form.id=cart.id
@@ -431,6 +442,17 @@
                 return 0
             },
 
+      },
+      watch:{
+        // checked: {
+        //   handler(newChecked, oldChecked) {
+        //     console.log('Checked IDs changed:');
+        //     console.log('New:', newChecked);
+        //     console.log('Old:', oldChecked);
+        //     this.update_checked
+        //   },
+        //   deep: true, 
+        // },
       },
       computed: {
             checkAll: {
