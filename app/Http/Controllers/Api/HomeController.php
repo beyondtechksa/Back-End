@@ -205,13 +205,13 @@ class HomeController extends Controller
             })
             ->latest();
         $products = $productsQuery->paginate($perPage);
-        $currencyService = new CurrencyService();
-        $products->getCollection()->transform(function ($product) use ($currencyService) {
+        $currencyService=new CurrencyService();
+        $products->getCollection()->transform(function ($product) use($currencyService){
             if ($product->brand && $product->brand->image) {
                 $product->brand->image = url($product->brand->image);
 
             }
-            $product['final_selling_price'] = $currencyService->convertPrice($product, $product->final_selling_price);
+            $product['final_selling_price'] = $currencyService->convertPrice($product,$product->final_selling_price);
             return $product;
         });
         $products = new ProductResourceCollection($products, $currency);
@@ -270,7 +270,6 @@ class HomeController extends Controller
         $user->restore();
         return returnSuccess('message', '', 'User has been restored. you can login now');
     }
-
     public function socials()
     {
         $setting = Cache::remember(CacheEnums::SOCIAL_LINKS(), CacheEnums::CACHE_TIME, function () {
@@ -282,12 +281,12 @@ class HomeController extends Controller
     public function notifications()
     {
         $limit = request()->get('limit', 10);
-        $notification = Auth::user()->notifications()->paginate($limit);
-        $data = [
-            'notifications' => $notification,
-            'unreadNotificationCount' => Auth::user()->unreadNotifications()->count(),
-        ];
-        return returnSuccess('notifications', $data, 'success');
+       $notification= Auth::user()->notifications()->paginate($limit);
+       $data = [
+           'notifications' => $notification,
+           'unreadNotificationCount' => Auth::user()->unreadNotifications()->count(),
+       ];
+       return returnSuccess('notifications', $data, 'success');
     }
 
     public function markAsRead($id)
