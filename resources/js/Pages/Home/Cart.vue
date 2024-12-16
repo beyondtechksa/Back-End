@@ -65,7 +65,7 @@
                   <div class="d-flex align-items-center gap-3">
                     <div class="selection mx-2">
                       <label class="custom-checkbox">
-                        <input  v-model="checked" :value="cart.id" type="checkbox">
+                        <input @change="update_cart_checked(cart.id)"  v-model="checked" :value="cart.id" type="checkbox">
                         <span class="checkmark"></span>
                       </label>
                     </div>
@@ -336,6 +336,11 @@
         }
       },
       methods:{
+
+        update_cart_checked(id){
+          // this.form.post(route('cart.update_selected'))
+
+        },
         next(){
           this.vform.checked=this.checked
           this.vform.post((route('cart.select_items')))
@@ -431,6 +436,17 @@
                 return 0
             },
 
+      },
+      watch:{
+        // checked: {
+        //   handler(newChecked, oldChecked) {
+        //     console.log('Checked IDs changed:');
+        //     console.log('New:', newChecked);
+        //     console.log('Old:', oldChecked);
+        //     this.update_checked
+        //   },
+        //   deep: true, 
+        // },
       },
       computed: {
             checkAll: {
