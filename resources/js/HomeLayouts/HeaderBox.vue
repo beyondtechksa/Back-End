@@ -109,7 +109,7 @@
                                 />
                                 <div class="suggestion-list" :class="{'showNow':vform.search_value}">
                                 <div class="products" v-if="products.length>0">
-                                   <Link :href="route('product.show',product.id)" class="d-flex product-list gap-2" v-for="product,index in products" :key="index">
+                                   <Link :href="route('product.show',{id:product.id,slug:product.slug})" class="d-flex product-list gap-2" v-for="product,index in products" :key="index">
                                     <img v-lazy="product.image">
                                     <div class="details">
                                     <h3 class="brand"> <span v-if="product.brand"> {{product.brand.translated_name}} </span> </h3>
@@ -346,12 +346,12 @@
                         <li class="" v-for="child,index in main_category.children" :key="index">
                             <Link class="" @mouseover="select_main_child(child)" :href="'/shop?category_id='+child.id" >{{ child.translated_name }}</Link>
                         </li>
-                        <li class="">
+                        <!-- <li class="">
                             <Link class=" sale" @mouseover="main_child=null" :href="'/products?type=sale&category_id='+main_category.id" >
                                 {{ __('Sale') }}
                                 <img src="/home/img/discount.svg" />
                             </Link>
-                        </li>
+                        </li> -->
                     </ul>
                 </div>
             </div>
