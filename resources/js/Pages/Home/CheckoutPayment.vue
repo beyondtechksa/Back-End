@@ -77,6 +77,7 @@
                                                 </a> -->
                                                 <a href="#" @click="loadPaymentIframe('tamara')">
                                                     <img src="/home/img/tamara.png" alt="" />
+
                                                 </a>
                                                 <a href="#" @click="loadPaymentIframe('clickPay')">
                                                     <img src="/home/img/ClickPayLogo.png" alt="" />
@@ -97,7 +98,7 @@
                                                 <img src="/home/img/mathod65.png" alt="" />
                                             </a>
                                         </div>
-                                         <!--<iframe v-if="showTamaraFrame" id="tamara" v-lazy="paymentUrl" sandbox="allow-forms allow-modals allow-popups-to-escape-sandbox allow-popups allow-scripts allow-top-navigation allow-same-origin"></iframe> -->
+                                         <iframe v-if="showTamaraFrame" id="tamara" v-lazy="paymentUrl" sandbox="allow-forms allow-modals allow-popups-to-escape-sandbox allow-popups allow-scripts allow-top-navigation allow-same-origin"></iframe>
 
                                         <iframe v-if="showIFrame"      id="telr"   :src="paymentUrl" sandbox="allow-forms allow-modals allow-popups-to-escape-sandbox allow-popups allow-scripts allow-top-navigation allow-same-origin"></iframe>
 
@@ -263,7 +264,7 @@ export default {
                 const data = await response.json();
                 if (data.status == "authorised") { // Adjust based on your API response structure
                      window.location.href  = `/tamara/order_success/${this.user_id}`;
- 
+
                 }
             } catch (error) {
                 console.error('Error fetching API:', error);
