@@ -76,7 +76,7 @@ class PaymentService
     protected function modifyCart($carts, $currency)
     {
         $orderData=(new OrderService())->calculateOrder($carts);
-        $this->total =$orderData['total'];
+        $this->total =$orderData['total_after_wallet'];
         $this->cart_id = json_encode($carts->pluck('id')->toArray());
     }
 

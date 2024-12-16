@@ -48,6 +48,10 @@
             <h3>{{ __('Total Amount') }}</h3>
             <h3 class="Total-amount">{{'SAR'}} {{ data.total }}</h3>
             </div>
+            <div class="Amount d-flex justify-content-between">
+            <h3>{{ __('Need to pay amount') }}</h3>
+            <h3 class="Total-amount">{{'SAR'}} {{ data.total_after_wallet }}</h3>
+            </div>
         </div>
 
 </template>

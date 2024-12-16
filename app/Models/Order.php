@@ -15,6 +15,7 @@ class Order extends Model
         'shipping',
         'discount',
         'total_amount',
+        'wallet_amount',
         'address',
         'status',
         'payment_id',

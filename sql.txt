@@ -181,3 +181,7 @@ ALTER TABLE `return_items` ADD `return_option` VARCHAR(255) NOT NULL DEFAULT 'wa
 ALTER TABLE `traking_products` CHANGE `trendyol_product_id` `company_product_id` BIGINT(20) NULL DEFAULT NULL;
 ======================================================================
 ALTER TABLE `traking_products` ADD `final_selling_price` DECIMAL(10,2) NULL DEFAULT NULL AFTER `old_stock_status`, ADD `old_final_selling_price` DECIMAL(10,2) NULL DEFAULT NULL AFTER `final_selling_price`;
+======================================================================
+ALTER TABLE `users` ADD `wallet_used` BOOLEAN NOT NULL DEFAULT FALSE AFTER `uuid`;
+ALTER TABLE `orders` ADD `wallet_amount` DECIMAL(10,2) NOT NULL DEFAULT '0' AFTER `total_amount`;
+ALTER TABLE `orders` CHANGE `payment_id` `payment_id` INT(11) NULL DEFAULT NULL;

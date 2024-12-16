@@ -21,6 +21,7 @@ class DenokidsDriver implements CompanyDriverInterface
         // $type  = scrap or track
         $xml = fetchDataFromUrl("http://b2b.ayensoftware.com/xml/reply/IdeasoftVaryantV4XmlRequest?MusteriId=5168&DukkanId=19&MusteriTedarikciId=42");
         $productsData = simplexml_load_string($xml, "SimpleXMLElement", LIBXML_NOCDATA);
+        return $productsData;
         $products = [];
 
         $productIds = TempProduct::where('type', 'company')

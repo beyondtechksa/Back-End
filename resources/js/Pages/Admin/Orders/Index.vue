@@ -64,6 +64,7 @@
                                 <th scope="col">{{ __('discount') }}</th>
                                 <th scope="col">{{ __('vat') }}</th>
                                 <th scope="col">{{ __('total amount') }}</th>
+                                <th scope="col">{{ __('wallet amount') }}</th>
                                 <th scope="col"> Company Shipping Coast </th>
                                 <th scope="col"> Weight </th>
                                 <th scope="col"> tracking code </th>
@@ -95,6 +96,9 @@
                                 </td>
                                 <td>
                                     {{ order.total_amount }}
+                                </td>
+                                <td>
+                                    {{ order.wallet_amount }}
                                 </td>
                                 <td>
                                    <span v-if="order.company_shipping "> {{ order.company_shipping }} SAR </span>
