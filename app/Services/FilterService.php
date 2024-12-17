@@ -118,6 +118,7 @@ class FilterService
 
     public function search($searchData)
     {
+        $currencyService = new CurrencyService();
         $limit = $searchData['limit'] ?? 12;
         $offset = $searchData['offset'] ?? 0;
         $search = $searchData['search'];
@@ -128,7 +129,10 @@ class FilterService
             ->orderBy('ontop', 'desc')
             ->limit($limit)
             ->offset($offset)
-            ->get();
+            ->get()->map(function($product) use($currencyService) {
+                $product->final_selling_price = $currencyService->convertPrice($product,$product->final_selling_price);
+                return $product;
+            });
 
     }
 }
