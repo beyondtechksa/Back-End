@@ -425,13 +425,17 @@ class ApiController extends Controller
         return $step2;
     }
 
-    public function typed_products(Request $request, $type)
+    public function typed_products(Request $request, $type,CurrencyService $currencyService)
     {
         $currency_prefix = $request->header('currency');
         if (!$this->check_currency($currency_prefix)) {
             return response()->json(['errors' => 'this currency is not exist'], 400);
         }
-        $products = new ProductResourceCollection(Product::with('brand:id,name')->where($type, 1)->latest()->paginate(20), $currency_prefix);
+        $maped_products = Product::with('brand:id,name')->where($type, 1)->latest()->paginate(20)->transform(function($product) use($currencyService){
+            $product->final_selling_price = $currencyService->convertPrice($product,$product->final_selling_price);
+            return $product;
+        });
+        $products = new ProductResourceCollection($maped_products, $currency_prefix);
         return returnSuccess('products', $products, 'success');
     }
 
