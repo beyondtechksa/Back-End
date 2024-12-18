@@ -206,11 +206,13 @@
                                             >
                                                 <div class="accordion-body">
                                                     <div class="filter-check ps-2">
-                                                        <div class="check-box" v-for="brand,index in brands"
+                                                        <div class="check-box" v-for="brand,index in filteredBrands"
                                                              :key="index">
                                                             <input type="checkbox" :id="'brand-check'+index"
                                                                    v-model="filter_data.brands" :value="brand.id"
-                                                                   @change="filterData"/>
+                                                                   @change="filterData"
+                                                                   :checked="isCheckedBrand(brand.id)"
+                                                            />
                                                             <label class="px-2"
                                                                    :for="'brand-check'+index">{{
                                                                     brand.translated_name
@@ -644,7 +646,9 @@
                                                              :key="index">
                                                             <input type="checkbox" :id="'brand-check'+index"
                                                                    v-model="filter_data.brands" :value="brand.id"
-                                                                   @change="filterData"/>
+                                                                   @change="filterData"
+                                                                   :checked="isCheckedBrand(brand.id)"
+                                                            />
                                                             <label class="px-2"
                                                                    :for="'brand-check'+index">{{
                                                                     brand.translated_name
@@ -852,7 +856,7 @@
                             <div class="col-xl-9 col-lg-8">
                                 <div class="shop-right-container" ref="targetDiv">
                                     <div class="shop-right-heading-content d-lg-block">
-                                    
+
                                         <div
                                             class="shop-featurch d-flex justify-content-between mb-5"
                                         >
@@ -933,6 +937,7 @@ export default {
         brands: Array,
         sizes: Array,
         category_id:null,
+        brand_id:null,
         // collection_id:null,
         product_type:null,
         colors:Array
@@ -955,6 +960,11 @@ export default {
         if (this.category_id){
             this.filter_data.subCategories = this.category_id
             this.previousFilterData.subCategories = this.category_id
+            // this.filterData()
+        }
+        if (this.brand_id){
+            this.filter_data.brands = this.brand_id
+            this.previousFilterData.brands = this.brand_id
             // this.filterData()
         }
         if (this.product_type){
@@ -1131,6 +1141,9 @@ export default {
         isChecked(categoryId) {
             return this.category_id === categoryId;
         },
+        isCheckedBrand(brandId) {
+            return this.filter_data.brands.includes(brandId);
+        },
         hasFilterChanged() {
             const { offset, ...currentFilter } = this.filter_data;
             const { offset: prevOffset, ...prevFilter } = this.previousFilterData || {};
@@ -1158,13 +1171,13 @@ export default {
         search_brands() {
             const query = this.search_brands.toLowerCase();
             if (!query) {
-                this.filteredBrands = this.brands;
+                this.filteredBrands = this.brands.filter(brand => brand.products_count > 0);
                 return;
             }
 
-            this.filteredBrands=this.brands.filter((e)=>{
-                return e.translated_name.toLowerCase().includes(query)
-            })
+            this.filteredBrands = this.brands.filter((brand) => {
+                return brand.products_count > 0 && brand.translated_name.toLowerCase().includes(query);
+            });
         },
         'filter_data.discount'(val){
             if (val)
