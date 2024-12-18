@@ -20,6 +20,9 @@ class FilterService
 
         if (!empty($filterData['subCategories'])) {
             $query->whereIn('category_id', $filterData['subCategories']);
+            $query->orderByRaw("CASE WHEN category_id IN (" . implode(',', $filterData['subCategories']) . ") THEN ontop ELSE 0 END DESC");
+        } else {
+            $query->orderBy('ontop', 'desc');
         }
 
         if (!empty($filterData['brands'])) {
@@ -82,7 +85,7 @@ class FilterService
 
         return $query->with(['brand:id,name'])
             ->limit($limit)
-            ->orderBy('ontop', 'desc')
+//            ->orderBy('ontop', 'desc')
             ->offset($offset)
 //            ->inRandomOrder()
             ->get()->map(function ($product) {
@@ -129,8 +132,8 @@ class FilterService
             ->orderBy('ontop', 'desc')
             ->limit($limit)
             ->offset($offset)
-            ->get()->map(function($product) use($currencyService) {
-                $product->final_selling_price = $currencyService->convertPrice($product,$product->final_selling_price);
+            ->get()->map(function ($product) use ($currencyService) {
+                $product->final_selling_price = $currencyService->convertPrice($product, $product->final_selling_price);
                 return $product;
             });
 
