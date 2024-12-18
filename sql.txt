@@ -185,3 +185,9 @@ ALTER TABLE `traking_products` ADD `final_selling_price` DECIMAL(10,2) NULL DEFA
 ALTER TABLE `users` ADD `wallet_used` BOOLEAN NOT NULL DEFAULT FALSE AFTER `uuid`;
 ALTER TABLE `orders` ADD `wallet_amount` DECIMAL(10,2) NOT NULL DEFAULT '0' AFTER `total_amount`;
 ALTER TABLE `orders` CHANGE `payment_id` `payment_id` INT(11) NULL DEFAULT NULL;
+
+==================================================================
+
+ALTER TABLE `products` ADD `product_group_id` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `group_id`;
+ALTER TABLE `products` ADD CONSTRAINT `products_product_group_id_id_foreign` FOREIGN KEY (`product_group_id`) REFERENCES `product_groups`(`id`) ON DELETE SET NULL ON UPDATE RESTRICT;
+ALTER TABLE `temp_products` CHANGE `product_id` `product_id` BIGINT(11) NULL DEFAULT NULL;
