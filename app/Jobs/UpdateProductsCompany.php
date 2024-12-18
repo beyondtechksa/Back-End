@@ -76,11 +76,11 @@ class UpdateProductsCompany implements ShouldQueue
                 $sizes = json_decode($companyProduct['sizes_ids'] ?? '[]', true);
                 $colors = json_decode($companyProduct['colors_ids'] ?? '[]', true);
 
-                $product->sizes()->syncWithoutDetaching(
+                $product->sizes()->sync(
                     collect($sizes)->mapWithKeys(fn($size) => [$size['id'] => ['inStock' => $size['inStock']]])->toArray()
                 );
 
-                $product->colors()->syncWithoutDetaching($colors);
+                $product->colors()->sync($colors);
                 File::where('product_id', $product->id)->delete();
          
                     $newFiles = json_decode($companyProduct['images'] ?? '[]', true) ?? [];

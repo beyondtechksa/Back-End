@@ -21,7 +21,7 @@ class DenokidsDriver implements CompanyDriverInterface
         // $type  = scrap or track
         $xml = fetchDataFromUrl("http://b2b.ayensoftware.com/xml/reply/IdeasoftVaryantV4XmlRequest?MusteriId=5168&DukkanId=19&MusteriTedarikciId=42");
         $productsData = simplexml_load_string($xml, "SimpleXMLElement", LIBXML_NOCDATA);
-        return $productsData;
+        // return $productsData;
         $products = [];
 
         $productIds = TempProduct::where('type', 'company')
@@ -62,7 +62,6 @@ class DenokidsDriver implements CompanyDriverInterface
                     $images = json_encode($images);
                 }
 
-
                 foreach($product->variants->variant as $secenek){
                     $size_name_tr= (string)$secenek->options->option[1]->variantValue;
                     $size_name['or'] =$size_name;
@@ -88,10 +87,10 @@ class DenokidsDriver implements CompanyDriverInterface
                 $company_discount_price=$finalPrice * $company_discount_percentage / 100;
                 // Prepare product data
                 $products[] = [
-                    'product_id' => (string)$product->ProductCode,
+                    'product_id' => (string)$product->variants->variant[0]->vBarcode,
                     'admin_id' => Auth::guard('admin')->check()?admin()->id:null,
-                    'name' => (string)$product->ProductDescription,
-                    'desc' => (string)$product->Description,
+                    'name' => (string)$product->label,
+                    'desc' => (string)$product->details,
                     'price' => $finalPrice,
                     'discount_price' => $company_discount_price,
                     'final_price' => $finalPrice - $company_discount_price,

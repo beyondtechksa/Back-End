@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\ReturnPoliciesController;
 use App\Http\Controllers\Admin\ReturnReasonsController;
 use App\Http\Controllers\Admin\ReturnStatusesController;
 use App\Http\Controllers\Admin\GeneralSettingsController;
+use App\Http\Controllers\Admin\ProductGroupsController;
 
 Route::get('test', [RolesController::class, 'test']);
 
@@ -70,6 +71,7 @@ Route::group(['middleware' => 'admin:admin'], function () {
             '/return_policies' => ReturnPoliciesController::class,
             '/return_reasons' => ReturnReasonsController::class,
             '/return_statuses' => ReturnStatusesController::class,
+            '/product_groups' => ProductGroupsController::class,
         ]);
         Route::get('/orders/return/requests', [OrdersController::class, 'return_requests'])->name('orders.return_requests');
         Route::get('/orders/companies', [OrdersController::class, 'companies'])->name('orders.companies');
