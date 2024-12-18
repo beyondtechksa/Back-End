@@ -31,7 +31,9 @@ class TamaraPaymentService
         $tamaraApiUrl = config('tamarapayment.url') . 'checkout';
 
         // Prepare the request payload dynamically
+        // dd($this->total);
         $payload = $this->prepareTamaraPayload($carts);
+
         //dd($payload);
         // Make the request to Tamara API
         $response = Http::withHeaders([
@@ -57,8 +59,9 @@ class TamaraPaymentService
         $cartDiscount = CartDiscount::where('user_id', $this->user->id)->where('status', 0)->first();
         $discountPercentage = $cartDiscount ? $cartDiscount->discount_percentage : 0;
         $total = (new OrderService())->calculateTotal($subtotal, $shipping, $discountPercentage);
-        $vat = (new OrderService())->calculateVat($carts);
-         $this->total = number_format($total  + $vat , 2, '.', '');
+        //  $vat = (new OrderService())->calculateVat($carts);
+        //  dd( $vat);
+         $this->total = number_format($total  , 2, '.', '');
         $this->cart_id = json_encode($carts->pluck('id')->toArray());
      }
 
@@ -173,7 +176,7 @@ class TamaraPaymentService
         return [
             "customer_age" => 21,
             "customer_dob" => "01-12-2000",
-            "customer_gender" => "Female",
+            "customer_gender" => "male",
             "customer_nationality" => "SA",
             "is_premium_customer" => false,
             "is_existing_customer" => false,
