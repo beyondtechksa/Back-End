@@ -69,6 +69,9 @@
                     <Link :href="route('products.index')"  class="side-menu__item">{{__('products list')}}</Link>
                   </li>
                   <li class="slide"  v-if="check_permissions(['view product'])">
+                    <Link :href="route('product_groups.index')"  class="side-menu__item">{{__('products groups')}}</Link>
+                  </li>
+                  <li class="slide"  v-if="check_permissions(['view product'])">
                     <Link :href="route('products.advanced_products')"  class="side-menu__item">{{__('advanced products list')}}</Link>
                   </li>
                   <li class="slide"  v-if="check_permissions(['add product'])">

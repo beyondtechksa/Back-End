@@ -29,6 +29,7 @@ use App\Imports\ProductsImport;
 use Illuminate\Validation\Rule;
 use App\Http\Enums\CompanyEnums;
 use App\Models\ProductAttribute;
+use App\Models\ProductGroup;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -512,6 +513,7 @@ class ProductsController extends Controller
         $sizes = Size::where('status',1)->get();
         $colors = Color::where('status',1)->get();
         $return_policies = ReturnPolicy::where('status',1)->get();
+        $product_groups = ProductGroup::get();
         return inertia('Products/Search', [
             'options' => $options,
             'categories' => $categories,
@@ -525,6 +527,7 @@ class ProductsController extends Controller
             'sizes' => $sizes,
             'colors' => $colors,
             'return_policies' => $return_policies,
+            'product_groups' => $product_groups,
         ])->with(['page_name' => __('search products')]);
     }
 
@@ -584,6 +587,7 @@ private function applyFilters($products, Request $request)
     $this->applyAttributesStatus($products, $request);
     $this->applyStockStatus($products, $request);
     $this->applyColorStatus($products, $request);
+    $this->applyGroupStatus($products, $request);
     $this->applyCategoryFilter($products, $request);
     $this->applyGeneralFilters($products, $request);
 }
@@ -652,6 +656,15 @@ private function applyColorStatus($products, Request $request)
         });
     }
 }
+private function applyGroupStatus($products, Request $request)
+{
+    if ($request->group_status === '1') {
+        $products->whereNotNull('group_id');
+    } elseif ($request->group_status === '2') {
+        $products->whereNull('group_id');
+    }
+
+}
 
 private function applyCategoryFilter($products, Request $request)
 {
@@ -667,7 +680,7 @@ private function applyCategoryFilter($products, Request $request)
 private function applyGeneralFilters($products, Request $request)
 {
     $generalFilters = [
-        'admin_id', 'brand_id', 'collection_id', 'company_name', 'sku', 'model_number',
+        'admin_id', 'brand_id', 'collection_id','product_group_id', 'company_name', 'sku', 'model_number',
         'featured', 'trending', 'new_arrival', 'related', 'highlight', 'most_sold', 'ontop',
         'price', 'sale_price', 'discount_price', 'final_price', 'final_selling_price', 'source_link'
     ];
@@ -724,9 +737,9 @@ private function applyGeneralFilters($products, Request $request)
                     'validation' => ['model_number' => 'required|string|max:255'],
                     'field' => 'model_number'
                 ],
-                'return_policy' => [
-                    'validation' => ['return_policy_id' => 'required|numeric'],
-                    'field' => 'return_policy_id'
+                'product_group' => [
+                    'validation' => ['product_group_id' => 'required|numeric'],
+                    'field' => 'product_group_id'
                 ],
             ];
 
@@ -802,9 +815,15 @@ private function applyGeneralFilters($products, Request $request)
         $checked = $request->checked;
         foreach ($checked as $product_id) {
             $product = Product::find($product_id);
-            $product->update([
-                'group_id' => $request->primary_id != $product->id ? $request->primary_id : null,
-            ]);
+            if($request->group_update_type=='add'){
+                $product->update([
+                    'group_id' => $request->primary_id != $product->id ? $request->primary_id : null,
+                ]);
+            }else{
+                $product->update([
+                    'group_id' => null,
+                ]);
+            }
         }
     }
 

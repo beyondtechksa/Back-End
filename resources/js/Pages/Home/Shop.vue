@@ -852,12 +852,7 @@
                             <div class="col-xl-9 col-lg-8">
                                 <div class="shop-right-container" ref="targetDiv">
                                     <div class="shop-right-heading-content d-lg-block">
-                                        <div class="shop-head-title">
-                                            <h2>
-                                                <span class="number"> {{ products.length }} </span>
-                                                <span class="px-2">{{ __('Results Listed') }}</span>
-                                            </h2>
-                                        </div>
+                                    
                                         <div
                                             class="shop-featurch d-flex justify-content-between mb-5"
                                         >

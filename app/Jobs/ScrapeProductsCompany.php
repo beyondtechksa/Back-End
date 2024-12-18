@@ -30,7 +30,7 @@ class ScrapeProductsCompany implements ShouldQueue
      */
     public function handle(): void
     {
-        $chunkSize = 50; // Define the chunk size for batch insertion
+        $chunkSize = 50; 
         $chunks = array_chunk($this->products, $chunkSize);
         foreach ($chunks as $chunk) {
             try {

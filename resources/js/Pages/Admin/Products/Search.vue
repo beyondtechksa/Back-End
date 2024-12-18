@@ -80,6 +80,11 @@
                         <v-select v-model="form.return_policy_id" :options="return_policies" :reduce="return_policy => return_policy.id" label="translated_name" />
                     <div class="text-danger" v-html="form.errors.get('return_policy_id')"></div>
                 </div>
+                <div class="" v-if="form.type=='product_group'">
+                    <label class="form-label"> {{ __('product group') }} </label>
+                        <v-select v-model="form.product_group_id" :options="product_groups" :reduce="product_group => product_group.id" label="translated_name" />
+                    <div class="text-danger" v-html="form.errors.get('product_group_id')"></div>
+                </div>
                 <div class="" v-if="form.type=='model_number'">
                     <label class="form-label"> {{ __('model number') }} </label>
                     <input type="text" class="form-control" v-model="form.model_number">
@@ -186,7 +191,8 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary"
                     data-bs-dismiss="modal">{{__('close')}}</button>
-                <button :disabled="form.busy" @click="update_products_group()" type="button" class="btn btn-primary"> {{ __('save') }} </button>
+                <button :disabled="form.busy" @click="update_products_group('add')" type="button" class="btn btn-primary"> {{ __('save') }} </button>
+                <button :disabled="form.busy" @click="update_products_group('remove')" type="button" class="btn btn-danger"> {{ __('remove from group') }} </button>
             </div>
             </div>
         </div>
@@ -504,6 +510,14 @@
                         <label class="form-label"> {{ __('colors') }} </label>
                         <v-select v-model="search_form.color_id" :options="get_color_options()" :reduce="option => option.id" label="languaged_name" />
                     </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label"> {{ __('product back groups') }} </label>
+                        <v-select v-model="search_form.product_group_id" :options="product_groups" :reduce="option => option.id" label="translated_name" />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label"> {{ __('products front group') }} </label>
+                        <v-select v-model="search_form.group_status" :options="[{id:'1',name:'Products in group'},{id:'2',name:'Products not in group'}]" :reduce="status => status.id" label="name" />
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-4 mb-3">
@@ -693,6 +707,10 @@
                     <button @click="form.type='return_policy'" :disabled="checked.length==0" data-bs-target="#moveModal" data-bs-toggle="modal"
                      class="btn btn-primary"> <i class="ri-share-forward-line"></i>
                       {{ __('move to return policy') }}
+                    </button>
+                    <button @click="form.type='product_group'" :disabled="checked.length==0" data-bs-target="#moveModal" data-bs-toggle="modal"
+                     class="btn btn-primary"> <i class="ri-share-forward-line"></i>
+                      {{ __('move to product group') }}
                     </button>
                     <button @click="form.type='model_number'" :disabled="checked.length==0" data-bs-target="#moveModal" data-bs-toggle="modal"
                      class="btn btn-primary"> <i class="ri-code-line"></i>
@@ -934,8 +952,7 @@
                                     </td>
                                     <td>
 
-                                        <span v-if="product.sizes"  style="width:200px;display: block;
-">
+                                        <span v-if="product.sizes"  style="width:200px;display: block;">
                                             <span v-if="product.sizes.length>0">
                                                 <span>
                                                     <span class="fw-bold" v-for="size,index in product.sizes" :key="index"><span v-if="index>0"> / </span>( {{   size.name_tr  }}
@@ -1073,6 +1090,7 @@ import { useForm } from '@inertiajs/vue3';
             currencies:Array,
             sizes:Array,
             colors:Array,
+            product_groups:Array,
         },
         mounted(){
             this.search(this.currentPage)
@@ -1105,6 +1123,7 @@ import { useForm } from '@inertiajs/vue3';
                     color_id:null,
                     collection_id:null,
                     return_policy_id:null,
+                    product_group_id:null,
                     formula_id:null,
                     primary_id:null,
                     products_ids:[],
@@ -1130,6 +1149,7 @@ import { useForm } from '@inertiajs/vue3';
                     page:null,
                     attribute_update_type:'add',
                     color_update_type:'add',
+                    group_update_type:'add',
                     model_number:null
                 }),
                 search_form:new Form({
@@ -1141,6 +1161,7 @@ import { useForm } from '@inertiajs/vue3';
                     category_id:null,
                     brand_id:null,
                     collection_id:null,
+                    product_group_id:null,
                     company_name:null,
                     source_link:null,
                     sku:null,
@@ -1163,6 +1184,7 @@ import { useForm } from '@inertiajs/vue3';
                     discount_percentage_selling_price_range:[0,100],
                     option_id:null,
                     color_status:null,
+                    group_status:null,
                     color_id:null,
                     // attributes_status:null,
                 }),
@@ -1276,8 +1298,9 @@ import { useForm } from '@inertiajs/vue3';
                     this.search(this.products.current_page)
                  })
            },
-           update_products_group(){
+           update_products_group(type){
             this.form.checked=this.checked
+            this.form.group_update_type=type
             this.form.post('/admin/api/update_products_group')
                  .then((resp)=>{
                     $('#groupModal').modal('hide')
