@@ -59,8 +59,6 @@ class TamaraPaymentService
         $cartDiscount = CartDiscount::where('user_id', $this->user->id)->where('status', 0)->first();
         $discountPercentage = $cartDiscount ? $cartDiscount->discount_percentage : 0;
         $total = (new OrderService())->calculateTotal($subtotal, $shipping, $discountPercentage);
-        //  $vat = (new OrderService())->calculateVat($carts);
-        //  dd( $vat);
          $this->total = number_format($total  , 2, '.', '');
         $this->cart_id = json_encode($carts->pluck('id')->toArray());
      }
