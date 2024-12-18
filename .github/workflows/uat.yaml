@@ -12,6 +12,7 @@ env:
 
 jobs:
   openvpn-connect:
+    timeout-minutes: 10
     runs-on: ubuntu-latest
 
     steps:
