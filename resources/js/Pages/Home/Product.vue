@@ -70,7 +70,7 @@
                     <h2>{{product['name_'+$page.props.locale]}}</h2>
                     <p class="d-flex justify-content-between">
                      <span v-if="product.brand">
-                      <strong> {{__('Brand')}} </strong>: <Link :href="'/brands/'+product.brand.slug">{{product.brand.translated_name}} </Link>
+                      <strong> {{__('Brand')}} </strong>: <Link :href="'/shop?brand_id='+product.brand.id">{{product.brand.translated_name}} </Link>
                       </span>
                       <span class="d-flex gap-2">
                         <social-sharing :product="product"></social-sharing>

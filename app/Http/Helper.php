@@ -37,7 +37,7 @@ if (!function_exists('admin')) {
 }
 if (!function_exists('vendor')) {
     function vendor()
-    {   
+    {
         $vendor =Vendor::with('wallet')->find(auth()->guard('vendor')->user()->id);
         // $vendor['permissions']=$vendor->getPermissionsViaRoles()->pluck('name');
         return $vendor;
@@ -313,7 +313,7 @@ if (!function_exists('active_brands')) {
     function active_brands()
     {
         return Cache::remember(CacheEnums::ACTIVE_BRANDS(), CacheEnums::CACHE_TIME, function () {
-            return Brand::where('status', 1)->orderBy('name','asc')->get();
+            return Brand::withCount('products')->where('status', 1)->orderBy('name','asc')->get();
         });
     }
 }
@@ -383,13 +383,13 @@ if (!function_exists('get_shipping_price')) {
         $shipping = Shipping::first();
 
         if (!$shipping) {
-            return 0; 
+            return 0;
         }
 
         $shippingPrice = $shipping->price;
 
         if (!user()) {
-            return $shippingPrice; 
+            return $shippingPrice;
         }
 
         $carts = Cart::with('product')->where('user_id', user()->id)->get();
@@ -410,10 +410,10 @@ if (!function_exists('get_shipping_price')) {
         }
 
         if ($shipping->free_shipping_start_at_amount > 0 && $totalPrice >= $shipping->free_shipping_start_at_amount) {
-            return 0; 
+            return 0;
         }
 
-        return $shippingPrice; 
+        return $shippingPrice;
     }
 
 
@@ -443,7 +443,7 @@ if (!function_exists('user_favourites')) {
                 });
 
                 return $favourites;
-        
+
     }
 }
 if (!function_exists('calc_final_price')) {
