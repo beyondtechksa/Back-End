@@ -189,5 +189,7 @@ ALTER TABLE `orders` CHANGE `payment_id` `payment_id` INT(11) NULL DEFAULT NULL;
 ==================================================================
 
 ALTER TABLE `products` ADD `product_group_id` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `group_id`;
-ALTER TABLE `products` ADD CONSTRAINT `products_product_group_id_id_foreign` FOREIGN KEY (`product_group_id`) REFERENCES `product_groups`(`id`) ON DELETE SET NULL ON UPDATE RESTRICT;
+ALTER TABLE `products` ADD CONSTRAINT `products_product_group_id_foreign` FOREIGN KEY (`product_group_id`) REFERENCES `product_groups`(`id`) ON DELETE SET NULL ON UPDATE RESTRICT;
 ALTER TABLE `temp_products` CHANGE `product_id` `product_id` BIGINT(11) NULL DEFAULT NULL;
+
+==============================================================
