@@ -20,7 +20,7 @@ class VavinorDriver implements CompanyDriverInterface
         $xml = fetchDataFromUrl("https://zariftesettur.com/instock/XmlApplai/xml");
         $productsData = simplexml_load_string($xml, "SimpleXMLElement", LIBXML_NOCDATA);
         $products = [];
-        return $productsData;
+        // return $productsData;
         $productIds = TempProduct::where('type', 'company')
             ->where('company_name', $company_name)
             ->pluck('product_id')
