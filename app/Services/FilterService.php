@@ -20,7 +20,8 @@ class FilterService
 
         if (!empty($filterData['subCategories'])) {
             $query->whereIn('category_id', $filterData['subCategories']);
-            $query->orderByRaw("CASE WHEN category_id IN (" . implode(',', $filterData['subCategories']) . ") THEN ontop ELSE 0 END DESC");
+            $query->orderByRaw("CASE WHEN category_id IN (" . implode(',', $filterData['subCategories']) . ") THEN ontop ELSE 0 END DESC")
+                ->orderBy('id', 'asc');
         } else {
             $query->orderBy('ontop', 'desc');
         }

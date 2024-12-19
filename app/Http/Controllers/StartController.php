@@ -167,7 +167,8 @@ class StartController extends Controller
                     $getLeafCategoriesRecursive($category);
                 }
                 $q->whereIn('category_id', $leafCategories);
-                $q->orderByRaw("CASE WHEN category_id IN (" . implode(',', $leafCategories->toArray()) . ") THEN ontop ELSE 0 END DESC");
+                $q->orderByRaw("CASE WHEN category_id IN (" . implode(',', $leafCategories->toArray()) . ") THEN ontop ELSE 0 END DESC")
+                    ->orderBy('id', 'asc');;
 //                $q->orderByRaw("CASE WHEN category_id = " . \request('category_id') . " THEN ontop ELSE 0 END DESC");
             })->when(\request()->has('product_type') && \request('product_type') != null, function ($q) {
                 if (\request('product_type') === 'trending')
