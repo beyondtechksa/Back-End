@@ -52,11 +52,11 @@ class StartController extends Controller
     public function home(Category $category, Product $product)
     {
         // $cacheKey = CacheEnums::HOMEPAGECACHE();
-    
+
         // return Cache::remember($cacheKey, CacheEnums::CACHE_TIME, function () use ($category, $product) {
             $topCategories = top_categories()->take(20);
             $currencyService = new CurrencyService();
-    
+
             // Trending products
             $trendingProducts = Cache::remember(CacheEnums::TRENDINGPRODUCTS(), CacheEnums::CACHE_TIME, function () use ($product, $currencyService) {
                 return $product->with('brand')
@@ -71,7 +71,7 @@ class StartController extends Controller
                         return $product;
                     });
             });
-    
+
             // Featured products
             $featuredProducts = Cache::remember(CacheEnums::FEATUREDPRODUCTS(), CacheEnums::CACHE_TIME, function () use ($product, $currencyService) {
                 return $product->with('brand')
@@ -86,7 +86,7 @@ class StartController extends Controller
                         return $product;
                     });
             });
-    
+
             // New arrival products
             $newArrivalProducts = Cache::remember(CacheEnums::NEWARRIVALPRODUCTS(), CacheEnums::CACHE_TIME, function () use ($product, $currencyService) {
                 return $product->with('brand')
@@ -101,10 +101,10 @@ class StartController extends Controller
                         return $product;
                     });
             });
-    
+
             // Brands
             $brands = active_brands()->take(5);
-    
+
             return inertia('Home/Index', [
                 'top_categories' => $topCategories,
                 'trending' => $trendingProducts,
@@ -135,8 +135,9 @@ class StartController extends Controller
     // shop
     public function shop(Request $request, FilterService $filterService)
     {
+//        Cache::flush();
 
-      $currencyService=new CurrencyService();
+        $currencyService = new CurrencyService();
         $leafCategories = collect();
         $products = Product::with('brand')->where('status', 1)
             ->when($request->has('search'), function ($q) use ($request) {
@@ -145,9 +146,15 @@ class StartController extends Controller
                 $q->orwhere('name_tr', 'like', '%' . $request->search . '%');
             })
             ->when(\request()->has('category_id'), function ($q) use ($leafCategories) {
+                //main => women
+                //top
+                //shirt
+
+                // id => 17
                 //maged => function to check if has children push to $leafCategories else loop on children and call the function again
                 $category = Category::find(\request('category_id'));
                 if ($category) {
+                    $leafCategories->push($category->id);
                     $getLeafCategoriesRecursive = function ($category) use (&$getLeafCategoriesRecursive, &$leafCategories) {
                         if ($category->children()->count() === 0) {
                             $leafCategories->push($category->id);
@@ -160,6 +167,8 @@ class StartController extends Controller
                     $getLeafCategoriesRecursive($category);
                 }
                 $q->whereIn('category_id', $leafCategories);
+                $q->orderByRaw("CASE WHEN category_id IN (" . implode(',', $leafCategories->toArray()) . ") THEN ontop ELSE 0 END DESC");
+//                $q->orderByRaw("CASE WHEN category_id = " . \request('category_id') . " THEN ontop ELSE 0 END DESC");
             })->when(\request()->has('product_type') && \request('product_type') != null, function ($q) {
                 if (\request('product_type') === 'trending')
                     $q->where('trending', 1);
@@ -167,21 +176,27 @@ class StartController extends Controller
                     $q->where('featured', 1);
                 if (\request('product_type') === 'new_arrival')
                     $q->where('new_arrival', 1);
+            })->when(\request()->has('brand_id'), function ($q){
+                $q->where('brand_id', \request('brand_id'));
+            })
+            ->when(!\request()->has('category_id'), function ($q){
+                $q->orderBy('ontop', 'desc');
             })
             //            ->when(\request()->has('collection_id' && \request('collection_id') != null, function ($q) {
             //                $q->where('collection_id', \request('collection_id'));
             //            }))
-            ->orderBy('ontop', 'desc')
             //            ->inRandomOrder()
             //            ->orderByRaw('RAND() * id')
             ->limit(12)
-            ->get()->map(function($product) use($currencyService) {
-                $product['final_selling_price'] = $currencyService->convertPrice($product,$product->final_selling_price);
-                $product['old_price'] = number_format($product->final_selling_price / (1-($product->discount_percentage_selling_price/100)),2);
+            ->get()->map(function ($product) use ($currencyService) {
+                $product['final_selling_price'] = $currencyService->convertPrice($product, $product->final_selling_price);
+                $product['old_price'] = number_format($product->final_selling_price / (1 - ($product->discount_percentage_selling_price / 100)), 2);
                 return $product;
             });
         $categories = categories_with_parents();
-        $brands = active_brands();
+        $brands = active_brands()->filter(function ($brand) {
+            return $brand->products_count > 0;
+        });
         //$colors = Color::orderBy('id', 'DESC')->get();
         //$sizes = Size::orderBy('id', 'DESC')->get();
         $colors = $this->getAllColors();
@@ -194,6 +209,7 @@ class StartController extends Controller
             'sizes' => $sizes,
             'brands' => $brands,
             'category_id' => \request()->has('category_id') ? $leafCategories : null,
+            'brand_id' => \request()->has('brand_id') ? [\request('brand_id')] : null,
             'collection_id' => \request()->has('collection_id') ? \request('collection_id') : null,
             'product_type' => request()->has('product_type') ? request()->product_type : null,
             'request' => $request->all()
@@ -226,9 +242,9 @@ class StartController extends Controller
             })->when($request->has('brand_id'), function ($q) use ($brand_id) {
                 $q->where('brand_id', $brand_id);
             })
-            ->orderBy('ontop', 'desc')->take($limit)->get()->map(function($product) use($currencyService) {
-                $product['final_selling_price'] = $currencyService->convertPrice($product,$product->final_selling_price);
-                $product['old_price'] = number_format($product->final_selling_price / (1-($product->discount_percentage_selling_price/100)),2);
+            ->orderBy('ontop', 'desc')->take($limit)->get()->map(function ($product) use ($currencyService) {
+                $product['final_selling_price'] = $currencyService->convertPrice($product, $product->final_selling_price);
+                $product['old_price'] = number_format($product->final_selling_price / (1 - ($product->discount_percentage_selling_price / 100)), 2);
                 return $product;
             });
     }
@@ -238,7 +254,7 @@ class StartController extends Controller
         if (!request()->has('type'))
             return redirect()->back();
         $products = Product::with('brand')->select('id', 'slug', 'name_en', 'name_ar', 'image', 'brand_id', 'final_selling_price', 'discount_percentage_selling_price', 'currency_id')
-        ->where('status', 1)
+            ->where('status', 1)
             ->when(request()->has('type'), function ($q) {
                 if (\request('type') == 'trending')
                     $q->where('trending', 1);
@@ -253,8 +269,6 @@ class StartController extends Controller
                 return $product;
             });
 
-            
-                    
 
         return inertia('Home/Products', [
             'products' => $products,
@@ -264,16 +278,16 @@ class StartController extends Controller
     public function collections($slug, CurrencyService $currencyService)
     {
         $collection = Collection::where('slug', $slug)->firstOrFail();
-            $products =  Product::with('brand')->select('id', 'slug', 'name_en', 'name_ar', 'image', 'brand_id', 'final_selling_price', 'discount_percentage_selling_price', 'currency_id')
-                    ->where('collection_id', $collection->id)
-                    ->where('status', 1)
-                    ->orderBy('ontop', 'desc')
-                    ->limit(12)
-                    ->get()->map(function ($product) use ($currencyService) {
-                        $product->final_selling_price = $currencyService->convertPrice($product, $product->final_selling_price);
-                        $product->old_price = $currencyService->convertPrice($product, $product->old_price);
-                        return $product;
-                    });
+        $products = Product::with('brand')->select('id', 'slug', 'name_en', 'name_ar', 'image', 'brand_id', 'final_selling_price', 'discount_percentage_selling_price', 'currency_id')
+            ->where('collection_id', $collection->id)
+            ->where('status', 1)
+            ->orderBy('ontop', 'desc')
+            ->limit(12)
+            ->get()->map(function ($product) use ($currencyService) {
+                $product->final_selling_price = $currencyService->convertPrice($product, $product->final_selling_price);
+                $product->old_price = $currencyService->convertPrice($product, $product->old_price);
+                return $product;
+            });
 
         $brands = active_brands();
         $colors = $this->getAllColors();
@@ -291,16 +305,16 @@ class StartController extends Controller
     public function brands($slug, CurrencyService $currencyService)
     {
         $brand = Brand::where('slug', $slug)->firstOrFail();
-          $products =  Product::with('brand')->select('id', 'slug', 'name_en', 'name_ar', 'image', 'brand_id', 'final_selling_price', 'discount_percentage_selling_price', 'currency_id')
-                    ->where('brand_id', $brand->id)
-                    ->where('status', 1)
-                    ->orderBy('ontop', 'desc')
-                    ->limit(15)
-                    ->get()->map(function ($product) use ($currencyService) {
-                        $product->final_selling_price = $currencyService->convertPrice($product, $product->final_selling_price);
-                        $product->old_price = $currencyService->convertPrice($product, $product->old_price);
-                        return $product;
-                    });
+        $products = Product::with('brand')->select('id', 'slug', 'name_en', 'name_ar', 'image', 'brand_id', 'final_selling_price', 'discount_percentage_selling_price', 'currency_id')
+            ->where('brand_id', $brand->id)
+            ->where('status', 1)
+            ->orderBy('ontop', 'desc')
+            ->limit(15)
+            ->get()->map(function ($product) use ($currencyService) {
+                $product->final_selling_price = $currencyService->convertPrice($product, $product->final_selling_price);
+                $product->old_price = $currencyService->convertPrice($product, $product->old_price);
+                return $product;
+            });
         return inertia('Home/Brand', [
             'brand' => $brand,
             'products' => $products,
@@ -309,22 +323,22 @@ class StartController extends Controller
 
     public function product_details($id, $slug = null)
     {
-        $product = Product::with('brand', 'files', 'rates','sizes','colors','currency')->withAttributesAndOptions()->withRated()->where('id', $id)->where('status', 1);
-        if($slug){
-            $product->where('slug',$slug);
+        $product = Product::with('brand', 'files', 'rates', 'sizes', 'colors', 'currency')->withAttributesAndOptions()->withRated()->where('id', $id)->where('status', 1);
+        if ($slug) {
+            $product->where('slug', $slug);
         }
         $product = $product->firstOrFail();
         $product = new SingleProductResource($product);
 
         $category = Category::where('id', $product->category_id)->first();
         $parents = getAllParents($category);
-        $currencyService=new CurrencyService();
+        $currencyService = new CurrencyService();
         $related = Product::with('brand')->where('status', true)->where('category_id', $product->category_id)
-        ->limit(5)->inRandomOrder()->get()->map(function($product) use($currencyService) {
-            $product['final_selling_price'] = $currencyService->convertPrice($product,$product->final_selling_price);
-            $product['old_price'] = number_format($product->final_selling_price / (1-($product->discount_percentage_selling_price/100)),2);
-            return $product;
-        });
+            ->limit(5)->inRandomOrder()->get()->map(function ($product) use ($currencyService) {
+                $product['final_selling_price'] = $currencyService->convertPrice($product, $product->final_selling_price);
+                $product['old_price'] = number_format($product->final_selling_price / (1 - ($product->discount_percentage_selling_price / 100)), 2);
+                return $product;
+            });
 
         $colors = $this->getAllColors();
         $sizes = $this->getAllSizes();
@@ -418,17 +432,17 @@ class StartController extends Controller
             'product_id' => 'required'
         ]);
         if (\auth()->check()) {
-            $userID=user()->id;
+            $userID = user()->id;
             $cart = Cart::where('user_id', $userID)->where('product_id', $request->product_id)->first();
             $cart->delete();
             $remainingCarts = Cart::where('user_id', $userID)->count();
             if ($remainingCarts === 0) {
-                $discountCoupon = CartDiscount::where('user_id', $userID)->where('status',0)->latest()->first();
+                $discountCoupon = CartDiscount::where('user_id', $userID)->where('status', 0)->latest()->first();
                 if ($discountCoupon) {
                     $discountCoupon->delete();
                 }
             }
-            
+
         } else {
             if (isset($_COOKIE['user_cart'])) {
                 $carts = json_decode($_COOKIE['user_cart'], true);
@@ -587,11 +601,12 @@ class StartController extends Controller
     {
         if (!auth()->check() && !isset($_COOKIE['user_cart']))
             return redirect('login');
-            $carts = $this->user_cart();
+        $carts = $this->user_cart();
         return inertia('Home/Cart', ['carts' => $carts])->with(['page_title' => __('Cart')]);
     }
 
-    private function user_cart(){
+    private function user_cart()
+    {
         if (auth()->check()) {
             $carts = (new GlobalService())->get_user_cart();
         } else {
@@ -601,7 +616,7 @@ class StartController extends Controller
             // if (empty($cookieCart)){
             //     return $carts;
             // }
-            $currencyService=new CurrencyService();
+            $currencyService = new CurrencyService();
             foreach ($cookieCart as $product) {
                 $obj = new \stdClass();
                 $obj->product_id = $product->product_id;
@@ -609,11 +624,11 @@ class StartController extends Controller
                 $obj->size = $product->size ?? null;
                 $obj->color = $product->color ?? null;
                 $obj->selected = $product->selected ?? true;
-                $product2=Product::with(['brand'])->find($product->product_id);
-                if($product2){
-                    $product2['final_selling_price']=$currencyService->convertPrice($product2,$product2->final_selling_price);
+                $product2 = Product::with(['brand'])->find($product->product_id);
+                if ($product2) {
+                    $product2['final_selling_price'] = $currencyService->convertPrice($product2, $product2->final_selling_price);
                 }
-                
+
                 $obj->product = $product2;
                 $carts[] = $obj;
             }
@@ -622,9 +637,11 @@ class StartController extends Controller
         return $carts;
     }
 
-    public function getCart(){
-       return  $this->user_cart();
+    public function getCart()
+    {
+        return $this->user_cart();
     }
+
     public function getCookieCart()
     {
         $cookieCart = isset($_COOKIE['user_cart']) ? json_decode($_COOKIE['user_cart']) : [];
@@ -633,15 +650,15 @@ class StartController extends Controller
         // if (empty($cookieCart)){
         //     return $carts;
         // }
-        $currencyService=new CurrencyService();
+        $currencyService = new CurrencyService();
         foreach ($cookieCart as $product) {
             $obj = new \stdClass();
             $obj->product_id = $product->product_id;
             $obj->quantity = $product->quantity;
             $obj->size = $product->size ?? null;
             $obj->color = $product->color ?? null;
-            $product2=Product::with(['brand'])->find($product->product_id);
-            $product2['final_selling_price']=$currencyService->convertPrice($product2,$product2->final_selling_price);
+            $product2 = Product::with(['brand'])->find($product->product_id);
+            $product2['final_selling_price'] = $currencyService->convertPrice($product2, $product2->final_selling_price);
             $obj->product = $product2;
             $carts[] = $obj;
         }
@@ -649,9 +666,10 @@ class StartController extends Controller
         return $carts;
     }
 
-    public function calculate_order(Request $request){
+    public function calculate_order(Request $request)
+    {
         $carts = $this->user_cart();
-        $data=(new OrderService())->calculateOrder($carts);
+        $data = (new OrderService())->calculateOrder($carts);
         return $data;
     }
 
@@ -693,7 +711,7 @@ class StartController extends Controller
         $frame = isset($res) && $res['order'] && $res['order']['url'] ? $res['order']['url'] : null;
         $order_data = $orderService->calculateOrder($carts);
         $total_after_wallet = $order_data['total_after_wallet'];
-        return inertia('Home/CheckoutPayment', ['carts' => $carts, 'frame' => $frame,'total_after_wallet'=>$total_after_wallet])->with(['page_title' => __('Checkout Payment')]);
+        return inertia('Home/CheckoutPayment', ['carts' => $carts, 'frame' => $frame, 'total_after_wallet' => $total_after_wallet])->with(['page_title' => __('Checkout Payment')]);
     }
 
 
@@ -704,25 +722,26 @@ class StartController extends Controller
         $paymentResponse = $paymentService->loadClickpayPaymentPage(user()->id);
         $frame = isset($paymentResponse) && $paymentResponse['redirect_url'] ? $paymentResponse['redirect_url'] : null;
         return response()->json([
-            'res' =>  $paymentResponse,
+            'res' => $paymentResponse,
             'frame' => $frame
         ]);
     }
+
     public function tamaraPayment()
     {
         $carts = Cart::with('product.brand')->where('user_id', auth()->user()->id)->get();
 
         $res = (new TamaraPaymentService())->loadTamaraPayment(auth()->user()->id, $carts); // Adjust for Tamara
-        $frame = isset($res) && isset($res['checkout_url'])  ? $res['checkout_url']: null;
-        $order_id = isset($res) && isset($res['order_id'])  ? $res['order_id']: null;
-        $token =  config('tamarapayment.token');
-       // dd(`Bearer ${$token}`);
+        $frame = isset($res) && isset($res['checkout_url']) ? $res['checkout_url'] : null;
+        $order_id = isset($res) && isset($res['order_id']) ? $res['order_id'] : null;
+        $token = config('tamarapayment.token');
+        // dd(`Bearer ${$token}`);
         return response()->json([
-           'res' =>  $res  ,
-           'frame' => $frame,
-           'url' => 'https://api-sandbox.tamara.co/orders/'.$order_id.'/authorise',
-           'token' => 'Bearer ' .$token,
-           'user_id'    =>  auth()->user()->id
+            'res' => $res,
+            'frame' => $frame,
+            'url' => 'https://api-sandbox.tamara.co/orders/' . $order_id . '/authorise',
+            'token' => 'Bearer ' . $token,
+            'user_id' => auth()->user()->id
         ]);
     }
 
@@ -762,8 +781,6 @@ class StartController extends Controller
     }
 
 
-
-
     // Update the status of the payment transaction in the database
     protected function updateTransactionStatus($transaction_ref, $status)
     {
@@ -783,7 +800,7 @@ class StartController extends Controller
         // Use the ClickpayPaymentService to check the payment status
         $paymentService = new \App\Services\ClickpayService();
 //        TODO checkPayment defined as void function --> you need to return the payment in checkPayment after update
-        $paymentStatus = $paymentService->checkPayment($transaction_ref ,0);
+        $paymentStatus = $paymentService->checkPayment($transaction_ref, 0);
 
         // Handle payment result
         if (isset($paymentStatus['payment_result']['response_status']) && $paymentStatus['payment_result']['response_status'] == 'A') {
@@ -821,11 +838,12 @@ class StartController extends Controller
             return back()->withErrors(['error' => 'Something went wrong']);
         }
     }
+
     public function place_order(OrderService $orderService)
     {
         // try {
-            $order = $orderService->order(user()->id);
-            return redirect()->route('order.place_success', $order->id);
+        $order = $orderService->order(user()->id);
+        return redirect()->route('order.place_success', $order->id);
         // } catch (OrderCreationException $exception) {
         //     return back()->withErrors(['error' => 'Order creation failed']);
         // } catch (\Exception $e) {
@@ -833,8 +851,9 @@ class StartController extends Controller
         // }
     }
 
-    public function place_order_success($id){
-        $order=Order::findOrFail($id);
+    public function place_order_success($id)
+    {
+        $order = Order::findOrFail($id);
         return inertia('Home/OrderSuccess', [
             'order' => $order
         ]);
@@ -873,15 +892,15 @@ class StartController extends Controller
         Auth::login($user);
         session(['user_id' => Auth::user()->id]);
         if (Cart::where('user_id', \user()->id)->count() == 0)
-        return redirect()->route('welcome');
+            return redirect()->route('welcome');
 
-        $transaction =  $user->payment_transactions()->latest()->first();
+        $transaction = $user->payment_transactions()->latest()->first();
         $transaction->status = 1;
         $transaction->update();
-        $payment =  $transaction;
+        $payment = $transaction;
         $order = (new OrderService())->order($user->id, $payment->id, 'SAR');
         DB::table(table: 'payment_transactions')
-            ->where('user_id',  $user->id)
+            ->where('user_id', $user->id)
             ->where('status', 0)
             ->whereNull('response')
             ->delete();
@@ -906,8 +925,8 @@ class StartController extends Controller
     {
         return [
             'socials_setting' => $settings->where('slug', 'social')->firstOrFail(),
-            'pages' => $page->where('show_in_footer_bar',0)->get(),
-            'footer_bar_pages' => $page->where('show_in_footer_bar',1)->get(),
+            'pages' => $page->where('show_in_footer_bar', 0)->get(),
+            'footer_bar_pages' => $page->where('show_in_footer_bar', 1)->get(),
             'popup' => $settings->where('slug', 'popup')->firstOrFail(),
         ];
     }
@@ -933,15 +952,15 @@ class StartController extends Controller
     {
         $currencyService = new CurrencyService();
         $products = Product::with('brand')->latest()
-            ->select('id','name_en','name_ar','brand_id','image','final_selling_price','old_price','currency_id')
+            ->select('id', 'name_en', 'name_ar', 'brand_id', 'image', 'final_selling_price', 'old_price', 'currency_id')
             ->where('status', 1)
             ->where(function ($query) use ($request) {
                 $query->where('name_en', 'like', '%' . $request->search_value . '%')
                     ->orwhere('name_ar', 'like', '%' . $request->search_value . '%')
                     ->orwhere('sku', $request->search_value);
-            })->limit(10)->get()->map(function($product) use($currencyService) {
-                $product['final_selling_price'] = $currencyService->convertPrice($product,$product->final_selling_price);
-                $product['old_price'] = number_format($product->final_selling_price / (1-($product->discount_percentage_selling_price/100)),2);
+            })->limit(10)->get()->map(function ($product) use ($currencyService) {
+                $product['final_selling_price'] = $currencyService->convertPrice($product, $product->final_selling_price);
+                $product['old_price'] = number_format($product->final_selling_price / (1 - ($product->discount_percentage_selling_price / 100)), 2);
                 return $product;
             });
         return $products;
@@ -964,10 +983,11 @@ class StartController extends Controller
     }
 
 
-    public function update_wallet_used_status(Request $request){
-        $user=Auth::user();
+    public function update_wallet_used_status(Request $request)
+    {
+        $user = Auth::user();
         $user->update([
-            'wallet_used'=>! $user->wallet_used
+            'wallet_used' => !$user->wallet_used
         ]);
         return redirect()->back();
     }

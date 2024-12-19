@@ -10,7 +10,7 @@ class Brand extends Model
 {
     use HasFactory, HasTranslations;
 
-    protected $fillable=[
+    protected $fillable = [
         'name',
         'slug',
         'link',
@@ -19,12 +19,17 @@ class Brand extends Model
     ];
 
     public $translatable = ['name'];
-    protected $appends=['translated_name',];
+    protected $appends = ['translated_name',];
 
     public function getTranslatedNameAttribute($value)
     {
         return @$this->name;
     }
- 
+
+    public function products(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Product::class)->where('status', 1);
+    }
+
 
 }
