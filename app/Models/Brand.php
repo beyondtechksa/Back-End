@@ -26,6 +26,5 @@ class Brand extends Model
         return @$this->name;
     }
  
-  
 
 }
